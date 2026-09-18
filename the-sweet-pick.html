@@ -246,6 +246,54 @@
   .disclaimer{font-size:.84rem;line-height:1.45;color:var(--navy-deep);text-align:left;max-width:none;opacity:.92}
   .disclaimer a{color:var(--navy-deep)}
 
+  /* ---------- how to play, condensed onto the first pick ---------- */
+  .howbox{
+    background:#fff;border:1.5px solid var(--card-line);border-radius:14px;
+    padding:17px 20px;margin-bottom:26px;box-shadow:var(--shadow);
+  }
+  .howbox .lbl{
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:.66rem;
+    letter-spacing:.09em;text-transform:uppercase;color:var(--orange);margin-bottom:11px;
+  }
+  .howbox ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:h}
+  .howbox li{display:flex;gap:11px;align-items:flex-start;counter-increment:h;font-size:1.04rem}
+  .howbox li::before{
+    content:counter(h);flex:none;width:22px;height:22px;border-radius:50%;
+    background:var(--orange);color:#fff;
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:.64rem;
+    display:grid;place-items:center;margin-top:.26em;
+  }
+
+  /* ---------- first-run onboarding ---------- */
+  .scrim{
+    position:fixed;inset:0;z-index:60;
+    background:rgba(46,16,4,.58);backdrop-filter:blur(3px);
+    display:grid;place-items:center;padding:20px;
+    animation:fade .22s ease both;
+  }
+  .scrim[hidden]{display:none}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{
+    background:var(--paper);border-radius:20px;width:min(420px,100%);
+    padding:26px 24px 18px;text-align:center;
+    box-shadow:0 22px 60px rgba(60,20,0,.42);
+    animation:pop .28s cubic-bezier(.2,.9,.3,1.25) both;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+  .sheet svg{width:92px;height:92px;margin:0 auto 14px;display:block}
+  .sheet h2{color:var(--orange);font-size:1.75rem;line-height:1.15;margin-bottom:8px}
+  .sheet p{font-size:1.06rem;margin:0 auto;max-width:30ch}
+  .dots{display:flex;gap:7px;justify-content:center;margin:20px 0 16px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--card-line);transition:background .2s,width .2s}
+  .dots i.on{background:var(--orange);width:20px;border-radius:99px}
+  .sheetbtns{display:flex;gap:10px;align-items:center;justify-content:center}
+  .lnk{
+    background:none;border:0;font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.82rem;color:var(--navy);opacity:.6;cursor:pointer;padding:11px 8px;
+  }
+  .lnk:hover{opacity:1}
+  .lnk:focus-visible,.sheet .pill:focus-visible{outline:2.5px solid var(--orange);outline-offset:2px}
+
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation:none!important;transition-duration:.001ms!important}
   }
@@ -297,25 +345,19 @@
   </div>
 </section>
 
-<!-- ================= HOW TO PLAY ================= -->
-<section id="p-howto" class="ruled" hidden>
-  <div class="page">
-    <div class="pageno">The Sweet Pick &middot; How to play</div>
-    <h1 class="headline">How to play</h1>
-    <p class="subhead">No overthinking &mdash; go with your first instinct.</p>
-    <ul class="dotlist">
-      <li>Take a look at the mithai boxes.</li>
-      <li>Trust your gut and make your Sweet Pick.</li>
-      <li>Flip only your choice to see what was at play.</li>
-      <li>Turn the page. Next pick!</li>
-    </ul>
-    <p>There are five picks in all. Each one sets up a familiar festive situation, and each one has a quiet nudge hidden in it. You will only find out which nudge after you have chosen.</p>
-    <div class="btnrow">
-      <button class="pill" data-go="play">Make my first pick</button>
-      <button class="pill plain" data-go="cover">Back to menu</button>
+<!-- ================= FIRST-RUN ONBOARDING ================= -->
+<div class="scrim" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-h">
+  <div class="sheet">
+    <div id="intro-art"></div>
+    <h2 id="intro-h"></h2>
+    <p id="intro-p"></p>
+    <div class="dots" id="intro-dots" aria-hidden="true"></div>
+    <div class="sheetbtns">
+      <button class="lnk" id="intro-skip">Skip</button>
+      <button class="pill" id="intro-next">Next</button>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ================= ABOUT ================= -->
 <section id="p-about" class="ruled" hidden>
@@ -338,6 +380,14 @@
 <section id="p-round" class="ruled" hidden>
   <div class="page">
     <div class="pageno" id="r-pageno"></div>
+    <div class="howbox" id="howbox">
+      <div class="lbl">How to play</div>
+      <ol>
+        <li>Trust your gut and make your Sweet Pick.</li>
+        <li>Flip only your choice to see what was at play.</li>
+        <li>Turn the page. Next pick!</li>
+      </ol>
+    </div>
     <h1 class="headline" id="r-headline"></h1>
     <p class="subhead" id="r-scenario"></p>
     <p class="pickline">Make your pick first. Then flip your chosen card to see what may have influenced it.</p>
@@ -495,7 +545,7 @@
     {label:"Past editions",      act:"archive"}
   ];
 
-  var PAGES = ["cover","howto","about","round","close","feedback"];
+  var PAGES = ["cover","about","round","close","feedback"];
   var state = {page:"cover", round:0, results:[], picked:false, mi:0};
 
   var $ = function(id){ return document.getElementById(id); };
@@ -566,6 +616,7 @@
     else if (a === "archive"){ window.open("https://www.icici.bank.in/blogs/the-orange-book","_blank","noopener"); }
     else if (a === "cover"){ show("cover"); }
     else if (a === "feedback"){ show("feedback"); }
+    else if (a === "howto"){ openIntro(0); }
     else { show(a); }
   }
 
@@ -601,6 +652,8 @@
     var r = ROUNDS[state.round];
     state.picked = false;
     $("r-pageno").textContent = "The Sweet Pick · Pick " + (state.round + 1) + " of " + ROUNDS.length;
+    /* the condensed rules sit on the first pick only; every round keeps the one-line instruction */
+    $("howbox").hidden = (state.round !== 0);
     $("r-headline").innerHTML = r.headline;
     $("r-scenario").innerHTML = "It’s festive season and you’re choosing a mithai box. You planned to spend <span class=\"amount\">" +
       rupee(BUDGET) + "</span>. Which one would you go for?";
@@ -664,6 +717,58 @@
     show("close");
   }
 
+  /* ---------- first-run onboarding ---------- */
+  var SEEN_KEY = "tob-vol65-intro-seen";
+  var STEPS = [
+    {
+      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><path d="M48 6l3.2 8.6 8.6 3.2-8.6 3.2L48 29.6l-3.2-8.6-8.6-3.2 8.6-3.2Z" fill="#F5B33F"/><path d="M14 36h68l-5 42a7 7 0 0 1-7 6.2H26a7 7 0 0 1-7-6.2Z" fill="#C0400E"/><rect x="11" y="28" width="74" height="12" rx="4" fill="#E4601A"/><rect x="22" y="40" width="52" height="34" rx="4" fill="#FBE3C0"/><circle cx="35" cy="51" r="7" fill="#E89A2E"/><rect x="53" y="44" width="14" height="14" rx="2" fill="#FFF6E2" stroke="#E3C88E" stroke-width="1.6"/><rect x="28" y="59" width="14" height="14" rx="2" fill="#FFF6E2" stroke="#E3C88E" stroke-width="1.6"/><circle cx="60" cy="66" r="7" fill="#E89A2E"/></svg>',
+      h:"This month, you play.",
+      p:"Vol. 65 is an interactive edition. Five festive choices, each with a quiet nudge hidden inside it."
+    },
+    {
+      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="14" y="20" width="42" height="56" rx="6" fill="#fff" stroke="#F0C9A8" stroke-width="2.5"/><circle cx="35" cy="40" r="8.5" fill="#E89A2E"/><rect x="24" y="55" width="22" height="5" rx="2.5" fill="#E7EDF4"/><rect x="24" y="64" width="14" height="5" rx="2.5" fill="#E7EDF4"/><path d="M66 34a20 20 0 0 1 0 28" stroke="#F06423" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M66 27l9 7.5-9 7.5Z" fill="#F06423"/></svg>',
+      h:"Pick first. Learn after.",
+      p:"Choose the box you would actually buy, then flip your card to see what may have influenced you."
+    },
+    {
+      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="14" y="18" width="44" height="60" rx="5" fill="#fff" stroke="#C9D8E8" stroke-width="2.5"/><path d="M24 32h24M24 43h24M24 54h16" stroke="#D5E2EE" stroke-width="3.4" stroke-linecap="round"/><path d="M58 18c13 10 15 42 0 60Z" fill="#FDEBD8" stroke="#F0C9A8" stroke-width="2.5" stroke-linejoin="round"/><path d="M68 48h14M76 41l7.5 7-7.5 7" stroke="#F06423" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      h:"Then turn the page.",
+      p:"Five picks in all. At the end, see how many mindful picks you made this festive season."
+    }
+  ];
+  var istep = 0, lastFocus = null;
+
+  function paintIntro(){
+    var s = STEPS[istep];
+    $("intro-art").innerHTML = s.art;
+    $("intro-h").textContent = s.h;
+    $("intro-p").textContent = s.p;
+    var d = "";
+    for (var i = 0; i < STEPS.length; i++) d += '<i class="' + (i === istep ? "on" : "") + '"></i>';
+    $("intro-dots").innerHTML = d;
+    $("intro-next").textContent = (istep === STEPS.length - 1) ? "Start picking" : "Next";
+  }
+  function openIntro(at){
+    istep = at || 0;
+    lastFocus = document.activeElement;
+    paintIntro();
+    $("intro").hidden = false;
+    $("intro-next").focus();
+  }
+  function closeIntro(andPlay){
+    $("intro").hidden = true;
+    try { window.localStorage.setItem(SEEN_KEY, "1"); } catch(e){}
+    if (andPlay) act("play");
+    else if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function introOpen(){ return !$("intro").hidden; }
+
+  $("intro-next").addEventListener("click", function(){
+    if (istep < STEPS.length - 1){ istep++; paintIntro(); } else { closeIntro(true); }
+  });
+  $("intro-skip").addEventListener("click", function(){ closeIntro(false); });
+  $("intro").addEventListener("click", function(e){ if (e.target === $("intro")) closeIntro(false); });
+
   /* ---------- wiring ---------- */
   document.addEventListener("click", function(e){
     var t = e.target.closest("[data-go]");
@@ -672,6 +777,12 @@
   $("next-btn").addEventListener("click", next);
 
   document.addEventListener("keydown", function(e){
+    if (introOpen()){
+      if (e.key === "Escape"){ e.preventDefault(); closeIntro(false); }
+      else if (e.key === "ArrowRight"){ e.preventDefault(); if (istep < STEPS.length-1){ istep++; paintIntro(); } }
+      else if (e.key === "ArrowLeft"){ e.preventDefault(); if (istep > 0){ istep--; paintIntro(); } }
+      return;
+    }
     if (state.page === "cover"){
       if (e.key === "ArrowDown"){ e.preventDefault(); state.mi = (state.mi + 1) % MENU.length; paintMenu(); }
       else if (e.key === "ArrowUp"){ e.preventDefault(); state.mi = (state.mi - 1 + MENU.length) % MENU.length; paintMenu(); }
@@ -692,6 +803,9 @@
       state.round = saved.round; state.results = saved.results || []; renderRound();
     } else {
       show("cover");
+      var seen = false;
+      try { seen = window.localStorage.getItem(SEEN_KEY) === "1"; } catch(e){ seen = false; }
+      if (!seen) openIntro(0);
     }
   }
 
