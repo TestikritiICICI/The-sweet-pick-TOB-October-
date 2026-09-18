@@ -264,34 +264,52 @@
     display:grid;place-items:center;margin-top:.26em;
   }
 
-  /* ---------- first-run coachmarks (one view, one tap) ---------- */
-  .coach{position:fixed;inset:0;z-index:60;animation:fade .22s ease both}
-  .coach[hidden]{display:none}
+  /* ---------- first-run edition note (one view, one tap) ---------- */
+  .intro{
+    position:fixed;inset:0;z-index:60;
+    /* the cover blurs back into warm texture and the darkness pools behind the
+       note, so the type stays crisp without a card under it */
+    -webkit-backdrop-filter:blur(9px);
+    backdrop-filter:blur(9px);
+    background:
+      radial-gradient(ellipse 360px 320px at 50% 47%, rgba(22,6,0,.58), rgba(22,6,0,0) 72%),
+      rgba(38,11,2,.74);
+    display:grid;place-items:center;padding:30px 24px;
+    animation:fade .24s ease both;
+  }
+  .intro[hidden]{display:none}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  /* one SVG carries the dimming, the spotlight holes and the arrows */
-  .coach-dim{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .coach-hd{
-    position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top, 0px) + 86px);
-    text-align:center;color:#FFE9C4;pointer-events:none;
+  /* no card and no panel: the note is set straight onto the dimmed cover */
+  .intro-note{
+    max-width:min(30ch,100%);text-align:center;color:#fff;
+    text-shadow:0 2px 20px rgba(24,7,0,.66);
+    animation:noteIn .42s cubic-bezier(.2,.9,.3,1.1) both;
+  }
+  @keyframes noteIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .intro-note p{max-width:none;margin:0}
+  .intro-kicker{
     font-family:Mulish,system-ui,sans-serif;font-weight:700;
-    font-size:.68rem;letter-spacing:.17em;text-transform:uppercase;
+    font-size:.66rem;letter-spacing:.19em;text-transform:uppercase;
+    color:#FFD98A;margin-bottom:16px!important;
   }
-  .cm{
-    position:absolute;top:0;left:0;width:max-content;max-width:min(230px,54vw);
-    color:#fff;text-align:left;line-height:1.26;pointer-events:none;
-    font-size:clamp(.96rem,3.2vw,1.12rem);
-    /* a double halo keeps a note legible even where it crosses cover type */
-    text-shadow:0 1px 2px rgba(24,7,0,.95),0 2px 16px rgba(24,7,0,.9);
-    animation:cmIn .3s ease both;
+  /* balance keeps the display lines even instead of dropping a one-word orphan */
+  .intro-note h2{
+    font-size:clamp(2.15rem,7.8vw,3.05rem);line-height:1.04;margin-bottom:14px;
+    text-wrap:balance;
   }
-  @keyframes cmIn{from{opacity:0}to{opacity:1}}
-  .coach-foot{
-    position:absolute;left:20px;right:20px;
-    bottom:calc(env(safe-area-inset-bottom, 0px) + 18px);
-    display:flex;justify-content:center;
+  .intro-lede{font-size:clamp(1.04rem,3.4vw,1.26rem);line-height:1.34;text-wrap:balance}
+  .intro-meta{
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
+    color:rgba(255,255,255,.74);margin-top:18px!important;
   }
-  .coach-foot .pill{padding:12px 32px;font-size:.92rem}
-  .coach-foot .pill:focus-visible{outline:3px solid #FFE9C4;outline-offset:3px}
+  .intro-note .pill{margin-top:28px}
+  .intro-note .pill:focus-visible{outline:3px solid #FFE9C4;outline-offset:3px}
+  /* a wider bed on a desktop, with the running text held to a readable measure */
+  @media (min-width:700px){
+    .intro-note{max-width:430px}
+    .intro-note .intro-lede{max-width:35ch;margin:0 auto}
+  }
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation:none!important;transition-duration:.001ms!important}
@@ -344,22 +362,15 @@
   </div>
 </section>
 
-<!-- ================= FIRST-RUN COACHMARKS (single view) ================= -->
-<div class="coach" id="coach" hidden role="dialog" aria-modal="true" aria-labelledby="coach-hd">
-  <svg class="coach-dim" id="coach-dim" aria-hidden="true" preserveAspectRatio="none">
-    <defs>
-      <mask id="coach-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%">
-        <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
-        <g id="coach-holes" fill="#000"></g>
-      </mask>
-    </defs>
-    <rect x="0" y="0" width="100%" height="100%" fill="#2E1004" fill-opacity=".82" mask="url(#coach-mask)"/>
-    <g id="coach-rings" fill="none" stroke="#FFD98A" stroke-width="2" stroke-dasharray="7 5" opacity=".85"></g>
-    <g id="coach-arrows" fill="none" stroke="#FFE9C4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></g>
-  </svg>
-  <div class="coach-hd" id="coach-hd">How to play</div>
-  <div id="coach-labels"></div>
-  <div class="coach-foot"><button class="pill" id="coach-done">Got it</button></div>
+<!-- ================= FIRST-RUN EDITION NOTE (single view) ================= -->
+<div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-h">
+  <div class="intro-note">
+    <p class="intro-kicker">Interactive edition &middot; Vol. 65</p>
+    <h2 id="intro-h">This one, you play.</h2>
+    <p class="intro-lede">Five festive mithai choices, each hiding a behavioural nudge. Pick the box you&rsquo;d actually buy, then flip it to meet the bias that swayed you.</p>
+    <p class="intro-meta">5 picks &middot; about 3 minutes</p>
+    <button class="pill" id="intro-done">Got it</button>
+  </div>
 </div>
 
 <!-- ================= ABOUT ================= -->
@@ -619,7 +630,7 @@
     else if (a === "archive"){ window.open("https://www.icici.bank.in/blogs/the-orange-book","_blank","noopener"); }
     else if (a === "cover"){ show("cover"); }
     else if (a === "feedback"){ show("feedback"); }
-    else if (a === "howto"){ openCoach(true); }
+    else if (a === "howto"){ openIntro(true); }
     else { show(a); }
   }
 
@@ -720,162 +731,32 @@
     show("close");
   }
 
-  /* ---------- first-run coachmarks (one view, one tap) ---------- */
+  /* ---------- first-run edition note (one view, one tap) ---------- */
   var SEEN_KEY = "tob-vol65-intro-seen";
+  var introPlay = false, lastFocus = null;
 
-  /* Every note points at something already on the cover, so the whole
-     how-to reads in one view instead of a three-step carousel. */
-  var COACH = [
-    {sel:".boxwrap",     text:"Two boxes a round. Pick the one you’d actually buy, then flip it to see the nudge.",
-     prefer:["left","right","top","bottom"]},
-    {sel:"#menu .mitem", text:"Start here.", prefer:["right","left","top","bottom"], hit:true}
-  ];
-  var GAP = 36, GUT = 14;
-
-  var marks = [], coachPlay = false, lastFocus = null;
-  function coachOpen(){ return !$("coach").hidden; }
-  function r1(n){ return Math.round(n * 10) / 10; }
-
-  /* only note what is actually on screen right now */
-  function coachMarks(){
-    var vh = window.innerHeight, out = [];
-    COACH.forEach(function(c){
-      var el = document.querySelector(c.sel);
-      if (!el) return;
-      var b = el.getBoundingClientRect();
-      if (b.bottom < 40 || b.top > vh - 40) return;
-      out.push({cfg:c, el:el});
-    });
-    return out;
-  }
-
-  function spotFor(side, r, w, h){
-    if (side === "right") return {side:side, x:r.right + GAP,     y:r.cy - h/2};
-    if (side === "left")  return {side:side, x:r.left - GAP - w,  y:r.cy - h/2};
-    if (side === "top")   return {side:side, x:r.cx - w/2,        y:r.top - GAP - h};
-    return {side:"bottom", x:r.cx - w/2, y:r.bottom + GAP};
-  }
-  function clash(a, b, m){
-    return a.x < b.x + b.w + m && a.x + a.w + m > b.x &&
-           a.y < b.y + b.h + m && a.y + a.h + m > b.y;
-  }
-  function clashAny(box, list, m){
-    for (var i = 0; i < list.length; i++) if (clash(box, list[i], m)) return true;
-    return false;
-  }
-
-  /* a curved arrow from the note to the edge of what it points at */
-  function arrowPath(side, l, r){
-    var from, to;
-    if (side === "right")      { from = {x:l.x - 6,       y:l.y + l.h/2}; to = {x:r.right + 5, y:r.cy}; }
-    else if (side === "left")  { from = {x:l.x + l.w + 6, y:l.y + l.h/2}; to = {x:r.left - 5,  y:r.cy}; }
-    else if (side === "top")   { from = {x:l.x + l.w/2,   y:l.y + l.h + 6}; to = {x:r.cx, y:r.top - 5}; }
-    else                       { from = {x:l.x + l.w/2,   y:l.y - 6};       to = {x:r.cx, y:r.bottom + 5}; }
-
-    var dx = to.x - from.x, dy = to.y - from.y;
-    var len = Math.sqrt(dx*dx + dy*dy) || 1;
-    var bend = Math.min(46, len * 0.42);
-    var cx = (from.x + to.x)/2 - dy/len*bend, cy = (from.y + to.y)/2 + dx/len*bend;
-
-    /* the head sits on the tangent of the curve where it lands */
-    var ax = to.x - cx, ay = to.y - cy, al = Math.sqrt(ax*ax + ay*ay) || 1;
-    ax /= al; ay /= al;
-    var co = Math.cos(0.55), si = Math.sin(0.55), hl = 10.5;
-    var b1x = to.x - hl*(ax*co - ay*si), b1y = to.y - hl*(ax*si + ay*co);
-    var b2x = to.x - hl*(ax*co + ay*si), b2y = to.y - hl*(ay*co - ax*si);
-
-    return '<path d="M' + r1(from.x) + " " + r1(from.y) + " Q" + r1(cx) + " " + r1(cy) +
-           " " + r1(to.x) + " " + r1(to.y) + '"/>' +
-           '<path d="M' + r1(b1x) + " " + r1(b1y) + " L" + r1(to.x) + " " + r1(to.y) +
-           " L" + r1(b2x) + " " + r1(b2y) + '"/>';
-  }
-
-  function layoutCoach(){
-    var vw = window.innerWidth, vh = window.innerHeight;
-    $("coach-dim").setAttribute("viewBox", "0 0 " + vw + " " + vh);
-
-    /* spotlight each target first, so no note lands on top of one */
-    var holes = "", rings = "", arrows = "", pad = 8;
-    marks.forEach(function(m){
-      var b = m.el.getBoundingClientRect();
-      var r = {left:b.left - pad, top:b.top - pad, w:b.width + pad*2, h:b.height + pad*2};
-      r.right = r.left + r.w; r.bottom = r.top + r.h;
-      r.cx = r.left + r.w/2;  r.cy = r.top + r.h/2;
-      m.rect = r;
-      var box = '<rect x="' + r1(r.left) + '" y="' + r1(r.top) + '" width="' + r1(r.w) +
-                '" height="' + r1(r.h) + '" rx="12"/>';
-      holes += box; rings += box;
-    });
-
-    /* the running head and the Got it button are no-go strips */
-    var top0 = 112, bot0 = vh - 76, placed = [];
-    var spots = marks.map(function(m){
-      return {x:m.rect.left, y:m.rect.top, w:m.rect.w, h:m.rect.h};
-    });
-
-    marks.forEach(function(m){
-      var w = m.node.offsetWidth, h = m.node.offsetHeight, p = null;
-      for (var i = 0; i < m.cfg.prefer.length; i++){
-        var t = spotFor(m.cfg.prefer[i], m.rect, w, h);
-        if (!p) p = t;
-        var box = {x:t.x, y:t.y, w:w, h:h};
-        if (t.x >= GUT && t.x + w <= vw - GUT && t.y >= top0 && t.y + h <= bot0 &&
-            !clashAny(box, placed, 10) && !clashAny(box, spots, 6)){ p = t; break; }
-      }
-      p.x = Math.max(GUT, Math.min(p.x, vw - GUT - w));
-      p.y = Math.max(top0, Math.min(p.y, bot0 - h));
-      m.node.style.transform = "translate(" + Math.round(p.x) + "px," + Math.round(p.y) + "px)";
-      placed.push({x:p.x, y:p.y, w:w, h:h});
-      arrows += arrowPath(p.side, {x:p.x, y:p.y, w:w, h:h}, m.rect);
-    });
-
-    $("coach-holes").innerHTML = holes;
-    $("coach-rings").innerHTML = rings;
-    $("coach-arrows").innerHTML = arrows;
-  }
-
-  function openCoach(fromMenu){
-    coachPlay = !fromMenu;
+  function introOpen(){ return !$("intro").hidden; }
+  function openIntro(fromMenu){
+    /* opened from the menu, the reader came to look, not to start a round */
+    introPlay = !fromMenu;
     lastFocus = document.activeElement;
-    $("coach-done").textContent = fromMenu ? "Back to menu" : "Got it, let’s play";
-    var host = $("coach-labels");
-    host.innerHTML = "";
-    marks = coachMarks();
-    marks.forEach(function(m, i){
-      var d = document.createElement("div");
-      d.className = "cm";
-      d.style.animationDelay = (0.07 * i) + "s";
-      d.textContent = m.cfg.text;
-      host.appendChild(d);
-      m.node = d;
-    });
-    $("coach").hidden = false;
-    layoutCoach();
-    $("coach-done").focus();
+    $("intro-done").textContent = fromMenu ? "Back to menu" : "Got it, let’s play";
+    $("intro").hidden = false;
+    $("intro-done").focus();
   }
-  function closeCoach(andPlay){
-    $("coach").hidden = true;
+  function closeIntro(andPlay){
+    $("intro").hidden = true;
     try { window.localStorage.setItem(SEEN_KEY, "1"); } catch(e){}
     if (andPlay) act("play");
     else if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  $("coach-done").addEventListener("click", function(e){
+  $("intro-done").addEventListener("click", function(e){
     e.stopPropagation();
-    closeCoach(coachPlay);
+    closeIntro(introPlay);
   });
-  /* one tap anywhere dismisses, and a tap on the spotlit menu item starts the
-     game outright, so the note reading "start here" does what it says */
-  $("coach").addEventListener("click", function(e){
-    for (var i = 0; i < marks.length; i++){
-      var m = marks[i], r = m.rect;
-      if (!m.cfg.hit || !r) continue;
-      if (e.clientX >= r.left && e.clientX <= r.right &&
-          e.clientY >= r.top  && e.clientY <= r.bottom){ closeCoach(true); return; }
-    }
-    closeCoach(false);
-  });
-  window.addEventListener("resize", function(){ if (coachOpen()) layoutCoach(); });
+  /* a tap anywhere also dismisses, so the note never needs hunting down */
+  $("intro").addEventListener("click", function(){ closeIntro(false); });
 
   /* ---------- wiring ---------- */
   document.addEventListener("click", function(e){
@@ -885,9 +766,8 @@
   $("next-btn").addEventListener("click", next);
 
   document.addEventListener("keydown", function(e){
-    if (coachOpen()){
-      if (e.key === "Escape"){ e.preventDefault(); closeCoach(false); }
-      return;
+    if (introOpen()){
+      if (e.key === "Escape"){ e.preventDefault(); closeIntro(false); }
     }
     if (state.page === "cover"){
       if (e.key === "ArrowDown"){ e.preventDefault(); state.mi = (state.mi + 1) % MENU.length; paintMenu(); }
@@ -911,7 +791,7 @@
       show("cover");
       var seen = false;
       try { seen = window.localStorage.getItem(SEEN_KEY) === "1"; } catch(e){ seen = false; }
-      if (!seen) openCoach(false);
+      if (!seen) openIntro(false);
     }
   }
 
