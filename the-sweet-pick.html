@@ -32,6 +32,9 @@
   }
 
   *{box-sizing:border-box}
+  /* every page and the action row are toggled through the hidden attribute, and
+     their own display rules outrank the browser default for it */
+  [hidden]{display:none!important}
   body{
     margin:0;
     background:var(--paper);
@@ -277,7 +280,6 @@
     display:grid;place-items:center;padding:30px 24px;
     animation:fade .24s ease both;
   }
-  .intro[hidden]{display:none}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   /* no card and no panel: the note is set straight onto the dimmed cover */
   .intro-note{
@@ -399,7 +401,7 @@
       <ol>
         <li>Trust your gut and make your Sweet Pick.</li>
         <li>Flip only your choice to see what was at play.</li>
-        <li>Turn the page. Next pick!</li>
+        <li>Keep shopping for your next box.</li>
       </ol>
     </div>
     <h1 class="headline" id="r-headline"></h1>
@@ -407,7 +409,10 @@
     <p class="pickline">Make your pick first. Then flip your chosen card to see what may have influenced it.</p>
     <div class="cards" id="r-cards"></div>
     <div id="r-bridge"></div>
-    <div class="btnrow" id="r-actions" hidden><button class="pill" id="next-btn">Turn the page</button></div>
+    <div class="btnrow" id="r-actions" hidden>
+      <button class="pill" id="next-btn">Keep shopping</button>
+      <button class="pill plain" id="again-btn">Pick again</button>
+    </div>
   </div>
 </section>
 
@@ -563,6 +568,11 @@
   var state = {page:"cover", round:0, results:[], picked:false, mi:0};
 
   var $ = function(id){ return document.getElementById(id); };
+  /* moving focus must not scroll: after a flip the reader is reading the card */
+  function focusQuiet(el){
+    if (!el) return;
+    try { el.focus({preventScroll:true}); } catch(e){ el.focus(); }
+  }
   var rupee = function(n){ return "₹" + n.toLocaleString("en-IN"); };
 
   function show(name){
@@ -683,7 +693,7 @@
     });
     $("r-bridge").innerHTML = "";
     $("r-actions").hidden = true;
-    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Turn the page";
+    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Keep shopping";
     show("round");
   }
 
@@ -703,13 +713,20 @@
       chosen.classList.remove("turning");
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
-      state.results.push({bias:r.bias, win:!!c.win});
+      state.results[state.round] = {bias:r.bias, win:!!c.win};
       $("r-bridge").innerHTML =
         '<div class="bridge"><p class="eyebrow">Where else you meet it</p><p class="wide">' + r.bridge + "</p>" +
         '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul></div>";
       $("r-actions").hidden = false;
-      $("next-btn").focus();
+      focusQuiet($("next-btn"));
     }, 280);
+  }
+
+  /* the reader wanted the other box: replay this round, and whichever box they
+     settle on is the one that counts */
+  function again(){
+    renderRound();
+    focusQuiet($("r-cards").querySelector(".card"));
   }
 
   function next(){
@@ -732,7 +749,7 @@
   }
 
   /* ---------- first-run edition note (one view, one tap) ---------- */
-  var SEEN_KEY = "tob-vol65-intro-seen";
+  var SEEN_KEY = "tob-vol65-note-seen";
   var introPlay = false, lastFocus = null;
 
   function introOpen(){ return !$("intro").hidden; }
@@ -742,7 +759,7 @@
     lastFocus = document.activeElement;
     $("intro-done").textContent = fromMenu ? "Back to menu" : "Got it, let’s play";
     $("intro").hidden = false;
-    $("intro-done").focus();
+    focusQuiet($("intro-done"));
   }
   function closeIntro(andPlay){
     $("intro").hidden = true;
@@ -764,10 +781,12 @@
     if (t) act(t.getAttribute("data-go"));
   });
   $("next-btn").addEventListener("click", next);
+  $("again-btn").addEventListener("click", again);
 
   document.addEventListener("keydown", function(e){
     if (introOpen()){
       if (e.key === "Escape"){ e.preventDefault(); closeIntro(false); }
+      return;
     }
     if (state.page === "cover"){
       if (e.key === "ArrowDown"){ e.preventDefault(); state.mi = (state.mi + 1) % MENU.length; paintMenu(); }
