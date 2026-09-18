@@ -264,35 +264,38 @@
     display:grid;place-items:center;margin-top:.26em;
   }
 
-  /* ---------- first-run onboarding ---------- */
+  /* ---------- first-run note: frosted glass over the live cover ---------- */
   .scrim{
     position:fixed;inset:0;z-index:60;
-    background:rgba(46,16,4,.58);backdrop-filter:blur(3px);
-    display:grid;place-items:center;padding:20px;
-    animation:fade .22s ease both;
+    display:grid;place-items:center;padding:30px 26px;
+    background:rgba(116,40,6,.32);
+    -webkit-backdrop-filter:blur(13px) saturate(1.15);
+    backdrop-filter:blur(13px) saturate(1.15);
+    animation:fade .26s ease both;
+  }
+  /* without backdrop-filter the tint alone has to carry the contrast */
+  @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+    .scrim{background:rgba(116,40,6,.82)}
   }
   .scrim[hidden]{display:none}
   @keyframes fade{from{opacity:0}to{opacity:1}}
-  .sheet{
-    background:var(--paper);border-radius:20px;width:min(420px,100%);
-    padding:26px 24px 18px;text-align:center;
-    box-shadow:0 22px 60px rgba(60,20,0,.42);
-    animation:pop .28s cubic-bezier(.2,.9,.3,1.25) both;
+  .introtext{
+    text-align:center;max-width:34ch;
+    text-shadow:0 2px 20px rgba(78,24,0,.55);
+    animation:risein .42s cubic-bezier(.2,.9,.3,1.1) both;
   }
-  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
-  .sheet svg{width:92px;height:92px;margin:0 auto 14px;display:block}
-  .sheet h2{color:var(--orange);font-size:1.75rem;line-height:1.15;margin-bottom:8px}
-  .sheet p{font-size:1.06rem;margin:0 auto;max-width:30ch}
-  .dots{display:flex;gap:7px;justify-content:center;margin:20px 0 16px}
-  .dots i{width:7px;height:7px;border-radius:50%;background:var(--card-line);transition:background .2s,width .2s}
-  .dots i.on{background:var(--orange);width:20px;border-radius:99px}
-  .sheetbtns{display:flex;gap:10px;align-items:center;justify-content:center}
-  .lnk{
-    background:none;border:0;font-family:Mulish,system-ui,sans-serif;font-weight:600;
-    font-size:.82rem;color:var(--navy);opacity:.6;cursor:pointer;padding:11px 8px;
+  @keyframes risein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .introtext .kicker{
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:.66rem;
+    letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:14px;
   }
-  .lnk:hover{opacity:1}
-  .lnk:focus-visible,.sheet .pill:focus-visible{outline:2.5px solid var(--orange);outline-offset:2px}
+  .introtext h2{color:#fff;font-size:clamp(1.9rem,6.4vw,2.5rem);line-height:1.12;margin-bottom:12px}
+  .introtext p{
+    color:rgba(255,255,255,.96);font-size:clamp(1.05rem,3.4vw,1.2rem);
+    margin:0 auto 28px;max-width:31ch;
+  }
+  .introtext .pill{box-shadow:0 5px 0 rgba(120,40,4,.55),inset 0 1px 0 rgba(255,255,255,.45)}
+  .introtext .pill:focus-visible{outline:3px solid #fff;outline-offset:3px}
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation:none!important;transition-duration:.001ms!important}
@@ -347,15 +350,11 @@
 
 <!-- ================= FIRST-RUN ONBOARDING ================= -->
 <div class="scrim" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-h">
-  <div class="sheet">
-    <div id="intro-art"></div>
-    <h2 id="intro-h"></h2>
-    <p id="intro-p"></p>
-    <div class="dots" id="intro-dots" aria-hidden="true"></div>
-    <div class="sheetbtns">
-      <button class="lnk" id="intro-skip">Skip</button>
-      <button class="pill" id="intro-next">Next</button>
-    </div>
+  <div class="introtext">
+    <div class="kicker">October 2026 &middot; Vol. 65</div>
+    <h2 id="intro-h">This month, you play.</h2>
+    <p>An interactive edition of The Orange Book. Make your pick, then flip your card to find the quiet nudge behind each festive choice &mdash; five picks in all.</p>
+    <button class="pill" id="intro-close">Got it</button>
   </div>
 </div>
 
@@ -540,8 +539,7 @@
 
   var MENU = [
     {label:"Play",               act:"play"},
-    {label:"How to play",        act:"howto"},
-    {label:"About this edition",  act:"about"},
+    {label:"About this edition", act:"about"},
     {label:"Past editions",      act:"archive"}
   ];
 
@@ -616,7 +614,6 @@
     else if (a === "archive"){ window.open("https://www.icici.bank.in/blogs/the-orange-book","_blank","noopener"); }
     else if (a === "cover"){ show("cover"); }
     else if (a === "feedback"){ show("feedback"); }
-    else if (a === "howto"){ openIntro(0); }
     else { show(a); }
   }
 
@@ -717,57 +714,25 @@
     show("close");
   }
 
-  /* ---------- first-run onboarding ---------- */
+  /* ---------- first-run note ---------- */
   var SEEN_KEY = "tob-vol65-intro-seen";
-  var STEPS = [
-    {
-      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><path d="M48 6l3.2 8.6 8.6 3.2-8.6 3.2L48 29.6l-3.2-8.6-8.6-3.2 8.6-3.2Z" fill="#F5B33F"/><path d="M14 36h68l-5 42a7 7 0 0 1-7 6.2H26a7 7 0 0 1-7-6.2Z" fill="#C0400E"/><rect x="11" y="28" width="74" height="12" rx="4" fill="#E4601A"/><rect x="22" y="40" width="52" height="34" rx="4" fill="#FBE3C0"/><circle cx="35" cy="51" r="7" fill="#E89A2E"/><rect x="53" y="44" width="14" height="14" rx="2" fill="#FFF6E2" stroke="#E3C88E" stroke-width="1.6"/><rect x="28" y="59" width="14" height="14" rx="2" fill="#FFF6E2" stroke="#E3C88E" stroke-width="1.6"/><circle cx="60" cy="66" r="7" fill="#E89A2E"/></svg>',
-      h:"This month, you play.",
-      p:"Vol. 65 is an interactive edition. Five festive choices, each with a quiet nudge hidden inside it."
-    },
-    {
-      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="14" y="20" width="42" height="56" rx="6" fill="#fff" stroke="#F0C9A8" stroke-width="2.5"/><circle cx="35" cy="40" r="8.5" fill="#E89A2E"/><rect x="24" y="55" width="22" height="5" rx="2.5" fill="#E7EDF4"/><rect x="24" y="64" width="14" height="5" rx="2.5" fill="#E7EDF4"/><path d="M66 34a20 20 0 0 1 0 28" stroke="#F06423" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M66 27l9 7.5-9 7.5Z" fill="#F06423"/></svg>',
-      h:"Pick first. Learn after.",
-      p:"Choose the box you would actually buy, then flip your card to see what may have influenced you."
-    },
-    {
-      art:'<svg viewBox="0 0 96 96" aria-hidden="true"><rect x="14" y="18" width="44" height="60" rx="5" fill="#fff" stroke="#C9D8E8" stroke-width="2.5"/><path d="M24 32h24M24 43h24M24 54h16" stroke="#D5E2EE" stroke-width="3.4" stroke-linecap="round"/><path d="M58 18c13 10 15 42 0 60Z" fill="#FDEBD8" stroke="#F0C9A8" stroke-width="2.5" stroke-linejoin="round"/><path d="M68 48h14M76 41l7.5 7-7.5 7" stroke="#F06423" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      h:"Then turn the page.",
-      p:"Five picks in all. At the end, see how many mindful picks you made this festive season."
-    }
-  ];
-  var istep = 0, lastFocus = null;
+  var lastFocus = null;
 
-  function paintIntro(){
-    var s = STEPS[istep];
-    $("intro-art").innerHTML = s.art;
-    $("intro-h").textContent = s.h;
-    $("intro-p").textContent = s.p;
-    var d = "";
-    for (var i = 0; i < STEPS.length; i++) d += '<i class="' + (i === istep ? "on" : "") + '"></i>';
-    $("intro-dots").innerHTML = d;
-    $("intro-next").textContent = (istep === STEPS.length - 1) ? "Start picking" : "Next";
-  }
-  function openIntro(at){
-    istep = at || 0;
+  function openIntro(){
     lastFocus = document.activeElement;
-    paintIntro();
     $("intro").hidden = false;
-    $("intro-next").focus();
+    $("intro-close").focus();
   }
-  function closeIntro(andPlay){
+  function closeIntro(){
     $("intro").hidden = true;
     try { window.localStorage.setItem(SEEN_KEY, "1"); } catch(e){}
-    if (andPlay) act("play");
-    else if (lastFocus && lastFocus.focus) lastFocus.focus();
+    /* dismissing leaves the reader on the cover, not in the game */
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   function introOpen(){ return !$("intro").hidden; }
 
-  $("intro-next").addEventListener("click", function(){
-    if (istep < STEPS.length - 1){ istep++; paintIntro(); } else { closeIntro(true); }
-  });
-  $("intro-skip").addEventListener("click", function(){ closeIntro(false); });
-  $("intro").addEventListener("click", function(e){ if (e.target === $("intro")) closeIntro(false); });
+  $("intro-close").addEventListener("click", closeIntro);
+  $("intro").addEventListener("click", function(e){ if (e.target === $("intro")) closeIntro(); });
 
   /* ---------- wiring ---------- */
   document.addEventListener("click", function(e){
@@ -778,9 +743,7 @@
 
   document.addEventListener("keydown", function(e){
     if (introOpen()){
-      if (e.key === "Escape"){ e.preventDefault(); closeIntro(false); }
-      else if (e.key === "ArrowRight"){ e.preventDefault(); if (istep < STEPS.length-1){ istep++; paintIntro(); } }
-      else if (e.key === "ArrowLeft"){ e.preventDefault(); if (istep > 0){ istep--; paintIntro(); } }
+      if (e.key === "Escape" || e.key === "Enter"){ e.preventDefault(); closeIntro(); }
       return;
     }
     if (state.page === "cover"){
@@ -805,7 +768,7 @@
       show("cover");
       var seen = false;
       try { seen = window.localStorage.getItem(SEEN_KEY) === "1"; } catch(e){ seen = false; }
-      if (!seen) openIntro(0);
+      if (!seen) openIntro();
     }
   }
 
