@@ -73,7 +73,6 @@
   h1,h2,h3{font-weight:400;margin:0}
   .headline{color:var(--orange);font-size:clamp(2rem,6.2vw,2.9rem);line-height:1.12;text-wrap:balance;margin-bottom:10px}
   .subhead{color:var(--orange-2);font-size:clamp(1.2rem,3.6vw,1.55rem);line-height:1.25;text-wrap:balance;margin-bottom:14px}
-  .readtime{font-size:1.08rem;margin-bottom:26px;opacity:.85}
   p{margin:0 0 18px;max-width:40ch}
   .wide{max-width:none}
   .amount{color:var(--orange);white-space:nowrap}
@@ -85,19 +84,35 @@
     letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:18px;
   }
 
-  /* ================= COVER / MAIN MENU ================= */
+  /* ================= COVER / MAIN MENU =================
+     A title screen: the stage is lit, the corners fall away, and each piece
+     boots in rather than simply being there. */
   .cover{
     position:relative;overflow:hidden;
     background:radial-gradient(118% 76% at 52% 42%,var(--cover-mid) 0%,var(--cover-edge) 74%);
     min-height:calc(100vh - 72px);
     display:flex;
   }
+  .cover::after{
+    content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+    background:radial-gradient(122% 80% at 50% 44%,rgba(90,25,0,0) 38%,rgba(66,14,0,.62) 100%);
+  }
   .cover-inner{
     position:relative;z-index:2;
     max-width:760px;width:100%;margin:0 auto;
-    padding:26px 24px 42px;
-    display:flex;flex-direction:column;gap:14px;
+    padding:22px 24px 26px;
+    display:flex;flex-direction:column;gap:12px;
   }
+  @keyframes boot{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .lockup,.stagearea,.cover-title,.coverstat,.keyhint,.taphint{
+    animation:boot .55s cubic-bezier(.2,.85,.3,1) both;
+  }
+  .lockup{animation-delay:.04s}
+  .stagearea{animation-delay:.12s}
+  .cover-title{animation-delay:.22s}
+  .coverstat{animation-delay:.5s}
+  .keyhint,.taphint{animation-delay:.56s}
+
   .lockup{
     font-family:Mulish,system-ui,sans-serif;font-weight:900;color:#fff;
     line-height:.94;letter-spacing:-.025em;text-transform:uppercase;
@@ -106,8 +121,8 @@
   .lockup .the{display:block;font-size:clamp(1.35rem,4.4vw,1.9rem)}
   .lockup .big{display:block;font-size:clamp(2.5rem,9vw,4rem)}
 
-  /* twinkling sparkles drifting across the cover */
-  .sparks{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+  /* two drifting layers: sparks rising, marigold petals falling */
+  .sparks,.petals{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
   .spark{position:absolute;fill:#FFDFA6;opacity:0;animation:rise linear infinite}
   @keyframes rise{
     0%{opacity:0;transform:translateY(24px) scale(.5) rotate(0deg)}
@@ -115,10 +130,26 @@
     72%{opacity:.6}
     100%{opacity:0;transform:translateY(-150px) scale(1.05) rotate(120deg)}
   }
+  .petal{position:absolute;top:-10%;opacity:0;animation:fall linear infinite}
+  .petal svg{
+    display:block;width:100%;height:auto;
+    filter:drop-shadow(0 2px 5px rgba(122,38,0,.42));
+    animation:sway ease-in-out infinite alternate;
+  }
+  @keyframes fall{
+    0%{opacity:0;transform:translateY(-20px) rotate(0deg)}
+    14%{opacity:.92}
+    86%{opacity:.6}
+    100%{opacity:0;transform:translateY(104vh) rotate(380deg)}
+  }
+  @keyframes sway{from{transform:translateX(-13px)}to{transform:translateX(13px)}}
 
   .stagearea{
     flex:1;display:flex;align-items:center;justify-content:center;gap:18px;
-    padding:6px 0 2px;min-height:170px;
+    padding:4px 0 2px;min-height:clamp(118px,20vh,170px);
+    /* parallax rides on translate so it never fights the boot transform */
+    translate:var(--px,0) var(--py,0);
+    transition:translate .25s ease-out;
   }
   .diya{width:36px;height:42px;flex:none}
   .diya .flame{transform-origin:50% 100%;animation:flick 2.4s ease-in-out infinite}
@@ -128,41 +159,117 @@
     45%{transform:scaleY(1.18) scaleX(.88);opacity:.8}
     70%{transform:scaleY(.95) scaleX(1.05);opacity:.95}
   }
-  .boxwrap{width:min(230px,46vw);animation:bob 4.2s ease-in-out infinite}
-  .boxwrap svg{width:100%;height:auto;display:block;filter:drop-shadow(0 14px 26px rgba(120,35,0,.34))}
+  /* the hero also answers to viewport height, so the screen fits without scrolling */
+  .boxwrap{position:relative;width:min(230px,46vw,25vh);animation:bob 4.2s ease-in-out infinite}
+  /* a lamp-lit halo breathing behind the hero box */
+  .boxwrap::before{
+    content:"";position:absolute;left:50%;top:52%;width:158%;aspect-ratio:1;
+    border-radius:50%;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(255,231,182,.72),rgba(255,214,146,.26) 50%,rgba(255,206,128,0) 76%);
+    animation:halo 3.8s ease-in-out infinite;
+  }
+  @keyframes halo{
+    0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}
+    50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+  }
+  .boxwrap svg{position:relative;width:100%;height:auto;display:block;filter:drop-shadow(0 14px 26px rgba(120,35,0,.34))}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
 
   .cover-title{color:#fff;text-align:center}
-  .cover-title .t{display:block;font-size:clamp(2.1rem,7.6vw,3rem);line-height:1.05}
-  .cover-title .s{display:block;font-size:clamp(1.02rem,3.3vw,1.24rem);line-height:1.3;margin-top:4px;opacity:.96}
+  .cover-title .t{
+    display:block;font-size:clamp(2.1rem,7.6vw,3rem);line-height:1.05;
+    animation:titleGlow 4.4s ease-in-out infinite;
+  }
+  @keyframes titleGlow{
+    0%,100%{text-shadow:0 2px 0 rgba(140,44,4,.42),0 0 24px rgba(255,196,116,.4)}
+    50%{text-shadow:0 2px 0 rgba(140,44,4,.42),0 0 42px rgba(255,216,152,.75)}
+  }
+  .cover-title .rule{
+    display:block;width:108px;height:2px;margin:11px auto 9px;
+    background:linear-gradient(90deg,rgba(255,217,138,0),rgba(255,217,138,.95),rgba(255,217,138,0));
+  }
+  .cover-title .s{display:block;font-size:clamp(1.02rem,3.3vw,1.24rem);line-height:1.3;opacity:.96}
 
-  .menu{list-style:none;margin:6px auto 0;padding:0;width:min(330px,100%);display:flex;flex-direction:column;gap:3px}
+  .menu{list-style:none;margin:6px auto 0;padding:0;width:min(340px,100%);display:flex;flex-direction:column;gap:6px}
   .mitem{
+    position:relative;overflow:hidden;
     display:flex;align-items:center;gap:11px;width:100%;
-    padding:11px 14px;border-radius:8px;
-    background:transparent;border:1.5px solid transparent;
+    padding:13px 16px;border-radius:10px;
+    background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);
     font-family:Mulish,system-ui,sans-serif;font-weight:700;
     font-size:.92rem;letter-spacing:.06em;text-transform:uppercase;
-    color:rgba(255,255,255,.78);cursor:pointer;text-align:left;
-    transition:background .15s,color .15s,transform .15s,border-color .15s;
+    color:rgba(255,255,255,.82);cursor:pointer;text-align:left;
+    transition:background .16s,color .16s,transform .16s,border-color .16s,box-shadow .16s;
+    animation:boot .5s cubic-bezier(.2,.85,.3,1) both;
+  }
+  .mitem .lbl{flex:1}
+  .mitem .note{
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.62rem;letter-spacing:.09em;color:rgba(255,236,206,.82);
   }
   .mitem .cur{width:17px;height:20px;flex:none;opacity:0;transition:opacity .15s}
   .mitem[aria-selected="true"]{
-    color:#fff;background:rgba(255,255,255,.17);
-    border-color:rgba(255,255,255,.45);transform:translateX(5px);
+    color:#fff;background:rgba(255,255,255,.2);
+    border-color:rgba(255,226,170,.7);transform:translateX(6px);
+    box-shadow:0 8px 22px rgba(96,28,0,.4),0 0 0 3px rgba(255,205,130,.16);
   }
   .mitem[aria-selected="true"] .cur{opacity:1;animation:pulse 1.5s ease-in-out infinite}
+  /* a light sweeps along whichever line is under the cursor */
+  .mitem[aria-selected="true"]::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.24) 50%,rgba(255,255,255,0) 62%);
+    animation:sweep 2.8s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{transform:translateX(-120%)}58%,100%{transform:translateX(120%)}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.16)}}
   .mitem:focus-visible{outline:2.5px solid #fff;outline-offset:2px}
 
-  .meta{
-    text-align:center;color:rgba(255,255,255,.9);
-    font-family:Mulish,system-ui,sans-serif;font-weight:600;
-    font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;
+  /* the save plate, the way a title screen shows your record */
+  .coverstat{
+    align-self:center;padding:6px 15px;border-radius:999px;
+    background:rgba(62,17,0,.3);border:1px solid rgba(255,214,150,.38);
+    color:#FFE3B4;
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;
+    font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
   }
+  .coverstat b{color:#fff;font-weight:900}
+
   .keyhint{
-    text-align:center;color:rgba(255,255,255,.72);
-    font-family:Mulish,system-ui,sans-serif;font-weight:600;font-size:.62rem;letter-spacing:.06em;
+    display:flex;justify-content:center;align-items:center;gap:7px;flex-wrap:wrap;
+    color:rgba(255,255,255,.74);
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+    animation:boot .55s cubic-bezier(.2,.85,.3,1) both,hintBlink 3.6s ease-in-out .56s infinite;
+  }
+  .keyhint kbd{
+    display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 5px;
+    border-radius:5px;background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.32);border-bottom-width:2px;
+    font-family:inherit;font-size:.68rem;color:#fff;
+  }
+  .taphint{
+    display:none;text-align:center;color:rgba(255,255,255,.74);
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    animation:boot .55s cubic-bezier(.2,.85,.3,1) both,hintBlink 3.6s ease-in-out .56s infinite;
+  }
+  @keyframes hintBlink{0%,100%{opacity:.6}50%{opacity:1}}
+  /* arrow keys mean nothing on a touch screen */
+  @media (hover:none){
+    .keyhint{display:none}
+    .taphint{display:block}
+  }
+  /* a short screen still has to hold the whole title screen without scrolling */
+  @media (max-height:700px){
+    .cover-inner{padding:16px 22px 18px;gap:9px}
+    .lockup .the{font-size:clamp(1.05rem,3.4vw,1.35rem)}
+    .lockup .big{font-size:clamp(1.85rem,6vw,2.5rem)}
+    .stagearea{min-height:92px}
+    .cover-title .t{font-size:clamp(1.75rem,5.6vw,2.25rem)}
+    .cover-title .rule{margin:7px auto 6px}
+    .cover-title .s{font-size:clamp(.92rem,2.7vw,1.04rem)}
+    .mitem{padding:10px 14px}
+    .menu{gap:5px}
   }
 
   /* ---------- pill button, as on the edition's feedback page ---------- */
@@ -300,11 +407,6 @@
     text-wrap:balance;
   }
   .intro-lede{font-size:clamp(1.04rem,3.4vw,1.26rem);line-height:1.34;text-wrap:balance}
-  .intro-meta{
-    font-family:Mulish,system-ui,sans-serif;font-weight:600;
-    font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
-    color:rgba(255,255,255,.74);margin-top:18px!important;
-  }
   .intro-note .pill{margin-top:28px}
   .intro-note .pill:focus-visible{outline:3px solid #FFE9C4;outline-offset:3px}
   /* a wider bed on a desktop, with the running text held to a readable measure */
@@ -326,6 +428,7 @@
 <!-- ================= COVER / MAIN MENU ================= -->
 <section id="p-cover" class="cover">
   <div class="sparks" id="sparks" aria-hidden="true"></div>
+  <div class="petals" id="petals" aria-hidden="true"></div>
   <div class="cover-inner">
     <div class="lockup"><span class="the">The</span><span class="big">Orange</span><span class="big">Book</span></div>
 
@@ -355,12 +458,16 @@
 
     <div class="cover-title">
       <span class="t">The Sweet Pick</span>
+      <span class="rule" aria-hidden="true"></span>
       <span class="s">Choose what you&rsquo;d buy. Discover what might be influencing you.</span>
     </div>
 
     <ul class="menu" id="menu" role="listbox" aria-label="Main menu"></ul>
-    <div class="meta">5 picks &middot; 3-minute read</div>
-    <div class="keyhint">&#9650;&#9660; SELECT &nbsp; &#8629; ENTER</div>
+    <div class="coverstat" id="coverstat" hidden></div>
+    <div class="keyhint" aria-hidden="true">
+      <kbd>&#9650;</kbd><kbd>&#9660;</kbd> Select <kbd>&#8629;</kbd> Enter
+    </div>
+    <div class="taphint" aria-hidden="true">Tap a line to choose</div>
   </div>
 </section>
 
@@ -370,7 +477,6 @@
     <p class="intro-kicker">Interactive edition &middot; Vol. 65</p>
     <h2 id="intro-h">This one, you play.</h2>
     <p class="intro-lede">Five festive mithai choices, each hiding a behavioural nudge. Pick the box you&rsquo;d actually buy, then flip it to meet the bias that swayed you.</p>
-    <p class="intro-meta">5 picks &middot; about 3 minutes</p>
     <button class="pill" id="intro-done">Got it</button>
   </div>
 </div>
@@ -381,7 +487,6 @@
     <div class="pageno">The Sweet Pick &middot; About this edition</div>
     <h1 class="headline">About this edition</h1>
     <p class="subhead">Five festive biases, drawn from The Orange Book&rsquo;s own back catalogue.</p>
-    <p class="readtime">3-minute read</p>
     <p>Festive season means more shopping, gifting, offers and impulse decisions. In the process, behavioural biases can quietly influence what feels like the &ldquo;better&rdquo; choice.</p>
     <p>This edition lets you experience five of them through simple mithai choices, so you can make more considered festive decisions.</p>
     <p class="wide" style="opacity:.8;font-size:1rem;margin-top:22px">The five biases here first appeared in The Orange Book Vol. 17 (October 2022) and Vol. 30 (November 2023).</p>
@@ -557,12 +662,44 @@
     }
   ];
 
-  var MENU = [
-    {label:"Play",               act:"play"},
-    {label:"How to play",        act:"howto"},
-    {label:"About this edition",  act:"about"},
-    {label:"Past editions",      act:"archive"}
-  ];
+  var MENU = [];
+  var SAVE_KEY = "tob-vol65-save", BEST_KEY = "tob-vol65-best";
+
+  /* a title screen remembers: a game in progress, and your best run */
+  function savedGame(){
+    try {
+      var g = JSON.parse(window.localStorage.getItem(SAVE_KEY) || "null");
+      if (!g || typeof g.round !== "number") return null;
+      if (g.round < 0 || g.round >= ROUNDS.length) return null;
+      /* a game only counts as in progress once a pick has actually been made */
+      if (!g.round && !(g.results && g.results.length)) return null;
+      return {round:g.round, results:g.results || []};
+    } catch(e){ return null; }
+  }
+  function saveGame(){
+    try {
+      window.localStorage.setItem(SAVE_KEY, JSON.stringify({round:state.round, results:state.results}));
+    } catch(e){}
+  }
+  function clearSave(){ try { window.localStorage.removeItem(SAVE_KEY); } catch(e){} }
+  function bestRun(){
+    try { return parseInt(window.localStorage.getItem(BEST_KEY), 10) || 0; } catch(e){ return 0; }
+  }
+  function recordBest(n){
+    try { if (n > bestRun()) window.localStorage.setItem(BEST_KEY, String(n)); } catch(e){}
+  }
+
+  function menuItems(){
+    var out = [], g = savedGame();
+    if (g){
+      out.push({label:"Continue", note:"Pick " + (g.round + 1) + " of " + ROUNDS.length, act:"continue"});
+      out.push({label:"New game", act:"play"});
+    } else {
+      out.push({label:"Play", act:"play"});
+    }
+    out.push({label:"How to play", act:"howto"});
+    return out;
+  }
 
   var PAGES = ["cover","about","round","close","feedback"];
   var state = {page:"cover", round:0, results:[], picked:false, mi:0};
@@ -605,6 +742,45 @@
     host.innerHTML = html;
   }
 
+  var PETAL_FILLS = ["#FFD98A","#FFC463","#FFE9B8","#FFB443"];
+  function seedPetals(){
+    var host = $("petals");
+    var n = window.matchMedia("(max-width:520px)").matches ? 7 : 12;
+    var html = "";
+    for (var i = 0; i < n; i++){
+      var left = Math.round(Math.random()*98);
+      var size = (Math.random()*11 + 11).toFixed(1);
+      var dur  = (Math.random()*9 + 12).toFixed(1);
+      var del  = (Math.random()*16).toFixed(1);
+      var sway = (Math.random()*1.8 + 2.4).toFixed(1);
+      html += '<div class="petal" style="left:' + left + "%;width:" + size +
+              "px;animation-duration:" + dur + "s;animation-delay:-" + del + 's">' +
+              '<svg viewBox="0 0 20 14" style="animation-duration:' + sway + 's">' +
+              '<path d="M10 0c5.5 0 10 3.1 10 7s-4.5 7-10 7S0 10.9 0 7 4.5 0 10 0Z" fill="' +
+              PETAL_FILLS[i % PETAL_FILLS.length] + '"/>' +
+              '<path d="M10 1.5c3.3 1.8 4.9 3.6 4.9 5.5S13.3 10.7 10 12.5C6.7 10.7 5.1 8.9 5.1 7S6.7 3.3 10 1.5Z" fill="rgba(255,255,255,.24)"/>' +
+              "</svg></div>";
+    }
+    host.innerHTML = html;
+  }
+
+  /* the stage drifts against the pointer, the way a title screen does */
+  function armParallax(){
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!window.matchMedia("(hover:hover)").matches) return;
+    var stage = document.querySelector(".stagearea"), cover = $("p-cover");
+    if (!stage || !cover) return;
+    cover.addEventListener("mousemove", function(e){
+      var r = cover.getBoundingClientRect();
+      stage.style.setProperty("--px", (((e.clientX - r.left) / r.width - .5) * -22).toFixed(1) + "px");
+      stage.style.setProperty("--py", (((e.clientY - r.top) / r.height - .5) * -15).toFixed(1) + "px");
+    });
+    cover.addEventListener("mouseleave", function(){
+      stage.style.setProperty("--px", "0px");
+      stage.style.setProperty("--py", "0px");
+    });
+  }
+
   /* ---------- menu ---------- */
   function cursorSvg(){
     return '<svg class="cur" viewBox="0 0 17 20" aria-hidden="true">' +
@@ -613,6 +789,8 @@
   }
   function buildMenu(){
     var ul = $("menu");
+    MENU = menuItems();
+    if (state.mi >= MENU.length) state.mi = 0;
     ul.innerHTML = "";
     MENU.forEach(function(m, i){
       var li = document.createElement("li");
@@ -621,12 +799,20 @@
       b.className = "mitem";
       b.setAttribute("role","option");
       b.setAttribute("aria-selected", i === state.mi ? "true" : "false");
-      b.innerHTML = cursorSvg() + "<span>" + m.label + "</span>";
+      b.style.animationDelay = (0.34 + i * 0.07).toFixed(2) + "s";
+      b.innerHTML = cursorSvg() + '<span class="lbl">' + m.label + "</span>" +
+                    (m.note ? '<span class="note">' + m.note + "</span>" : "");
       b.addEventListener("mouseenter", function(){ state.mi = i; paintMenu(); });
       b.addEventListener("click", function(){ act(m.act); });
       li.appendChild(b);
       ul.appendChild(li);
     });
+    paintCoverStat();
+  }
+  function paintCoverStat(){
+    var n = bestRun(), el = $("coverstat");
+    el.innerHTML = "Best run <b>" + n + " / " + ROUNDS.length + "</b> mindful";
+    el.hidden = (n <= 0);
   }
   function paintMenu(){
     var it = $("menu").querySelectorAll(".mitem");
@@ -636,9 +822,13 @@
   }
 
   function act(a){
-    if (a === "play"){ state.round = 0; state.results = []; renderRound(); }
-    else if (a === "archive"){ window.open("https://www.icici.bank.in/blogs/the-orange-book","_blank","noopener"); }
-    else if (a === "cover"){ show("cover"); }
+    if (a === "play"){ clearSave(); state.round = 0; state.results = []; renderRound(); }
+    else if (a === "continue"){
+      var g = savedGame();
+      if (!g){ act("play"); return; }
+      state.round = g.round; state.results = g.results; renderRound();
+    }
+    else if (a === "cover"){ buildMenu(); show("cover"); }
     else if (a === "feedback"){ show("feedback"); }
     else if (a === "howto"){ openIntro(true); }
     else { show(a); }
@@ -694,6 +884,7 @@
     $("r-bridge").innerHTML = "";
     $("r-actions").hidden = true;
     $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Keep shopping";
+    saveGame();
     show("round");
   }
 
@@ -714,6 +905,7 @@
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
       state.results[state.round] = {bias:r.bias, win:!!c.win};
+      saveGame();
       $("r-bridge").innerHTML =
         '<div class="bridge"><p class="eyebrow">Where else you meet it</p><p class="wide">' + r.bridge + "</p>" +
         '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul></div>";
@@ -736,6 +928,8 @@
 
   function renderClose(){
     var n = state.results.filter(function(x){ return x.win; }).length;
+    clearSave();
+    recordBest(n);
     $("scoreline").textContent = "You made " + n + " mindful " + (n === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + ".";
     var t = $("tally");
     t.innerHTML = "";
@@ -803,6 +997,8 @@
 
   function start(saved){
     seedSparks();
+    seedPetals();
+    armParallax();
     buildMenu();
     if (saved && saved.page === "round" && typeof saved.round === "number"){
       state.round = saved.round; state.results = saved.results || []; renderRound();
