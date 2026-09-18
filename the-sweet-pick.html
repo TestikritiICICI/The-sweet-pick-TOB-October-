@@ -1,416 +1,412 @@
 <title>The Sweet Pick</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600;700;800;900&family=Silkscreen:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Handlee&family=Mulish:ital,wght@0,400;0,600;0,700;0,900;1,900&display=swap">
 <style>
+  /* ============================================================
+     THE ORANGE BOOK — template tokens
+     Extracted from Vol. 53 / 60 / 61 PDFs:
+       fonts   Handlee (body + headings), Mulish Black/Bold/SemiBold (lockup, UI)
+       navy    #183E6D   orange #F06423 / #F37236   maroon #A21D28
+       bar     #E16E25 -> #BE2C2A vertical gradient, ~63pt tall
+       paper   #FBFCFD with light blue rules at a 24pt pitch
+     ============================================================ */
   :root{
-    --ground:#FBF1DE;
-    --ground-2:#F3E1C1;
-    --surface:#FFFCF5;
-    --surface-2:#F7E9CE;
-    --ink:#43120E;
-    --ink-soft:#8C5C43;
-    --accent:#DD5F06;
-    --accent-deep:#8E1616;
-    --gold:#BA8B2E;
-    --good:#0F6A50;
-    --bad:#A81F1F;
-    --rule:#E3CCA2;
-    --glow:rgba(221,95,6,.16);
-    --shadow:0 12px 34px rgba(67,18,14,.14);
-    --card-shadow:0 6px 18px rgba(67,18,14,.10);
+    --paper:#FBFCFD;
+    --rule-line:#E4F0F8;
+    --navy:#183E6D;
+    --navy-deep:#003366;
+    --orange:#F06423;
+    --orange-2:#F37236;
+    --maroon:#A21D28;
+    --bar-top:#E16E25;
+    --bar-bottom:#BE2C2A;
+    --cover-edge:#E9540F;
+    --cover-mid:#F5903C;
+    --card-line:#F0C9A8;
+    --card-face:#FFFFFF;
+    --good:#0F7A4A;
+    --shadow:0 3px 14px rgba(24,62,109,.12);
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --ground:#150A06;
-      --ground-2:#210E08;
-      --surface:#2A120B;
-      --surface-2:#391A10;
-      --ink:#FCE9CB;
-      --ink-soft:#C0906D;
-      --accent:#FF8C33;
-      --accent-deep:#FFC078;
-      --gold:#E4B95F;
-      --good:#54D6A6;
-      --bad:#FF7264;
-      --rule:#4E2417;
-      --glow:rgba(255,140,51,.22);
-      --shadow:0 12px 34px rgba(0,0,0,.55);
-      --card-shadow:0 6px 18px rgba(0,0,0,.45);
+      --paper:#101A28;
+      --rule-line:#1C2B3F;
+      --navy:#DCE8F6;
+      --navy-deep:#B7CBE2;
+      --orange:#FF8B44;
+      --orange-2:#FFA05F;
+      --maroon:#FF7A82;
+      --bar-top:#C25A1C;
+      --bar-bottom:#9B2321;
+      --cover-edge:#B8410B;
+      --cover-mid:#D9762E;
+      --card-line:#3A2A22;
+      --card-face:#182436;
+      --good:#4FD69B;
+      --shadow:0 3px 14px rgba(0,0,0,.5);
     }
   }
   :root[data-theme="dark"]{
-    --ground:#150A06;
-    --ground-2:#210E08;
-    --surface:#2A120B;
-    --surface-2:#391A10;
-    --ink:#FCE9CB;
-    --ink-soft:#C0906D;
-    --accent:#FF8C33;
-    --accent-deep:#FFC078;
-    --gold:#E4B95F;
-    --good:#54D6A6;
-    --bad:#FF7264;
-    --rule:#4E2417;
-    --glow:rgba(255,140,51,.22);
-    --shadow:0 12px 34px rgba(0,0,0,.55);
-    --card-shadow:0 6px 18px rgba(0,0,0,.45);
+    --paper:#101A28;
+    --rule-line:#1C2B3F;
+    --navy:#DCE8F6;
+    --navy-deep:#B7CBE2;
+    --orange:#FF8B44;
+    --orange-2:#FFA05F;
+    --maroon:#FF7A82;
+    --bar-top:#C25A1C;
+    --bar-bottom:#9B2321;
+    --cover-edge:#B8410B;
+    --cover-mid:#D9762E;
+    --card-line:#3A2A22;
+    --card-face:#182436;
+    --good:#4FD69B;
+    --shadow:0 3px 14px rgba(0,0,0,.5);
   }
 
   *{box-sizing:border-box}
   body{
     margin:0;
-    background:var(--ground);
-    color:var(--ink);
-    font-family:Mulish,"Segoe UI",system-ui,sans-serif;
-    font-size:16px;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
+    background:var(--paper);
+    color:var(--navy);
+    font-family:Handlee,"Bradley Hand","Segoe Print","Comic Sans MS",cursive;
+    font-size:19px;
+    line-height:1.5;
   }
-  .pix{font-family:Silkscreen,"Courier New",monospace;letter-spacing:.04em}
 
-  /* ---------- cabinet shell ---------- */
-  .cabinet{
-    max-width:1060px;
-    margin:0 auto;
-    padding-inline:16px;
-    padding-block:0 0;
-    min-height:100%;
-    display:flex;
-    flex-direction:column;
+  /* ---------- the masthead bar, on every page of the edition ---------- */
+  .bar{
+    position:sticky;
+    top:env(safe-area-inset-top, 0px);
+    z-index:20;
+    background:linear-gradient(180deg,var(--bar-top) 0%,var(--bar-bottom) 100%);
+    padding:0 18px;
+    height:62px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
   }
-  .brandbar{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-    padding-block:14px 12px;
-    border-bottom:1px solid var(--rule);
+  /* Type stand-in for the ICICI Bank wordmark — replace with the logo asset. */
+  .logo{
+    font-family:Mulish,system-ui,sans-serif;font-weight:900;font-style:italic;
+    font-size:1.42rem;letter-spacing:-.02em;color:#fff;line-height:1;
   }
-  .brandbar .mark{
-    font-weight:900;font-size:1rem;letter-spacing:-.02em;color:var(--accent);
+  .logo .i{
+    display:inline-grid;place-items:center;
+    width:1.15em;height:1.15em;margin-right:.12em;border-radius:50%;
+    background:radial-gradient(circle at 34% 30%,#FBB040,#E0451C 72%);
+    font-size:.86em;vertical-align:-.18em;
   }
-  .brandbar .mark span{color:var(--ink)}
-  .brandbar .edition{font-size:.6rem;color:var(--ink-soft)}
+  .issue{
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:.72rem;letter-spacing:.03em;color:#fff;text-align:right;
+  }
 
-  .stage{flex:1;padding-block:clamp(20px,5vw,44px) 32px}
-
-  .base{
-    border-top:1px solid var(--rule);
-    padding-block:14px;
-    padding-bottom:calc(14px + env(safe-area-inset-bottom, 0px));
-    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
-    font-size:.62rem;color:var(--ink-soft);
+  /* ---------- page shell ---------- */
+  .page{
+    max-width:760px;margin:0 auto;
+    padding-inline:24px;
+    padding-block:34px 56px;
   }
-  .base strong{color:var(--accent);font-weight:700}
+  .ruled{
+    background-image:repeating-linear-gradient(to bottom,transparent 0 31px,var(--rule-line) 31px 32px);
+    background-attachment:local;
+    min-height:60vh;
+  }
 
-  /* ---------- title screen ---------- */
-  .title-screen{text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3.5vw,26px)}
-  .eyebrow{font-size:.6rem;color:var(--ink-soft)}
-  .wordmark{
-    font-weight:900;
-    font-size:clamp(2.9rem,12vw,6.4rem);
-    line-height:.86;
-    letter-spacing:-.035em;
-    text-transform:uppercase;
-    color:var(--accent);
+  h1,h2,h3,h4{font-weight:400;margin:0}
+  .headline{
+    color:var(--orange);
+    font-size:clamp(2rem,6.2vw,2.9rem);
+    line-height:1.12;
     text-wrap:balance;
-    margin:0;
-    text-shadow:0 0 42px var(--glow);
+    margin-bottom:10px;
   }
-  .wordmark em{display:block;font-style:normal;color:var(--accent-deep)}
-  .tagline{
-    max-width:34ch;margin:0;font-size:clamp(1rem,2.4vw,1.15rem);
-    color:var(--ink);font-weight:600;text-wrap:balance;
+  .subhead{
+    color:var(--orange-2);
+    font-size:clamp(1.2rem,3.6vw,1.55rem);
+    line-height:1.25;
+    text-wrap:balance;
+    margin-bottom:14px;
   }
-  .diya-row{display:flex;gap:26px;justify-content:center;align-items:flex-end}
-  .diya{width:26px;height:30px}
-  .flame{transform-origin:50% 100%;animation:flicker 2.6s ease-in-out infinite}
-  .diya:nth-child(2) .flame{animation-delay:-.9s}
-  .diya:nth-child(3) .flame{animation-delay:-1.7s}
-  @keyframes flicker{
-    0%,100%{transform:scaleY(1) scaleX(1);opacity:1}
-    50%{transform:scaleY(1.14) scaleX(.9);opacity:.82}
+  .readtime{color:var(--navy);font-size:1.08rem;margin-bottom:26px;opacity:.85}
+  p{margin:0 0 18px;max-width:40ch}
+  .wide{max-width:none}
+  .amount{color:var(--orange);white-space:nowrap}
+
+  .dotlist{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:10px}
+  .dotlist li{display:flex;gap:12px;align-items:flex-start}
+  .dotlist li::before{
+    content:"";flex:none;width:9px;height:9px;border-radius:50%;
+    background:var(--orange);margin-top:.52em;
   }
 
-  .menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;width:min(360px,100%)}
-  .menu-item{
-    display:flex;align-items:center;gap:12px;
-    width:100%;padding:13px 14px;
-    background:transparent;border:1px solid transparent;border-radius:3px;
-    font-family:inherit;font-size:.95rem;font-weight:800;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--ink-soft);
-    cursor:pointer;text-align:left;
-    transition:background .14s,color .14s,transform .14s;
+  /* ---------- cover ---------- */
+  .cover{
+    background:
+      radial-gradient(120% 78% at 52% 46%,var(--cover-mid) 0%,var(--cover-edge) 72%);
+    min-height:calc(100vh - 62px);
+    display:flex;flex-direction:column;
   }
-  .menu-item .cursor{width:16px;height:18px;flex:none;opacity:0;transition:opacity .14s}
-  .menu-item[aria-selected="true"]{
-    color:var(--ink);background:var(--surface-2);
-    border-color:var(--rule);transform:translateX(4px);
+  .cover-inner{
+    max-width:760px;width:100%;margin:0 auto;flex:1;
+    padding:30px 24px 40px;
+    display:flex;flex-direction:column;
   }
-  .menu-item[aria-selected="true"] .cursor{opacity:1}
-  .menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .keyhint{font-size:.58rem;color:var(--ink-soft)}
-  .keyhint b{color:var(--accent);font-weight:400}
+  .lockup{
+    font-family:Mulish,system-ui,sans-serif;font-weight:900;color:#fff;
+    line-height:.94;letter-spacing:-.025em;text-transform:uppercase;
+  }
+  .lockup .the{display:block;font-size:clamp(1.5rem,5vw,2.1rem)}
+  .lockup .big{display:block;font-size:clamp(2.9rem,10.5vw,4.6rem)}
+  .cover-art{margin:auto;padding:26px 0;width:min(340px,82%)}
+  .cover-art svg{width:100%;height:auto;display:block;filter:drop-shadow(0 12px 26px rgba(120,35,0,.34))}
+  .cover-title{color:#fff;text-align:center}
+  .cover-title .t{font-size:clamp(2.2rem,8vw,3.2rem);line-height:1.05;display:block}
+  .cover-title .s{font-size:clamp(1.1rem,3.6vw,1.35rem);line-height:1.3;display:block;margin-top:6px;opacity:.96}
+  .cover-cta{display:flex;justify-content:center;margin-top:26px}
 
-  /* ---------- panels ---------- */
-  .panel{
-    background:var(--surface);
-    border:1px solid var(--rule);
-    border-radius:4px;
-    padding:clamp(20px,4vw,30px);
-    box-shadow:var(--shadow);
+  /* ---------- the pill button, as used on the edition's feedback page ---------- */
+  .pill{
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;
+    font-size:1rem;letter-spacing:.03em;
+    color:#fff;background:linear-gradient(180deg,#F5943C 0%,#E8621B 52%,#D24A12 100%);
+    border:1px solid #C4440F;border-radius:999px;
+    padding:13px 38px;cursor:pointer;
+    box-shadow:0 4px 0 rgba(150,52,8,.5),inset 0 1px 0 rgba(255,255,255,.45);
+    transition:transform .12s,filter .12s;
   }
-  h2.screen-title{
-    margin:0 0 6px;font-size:clamp(1.5rem,4vw,2rem);font-weight:900;
-    letter-spacing:-.02em;color:var(--accent-deep);text-wrap:balance;
+  .pill:hover{filter:brightness(1.05)}
+  .pill:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(150,52,8,.5)}
+  .pill:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+  .pill.plain{
+    background:none;color:var(--orange);border:1.5px solid var(--orange);
+    box-shadow:none;font-weight:600;
   }
-  .lede{margin:0 0 22px;color:var(--ink-soft);max-width:60ch}
+  .pill.plain:hover{background:rgba(240,100,35,.08)}
+  .pill[disabled]{opacity:.45;cursor:default;box-shadow:none}
+  .btnrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px}
 
-  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:s}
-  .steps li{display:flex;gap:14px;align-items:flex-start;counter-increment:s}
-  .steps li::before{
-    content:counter(s);flex:none;
-    width:26px;height:26px;border-radius:50%;
-    background:var(--accent);color:#fff;
-    font-family:Silkscreen,monospace;font-size:.62rem;
-    display:grid;place-items:center;margin-top:2px;
-  }
-  .steps li p{margin:0}
-
-  /* ---------- HUD ---------- */
-  .hud{
-    display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;
-    padding:12px 16px;margin-bottom:20px;
-    background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;
-  }
-  .hud-stat{display:flex;flex-direction:column;gap:3px}
-  .hud-stat .k{font-family:Silkscreen,monospace;font-size:.52rem;color:var(--ink-soft)}
-  .hud-stat .v{font-weight:900;font-size:1rem;font-variant-numeric:tabular-nums;color:var(--ink)}
-  .hud-stat .v.money{color:var(--accent)}
-  .pips{display:flex;gap:6px;margin-left:auto}
-  .pip{width:22px;height:5px;border-radius:2px;background:var(--rule)}
-  .pip.done{background:var(--good)}
-  .pip.miss{background:var(--bad)}
-  .pip.now{background:var(--accent)}
-
-  /* ---------- round ---------- */
-  .scenario{margin:0 0 4px;font-size:clamp(1.12rem,2.8vw,1.4rem);font-weight:800;text-wrap:balance;max-width:44ch}
-  .scenario .budget{color:var(--accent);white-space:nowrap}
-  .instruction{margin:0 0 24px;font-size:.88rem;color:var(--ink-soft);max-width:52ch}
-
-  .cards{
-    display:grid;gap:16px;
-    grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
-    align-items:start;
-  }
-  .cards.duo{grid-template-columns:repeat(auto-fit,minmax(235px,1fr));max-width:640px}
-
+  /* ---------- pick cards ---------- */
+  .pickline{color:var(--navy);font-size:1.02rem;opacity:.8;margin-bottom:6px}
+  .cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:start;margin-bottom:8px}
+  .cards.duo{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));max-width:600px}
   .card{
-    position:relative;
-    background:var(--surface);
-    border:1.5px solid var(--rule);
-    border-radius:5px;
-    padding:22px 18px 20px;
-    text-align:center;
-    font-family:inherit;color:var(--ink);
-    cursor:pointer;
-    box-shadow:var(--card-shadow);
-    transform-style:preserve-3d;
-    transition:transform .3s ease,opacity .3s ease,border-color .18s,box-shadow .18s;
+    font-family:inherit;color:var(--navy);text-align:center;
+    background:var(--card-face);
+    border:2px solid var(--card-line);border-radius:14px;
+    padding:20px 16px 18px;cursor:pointer;
+    box-shadow:var(--shadow);
+    transition:transform .28s ease,opacity .28s ease,border-color .16s;
   }
-  .card:hover:not(.locked){border-color:var(--accent);box-shadow:0 10px 26px var(--glow)}
-  .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  .card.dim{opacity:.34;pointer-events:none}
-  .card.flipping{transform:rotateY(90deg)}
+  .card:hover:not(.locked){border-color:var(--orange);transform:translateY(-3px)}
+  .card:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  .card.dim{opacity:.36;pointer-events:none}
+  .card.turning{transform:rotateY(90deg)}
   .card.locked{cursor:default}
-  .card.revealed{text-align:left;border-width:2px}
-  .card.revealed.good{border-color:var(--good)}
-  .card.revealed.bad{border-color:var(--bad)}
+  .card.revealed{text-align:left;border-color:var(--orange)}
+  .card.revealed.win{border-color:var(--good)}
 
-  .boxart{width:74px;height:74px;margin:0 auto 12px;display:block}
-  .card-name{font-weight:800;font-size:1.02rem;margin:0 0 2px;letter-spacing:-.01em}
-  .card-price{font-weight:900;font-size:1.7rem;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-  .card-was{display:block;font-size:.95rem;font-weight:700;color:var(--ink-soft);text-decoration:line-through;margin-bottom:-2px}
-  .card-claim{
-    margin-top:10px;font-size:.84rem;font-weight:700;color:var(--ink-soft);
-    padding-top:10px;border-top:1px dashed var(--rule);
+  .boxart{width:82px;height:82px;margin:0 auto 10px;display:block}
+  .cname{font-size:1.18rem;line-height:1.2;margin-bottom:2px}
+  .cprice{font-family:Mulish,system-ui,sans-serif;font-weight:900;font-size:1.8rem;color:var(--orange);letter-spacing:-.02em}
+  .cwas{
+    display:block;font-family:Mulish,system-ui,sans-serif;font-weight:700;
+    font-size:1rem;color:var(--navy);opacity:.6;text-decoration:line-through;
   }
-  .cue{
-    display:inline-block;margin-bottom:10px;
-    padding:4px 9px;border-radius:2px;
-    background:var(--accent);color:#fff;
-    font-family:Silkscreen,monospace;font-size:.5rem;
+  .cclaim{margin-top:10px;padding-top:9px;border-top:1px dashed var(--card-line);font-size:1.02rem}
+  .tag{
+    display:inline-block;margin-bottom:9px;padding:3px 11px;border-radius:999px;
+    background:var(--orange);color:#fff;
+    font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:.6rem;
+    letter-spacing:.07em;text-transform:uppercase;
   }
-  .cue.urgent{background:var(--bad)}
-  .card-pick{
-    margin-top:14px;font-family:Silkscreen,monospace;font-size:.52rem;
-    color:var(--ink-soft);
-  }
-  .card.locked .card-pick{visibility:hidden}
+  .tag.hot{background:var(--maroon)}
 
-  .verdict{display:flex;align-items:center;gap:9px;margin-bottom:8px}
-  .verdict .sigil{
-    width:26px;height:26px;border-radius:50%;flex:none;
-    display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:900;
-  }
-  .good .sigil{background:var(--good)}
-  .bad .sigil{background:var(--bad)}
-  .verdict h3{margin:0;font-size:1.22rem;font-weight:900;letter-spacing:-.02em}
-  .good .verdict h3{color:var(--good)}
-  .bad .verdict h3{color:var(--bad)}
-  .verdict-sub{margin:0 0 12px;font-weight:800;font-size:.95rem}
-  .verdict-body{margin:0;font-size:.9rem;color:var(--ink-soft)}
-  .defn{margin-top:14px;padding-top:12px;border-top:1px dashed var(--rule)}
-  .defn h4{margin:0 0 4px;font-size:.82rem;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
-  .defn p{margin:0;font-size:.86rem;color:var(--ink-soft)}
+  .vhead{font-size:1.5rem;color:var(--maroon);margin-bottom:2px}
+  .win .vhead{color:var(--good)}
+  .vsub{font-size:1.12rem;margin-bottom:8px}
+  .vbody{font-size:1.02rem;margin:0}
+  .vdef{margin-top:12px;padding-top:11px;border-top:1px dashed var(--card-line)}
+  .vdef .q{color:var(--orange);font-size:1.06rem;margin-bottom:2px}
+  .vdef p{font-size:1rem;margin:0}
 
-  .bridge{
-    margin-top:22px;padding:20px;
-    background:var(--surface-2);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;
-  }
-  .bridge .k{font-family:Silkscreen,monospace;font-size:.52rem;color:var(--ink-soft);display:block;margin-bottom:8px}
-  .bridge p{margin:0 0 12px;font-size:.93rem;max-width:62ch}
-  .places{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0;list-style:none}
-  .places li{
-    font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:99px;
-    background:var(--surface);border:1px solid var(--rule);color:var(--ink-soft);
+  .bridge{margin-top:26px;padding-top:20px;border-top:2px solid var(--rule-line)}
+  .bridge .eyebrow{color:var(--orange);font-size:1.12rem;margin-bottom:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;list-style:none;margin:14px 0 0;padding:0}
+  .chips li{
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;font-size:.76rem;
+    padding:5px 13px;border-radius:999px;border:1.5px solid var(--card-line);color:var(--navy);
   }
 
-  /* ---------- buttons ---------- */
-  .btn{
-    display:inline-flex;align-items:center;gap:9px;
-    padding:13px 22px;border-radius:3px;border:1.5px solid var(--accent);
-    background:var(--accent);color:#fff;
-    font-family:inherit;font-size:.85rem;font-weight:800;
-    letter-spacing:.07em;text-transform:uppercase;text-decoration:none;
-    cursor:pointer;transition:filter .15s,transform .15s;
+  /* ---------- tally + closing ---------- */
+  .tally{list-style:none;margin:0 0 26px;padding:0}
+  .tally li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule-line)}
+  .tally li:first-child{border-top:1px solid var(--rule-line)}
+  .tally .nm{font-size:1.1rem}
+  .tally .st{
+    margin-left:auto;font-family:Mulish,system-ui,sans-serif;font-weight:700;
+    font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 11px;border-radius:999px;color:#fff;background:var(--maroon);
   }
-  .btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
-  .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  .btn.ghost{background:transparent;color:var(--accent)}
-  .actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:24px}
+  .tally .st.ok{background:var(--good)}
+  .scoreline{font-size:1.5rem;color:var(--orange);margin-bottom:18px}
 
-  /* ---------- results ---------- */
-  .score{text-align:center;padding-block:8px 24px}
-  .score .num{
-    font-weight:900;font-size:clamp(3.4rem,14vw,6rem);line-height:1;
-    color:var(--accent);letter-spacing:-.04em;font-variant-numeric:tabular-nums;
-  }
-  .score .num small{font-size:.36em;color:var(--ink-soft)}
-  .score .k{font-family:Silkscreen,monospace;font-size:.58rem;color:var(--ink-soft)}
-  .tally{list-style:none;margin:0 0 26px;padding:0;display:flex;flex-direction:column}
-  .tally li{
-    display:flex;align-items:center;gap:12px;
-    padding:11px 2px;border-bottom:1px solid var(--rule);
-  }
-  .tally li:first-child{border-top:1px solid var(--rule)}
-  .tally .n{font-family:Silkscreen,monospace;font-size:.55rem;color:var(--ink-soft);width:22px;flex:none}
-  .tally .nm{font-weight:800;font-size:.95rem}
-  .tally .st{margin-left:auto;font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:99px}
-  .tally .st.good{background:var(--good);color:#fff}
-  .tally .st.bad{background:var(--bad);color:#fff}
-  .closing p{max-width:62ch;margin:0 0 14px}
-  .closing p:last-of-type{margin-bottom:0}
+  /* ---------- feedback page (edition template) ---------- */
+  .fb{text-align:center;max-width:520px;margin:0 auto}
+  .fb .mascot{width:150px;height:150px;margin:0 auto 18px;display:block}
+  .fb h2{color:var(--maroon);font-size:2.1rem;margin-bottom:10px}
+  .fb .ess{font-size:1.35rem;margin:0 auto 22px;max-width:22ch}
+  .fb hr{border:0;border-top:1.5px solid var(--maroon);margin:30px 0 24px}
+  .fb .connect{color:var(--orange);font-size:1.7rem;line-height:1.2;margin-bottom:18px}
+  .contact{display:flex;flex-direction:column;gap:12px;align-items:center;margin-bottom:26px}
+  .contact div{display:flex;align-items:center;gap:12px;font-size:1.2rem;text-align:left}
+  .contact svg{width:34px;height:34px;flex:none}
+  .contact .num{color:var(--orange)}
+  .disclaimer{font-size:.84rem;line-height:1.45;color:var(--navy-deep);text-align:left;max-width:none;opacity:.92}
+  .disclaimer a{color:var(--navy-deep)}
 
-  @media (max-width:520px){
-    .hud{gap:10px 14px}
-    .pips{margin-left:0;width:100%}
-    .pip{flex:1}
+  .pageno{
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;font-size:.72rem;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--navy);opacity:.55;
+    margin-bottom:18px;
   }
+
   @media (prefers-reduced-motion: reduce){
-    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+    *,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}
   }
 </style>
 
-<div class="cabinet">
-  <div class="brandbar">
-    <div class="mark">ICICI <span>Bank</span></div>
-    <div class="edition pix">THE ORANGE BOOK &middot; VOL. 65 &middot; OCTOBER 2026</div>
+<div class="bar">
+  <div class="logo"><span class="i">i</span>ICICI Bank</div>
+  <div class="issue">OCTOBER 2026 | VOL. 65</div>
+</div>
+
+<!-- ================= COVER ================= -->
+<section id="p-cover" class="cover">
+  <div class="cover-inner">
+    <div class="lockup"><span class="the">The</span><span class="big">Orange</span><span class="big">Book</span></div>
+    <div class="cover-art">
+      <svg viewBox="0 0 300 260" role="img" aria-label="An open box of festive mithai">
+        <ellipse cx="150" cy="238" rx="118" ry="15" fill="rgba(120,35,0,.22)"/>
+        <path d="M34 96h232l-14 132a12 12 0 0 1-12 11H60a12 12 0 0 1-12-11Z" fill="#C0400E"/>
+        <rect x="26" y="74" width="248" height="34" rx="9" fill="#E4601A"/>
+        <rect x="42" y="106" width="216" height="112" rx="7" fill="#FBE3C0"/>
+        <g>
+          <circle cx="82" cy="140" r="21" fill="#E89A2E"/><circle cx="82" cy="140" r="21" fill="none" stroke="#C97B18" stroke-width="2"/>
+          <rect x="128" y="119" width="42" height="42" rx="6" fill="#FFF6E2" stroke="#E3C88E" stroke-width="2"/>
+          <circle cx="149" cy="140" r="4.5" fill="#C0400E"/>
+          <circle cx="216" cy="140" r="21" fill="#E89A2E" stroke="#C97B18" stroke-width="2"/>
+          <rect x="61" y="166" width="42" height="42" rx="6" fill="#FFF6E2" stroke="#E3C88E" stroke-width="2"/>
+          <circle cx="82" cy="187" r="4.5" fill="#C0400E"/>
+          <circle cx="149" cy="187" r="21" fill="#E89A2E" stroke="#C97B18" stroke-width="2"/>
+          <rect x="195" y="166" width="42" height="42" rx="6" fill="#FFF6E2" stroke="#E3C88E" stroke-width="2"/>
+          <circle cx="216" cy="187" r="4.5" fill="#C0400E"/>
+        </g>
+        <g fill="#FFD79B">
+          <path d="M150 12l5 13 13 5-13 5-5 13-5-13-13-5 13-5Z"/>
+          <path d="M44 34l3.5 9 9 3.5-9 3.5L44 59l-3.5-9-9-3.5 9-3.5Z"/>
+          <path d="M258 30l3.5 9 9 3.5-9 3.5-3.5 9-3.5-9-9-3.5 9-3.5Z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="cover-title">
+      <span class="t">The Sweet Pick</span>
+      <span class="s">Choose what you&rsquo;d buy. Discover what might be influencing you.</span>
+    </div>
+    <div class="cover-cta"><button class="pill" id="open-btn">Open this edition</button></div>
   </div>
+</section>
 
-  <main class="stage">
-    <!-- ============ TITLE SCREEN ============ -->
-    <section id="screen-menu" class="title-screen">
-      <div class="eyebrow pix">A FESTIVE BEHAVIOURAL-BIAS GAME</div>
-      <h1 class="wordmark">The<em>Sweet Pick</em></h1>
-      <div class="diya-row" aria-hidden="true">
-        <svg class="diya" viewBox="0 0 26 30"><g class="flame"><path d="M13 2c3 4 4.6 6.2 4.6 8.7a4.6 4.6 0 0 1-9.2 0C8.4 8.2 10 6 13 2Z" fill="#FFB33A"/><path d="M13 6.4c1.6 2.3 2.4 3.4 2.4 4.7a2.4 2.4 0 1 1-4.8 0c0-1.3.8-2.4 2.4-4.7Z" fill="#FFF0C4"/></g><path d="M2 19h22c-1.4 5.2-5.4 8.4-11 8.4S3.4 24.2 2 19Z" fill="#C4551A"/><path d="M2 19h22a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2Z" fill="#E2731F"/></svg>
-        <svg class="diya" viewBox="0 0 26 30"><g class="flame"><path d="M13 2c3 4 4.6 6.2 4.6 8.7a4.6 4.6 0 0 1-9.2 0C8.4 8.2 10 6 13 2Z" fill="#FFB33A"/><path d="M13 6.4c1.6 2.3 2.4 3.4 2.4 4.7a2.4 2.4 0 1 1-4.8 0c0-1.3.8-2.4 2.4-4.7Z" fill="#FFF0C4"/></g><path d="M2 19h22c-1.4 5.2-5.4 8.4-11 8.4S3.4 24.2 2 19Z" fill="#C4551A"/><path d="M2 19h22a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2Z" fill="#E2731F"/></svg>
-        <svg class="diya" viewBox="0 0 26 30"><g class="flame"><path d="M13 2c3 4 4.6 6.2 4.6 8.7a4.6 4.6 0 0 1-9.2 0C8.4 8.2 10 6 13 2Z" fill="#FFB33A"/><path d="M13 6.4c1.6 2.3 2.4 3.4 2.4 4.7a2.4 2.4 0 1 1-4.8 0c0-1.3.8-2.4 2.4-4.7Z" fill="#FFF0C4"/></g><path d="M2 19h22c-1.4 5.2-5.4 8.4-11 8.4S3.4 24.2 2 19Z" fill="#C4551A"/><path d="M2 19h22a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2Z" fill="#E2731F"/></svg>
-      </div>
-      <p class="tagline">Choose what you&rsquo;d buy. Discover what might be influencing you.</p>
-      <ul class="menu" id="menu" role="listbox" aria-label="Main menu"></ul>
-      <div class="keyhint pix"><b>&#9650;&#9660;</b> SELECT &nbsp;&nbsp; <b>&#8629;</b> ENTER &nbsp;&nbsp; <b>1-3</b> PICK</div>
-    </section>
+<!-- ================= INTRO ================= -->
+<section id="p-intro" class="ruled" hidden>
+  <div class="page">
+    <div class="pageno">The Sweet Pick &middot; Page 1</div>
+    <h1 class="headline">The Sweet Pick Challenge</h1>
+    <p class="subhead">Five festive choices. One familiar mithai box. And a quiet nudge behind each one.</p>
+    <p class="readtime">3-minute read</p>
+    <p>Festive season means more shopping, gifting, offers and impulse decisions. In the process, behavioural biases can quietly influence what feels like the &ldquo;better&rdquo; choice.</p>
+    <p>This edition lets you experience a few of them through simple mithai choices, so you can make more considered festive decisions.</p>
+    <h3 class="subhead" style="margin-top:28px">How it works</h3>
+    <ul class="dotlist">
+      <li>Take a look at the mithai boxes.</li>
+      <li>Trust your gut and make your Sweet Pick.</li>
+      <li>Flip only your choice to see what was at play.</li>
+      <li>Turn the page. Next pick!</li>
+    </ul>
+    <p style="color:var(--orange);font-size:1.15rem">No overthinking &mdash; go with your first instinct.</p>
+    <div class="btnrow"><button class="pill" id="start-btn">Make my first pick</button></div>
+  </div>
+</section>
 
-    <!-- ============ HOW TO PLAY ============ -->
-    <section id="screen-howto" class="panel" hidden>
-      <h2 class="screen-title">How to play</h2>
-      <p class="lede">No overthinking &mdash; go with your first instinct.</p>
-      <ol class="steps">
-        <li><p>Take a look at the mithai boxes.</p></li>
-        <li><p>Trust your gut and make your Sweet Pick.</p></li>
-        <li><p>Flip only your choice to see what was at play.</p></li>
-        <li><p>Turn the page. Next pick!</p></li>
-      </ol>
-      <div class="actions">
-        <button class="btn" data-go="play">Start game</button>
-        <button class="btn ghost" data-go="menu">Back</button>
-      </div>
-    </section>
+<!-- ================= ROUNDS ================= -->
+<section id="p-round" class="ruled" hidden>
+  <div class="page">
+    <div class="pageno" id="r-pageno"></div>
+    <h1 class="headline" id="r-headline"></h1>
+    <p class="subhead" id="r-scenario"></p>
+    <p class="pickline">Make your pick first. Then flip your chosen card to see what may have influenced it.</p>
+    <div class="cards" id="r-cards"></div>
+    <div id="r-bridge"></div>
+    <div class="btnrow" id="r-actions" hidden><button class="pill" id="next-btn">Turn the page</button></div>
+  </div>
+</section>
 
-    <!-- ============ ABOUT ============ -->
-    <section id="screen-about" class="panel" hidden>
-      <h2 class="screen-title">About The Orange Book</h2>
-      <p class="lede">The Orange Book is ICICI Bank&rsquo;s personal finance publication &mdash; simple, practical ways to save, invest and protect your money.</p>
-      <p>Festive season means more shopping, gifting, offers and impulse decisions. In the process, behavioural biases can quietly influence what feels like the &ldquo;better&rdquo; choice. This edition lets you experience five of them through simple mithai choices, so you can make more considered festive decisions.</p>
-      <p style="color:var(--ink-soft);font-size:.86rem;margin-top:18px">The five biases in this game first appeared in The Orange Book Vol. 17 (October 2022) and Vol. 30 (November 2023).</p>
-      <div class="actions">
-        <button class="btn" data-go="play">Start game</button>
-        <button class="btn ghost" data-go="menu">Back</button>
-      </div>
-    </section>
+<!-- ================= CLOSING ================= -->
+<section id="p-close" class="ruled" hidden>
+  <div class="page">
+    <div class="pageno">The Sweet Pick &middot; Last page</div>
+    <h1 class="headline">A sweeter way to choose</h1>
+    <p class="scoreline" id="scoreline"></p>
+    <ul class="tally" id="tally"></ul>
+    <p>The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned.</p>
+    <p>The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always.</p>
+    <p style="color:var(--orange);font-size:1.2rem">For more such interesting money lessons, explore The Orange Book.</p>
+    <div class="btnrow">
+      <a class="pill" href="https://www.icici.bank.in/blogs/the-orange-book" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">Read The Orange Book</a>
+      <button class="pill plain" id="again-btn">Play again</button>
+      <button class="pill plain" id="tofb-btn">Turn the page</button>
+    </div>
+  </div>
+</section>
 
-    <!-- ============ ROUND ============ -->
-    <section id="screen-round" hidden>
-      <div class="hud">
-        <div class="hud-stat"><span class="k">ROUND</span><span class="v" id="hud-round">01/05</span></div>
-        <div class="hud-stat"><span class="k">BUDGET</span><span class="v money" id="hud-budget">&#8377;500</span></div>
-        <div class="hud-stat"><span class="k">MINDFUL PICKS</span><span class="v" id="hud-score">0</span></div>
-        <div class="pips" id="pips" aria-hidden="true"></div>
-      </div>
-      <div class="panel">
-        <p class="scenario" id="scenario"></p>
-        <p class="instruction" id="instruction">Make your pick first. Then flip your chosen card to see what may have influenced it.</p>
-        <div class="cards" id="cards"></div>
-        <div id="bridge-slot"></div>
-        <div class="actions" id="round-actions" hidden>
-          <button class="btn" id="next-btn">Next round</button>
+<!-- ================= FEEDBACK (edition template) ================= -->
+<section id="p-feedback" class="ruled" hidden>
+  <div class="page">
+    <div class="fb">
+      <svg class="mascot" viewBox="0 0 150 150" role="img" aria-label="The Orange Book mascot at a desk">
+        <path d="M30 96h90l-6 34H36Z" fill="#E7A23C"/>
+        <rect x="26" y="88" width="98" height="12" rx="4" fill="#F0B255"/>
+        <rect x="40" y="130" width="8" height="18" rx="3" fill="#D08C2C"/>
+        <rect x="102" y="130" width="8" height="18" rx="3" fill="#D08C2C"/>
+        <circle cx="75" cy="60" r="31" fill="#F07C1E"/>
+        <circle cx="75" cy="60" r="31" fill="none" stroke="#D2600F" stroke-width="2"/>
+        <ellipse cx="65" cy="58" rx="8" ry="9.5" fill="#fff"/><circle cx="65.5" cy="59" r="4.6" fill="#3A2411"/>
+        <ellipse cx="85" cy="58" rx="8" ry="9.5" fill="#fff"/><circle cx="84.5" cy="59" r="4.6" fill="#3A2411"/>
+        <path d="M65 74q10 8 20 0" stroke="#8E3C06" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M43 34h64l6 7-38 12-38-12Z" fill="#1F3B73"/>
+        <rect x="66" y="26" width="18" height="12" rx="2" fill="#1F3B73"/>
+        <path d="M107 38v16" stroke="#E8B93E" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="107" cy="56" r="4" fill="#E8B93E"/>
+        <rect x="58" y="92" width="34" height="22" rx="2" fill="#fff" stroke="#C9D3E2" stroke-width="1.5"/>
+      </svg>
+      <h2>We&rsquo;re listening!</h2>
+      <p class="ess">Your feedback is essential to help us improve.</p>
+      <button class="pill" id="fb-btn">FEEDBACK</button>
+      <hr>
+      <p class="connect">Connect with us<br>for banking solutions.</p>
+      <div class="contact">
+        <div>
+          <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#C4212A"/><path d="M12 11c-1.6 0-2.4 1.3-2.4 2.7 0 5.3 5.4 10.7 10.7 10.7 1.4 0 2.7-.8 2.7-2.4 0-.6-2.6-2.4-3.2-2.4-.7 0-1.5 1.6-2.1 1.6-1.2 0-4.9-3.7-4.9-4.9 0-.6 1.6-1.4 1.6-2.1 0-.6-1.8-3.2-2.4-3.2Z" fill="#fff"/></svg>
+          <span class="num">1800 1080</span>
+        </div>
+        <div>
+          <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="16" fill="#25D366"/><path d="M11.6 11.4c-1.4 1.5-1.8 3.8-.7 5.9 1.4 2.8 3.9 5.2 6.8 6.3 2 .8 4.2.5 5.5-.9.4-.4.3-.8-.1-1.1l-2.2-1.5c-.4-.3-.8-.2-1.1.2l-.7.9c-.2.3-.6.4-.9.2-1.5-.8-2.9-2.2-3.7-3.7-.2-.3-.1-.7.2-.9l.9-.7c.4-.3.5-.7.2-1.1l-1.5-2.2c-.3-.4-.9-.5-1.2-.1Z" fill="#fff"/></svg>
+          <span>WhatsApp <span class="num">&lsquo;Start&rsquo;</span> to <span class="num">86400 86400.</span></span>
         </div>
       </div>
-    </section>
-
-    <!-- ============ RESULTS ============ -->
-    <section id="screen-results" class="panel" hidden>
-      <div class="score">
-        <div class="k pix">MINDFUL PICKS</div>
-        <div class="num"><span id="final-score">0</span><small>/5</small></div>
-      </div>
-      <ul class="tally" id="tally"></ul>
-      <div class="closing">
-        <h2 class="screen-title">A sweeter way to choose</h2>
-        <p>The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned.</p>
-        <p>The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always.</p>
-        <p style="margin-top:16px;font-weight:700">For more such interesting money lessons, explore The Orange Book.</p>
-      </div>
-      <div class="actions">
-        <a class="btn" href="https://www.icici.bank.in/blogs/the-orange-book" target="_blank" rel="noopener">Read The Orange Book</a>
-        <button class="btn ghost" data-go="play">Play again</button>
-      </div>
-    </section>
-  </main>
-
-  <div class="base">
-    <span>Powered by <strong>The Orange Book</strong></span>
-    <span class="pix">ICICI BANK</span>
+      <p class="disclaimer">The information provided by ICICI Bank is for general informational purposes only and does not constitute financial, investment, legal, or tax advice. It does not take into account your individual objectives or financial situation. We strongly recommend you seek independent professional advice before making any investment decisions.</p>
+      <p class="disclaimer" style="margin-top:12px"><a href="https://www.icici.bank.in/disclaimer" target="_blank" rel="noopener">Click here</a> to view the disclaimer.</p>
+    </div>
   </div>
-</div>
+</section>
 
 <script>
 (function(){
@@ -420,330 +416,231 @@
 
   var ROUNDS = [
     {
+      headline:"Which box would you pick?",
       bias:"Anchoring Bias",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
       bridge:"A jacket is marked ₹4,999, now ₹2,499. The ₹4,999 becomes the reference point, making ₹2,499 feel like a bargain even if you had planned to spend much less.",
       places:["Festive sales","Hotel deals","Electronics with crossed-out MRPs"],
       cards:[
-        {name:"Classic Box", price:400, good:true,
-         head:"Great!", sub:"You avoided Anchoring Bias.",
+        {name:"Classic Box", price:400, win:true, head:"Great!", sub:"You avoided Anchoring Bias.",
          body:"The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box."},
-        {name:"Celebration Box", price:475, good:true,
-         head:"Great!", sub:"You avoided Anchoring Bias.",
+        {name:"Celebration Box", price:475, win:true, head:"Great!", sub:"You avoided Anchoring Bias.",
          body:"The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box."},
-        {name:"Premium Box", price:750, was:1000, good:false,
-         head:"Oops!", sub:"You fell for Anchoring Bias.",
+        {name:"Premium Box", price:750, was:1000, win:false, head:"Oops!", sub:"You fell for Anchoring Bias.",
          body:"The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget."}
       ]
     },
     {
+      headline:"Small, medium or large?",
       bias:"Decoy Effect",
       defn:"The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison.",
       bridge:"At the movies, Small popcorn is ₹180, Medium is ₹290 and Large is ₹320. Since Large is only ₹30 more than Medium, Medium can make Large feel like the obvious deal.",
       places:["Meal sizes","Subscription plans","Phone storage options"],
       cards:[
-        {name:"Small Box", price:300, good:true,
-         head:"Great!", sub:"You avoided the Decoy Effect.",
+        {name:"Small Box", price:300, win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
          body:"The ₹500 Medium and ₹575 Large boxes make Large look like a tempting upgrade. But you still chose the ₹300 Small Box and remained under budget."},
-        {name:"Medium Box", price:500, good:true,
-         head:"Great!", sub:"You avoided the Decoy Effect.",
+        {name:"Medium Box", price:500, win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
          body:"The ₹575 Large Box is only ₹75 more. You still chose the ₹500 Medium Box instead of automatically upgrading."},
-        {name:"Large Box", price:575, good:false,
-         head:"Oops!", sub:"You fell for the Decoy Effect.",
+        {name:"Large Box", price:575, win:false, head:"Oops!", sub:"You fell for the Decoy Effect.",
          body:"The ₹500 Medium Box may have made the ₹575 Large Box feel like the obvious upgrade for just ₹75 more."}
       ]
     },
     {
+      headline:"Everyone&rsquo;s picking one of these.",
       bias:"Bandwagon Effect",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
       bridge:"You are choosing between two gadgets. One suits what you need, but the other is marked “Bestseller” and everyone seems to own it. Popularity can start to feel like proof that it is the better choice.",
       places:["Trending restaurants","Bestseller products","Popular gadgets"],
       cards:[
-        {name:"Traditional Mithai Box", price:425, good:true,
-         head:"Great!", sub:"You avoided the Bandwagon Effect.",
+        {name:"Traditional Mithai Box", price:425, win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
          body:"The ₹600 Signature Fusion Box was marked “Office Favourite Today”. You ignored the popularity cue and chose the ₹425 box."},
-        {name:"Signature Fusion Mithai Box", price:600, cue:"OFFICE FAVOURITE TODAY", good:false,
-         head:"Oops!", sub:"You fell for the Bandwagon Effect.",
+        {name:"Signature Fusion Mithai Box", price:600, tag:"Office Favourite Today", win:false, head:"Oops!", sub:"You fell for the Bandwagon Effect.",
          body:"“Office Favourite Today” may have pulled you towards the ₹600 box, even though ₹425 and ₹475 options were available within budget."},
-        {name:"Dry Fruit Mithai Box", price:475, good:true,
-         head:"Great!", sub:"You avoided the Bandwagon Effect.",
+        {name:"Dry Fruit Mithai Box", price:475, win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
          body:"You chose the ₹475 Dry Fruit Box instead of automatically following the ₹600 “Office Favourite”."}
       ]
     },
     {
+      headline:"Better hurry &mdash; one left.",
       bias:"FOMO",
       defn:"FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to.",
       bridge:"A travel site says “Only 1 room left at this price.” That message can make you book immediately before checking whether another option suits you better.",
       places:["Flash sales","Ticket bookings","Limited-stock messages"],
       cards:[
-        {name:"Classic Box", price:300, good:true,
-         head:"Great!", sub:"You avoided FOMO.",
+        {name:"Classic Box", price:300, win:true, head:"Great!", sub:"You avoided FOMO.",
          body:"The ₹550 Premium Box said “Only 1 left”. You ignored the urgency and chose the ₹300 Classic Box."},
-        {name:"Celebration Box", price:400, good:true,
-         head:"Great!", sub:"You avoided FOMO.",
+        {name:"Celebration Box", price:400, win:true, head:"Great!", sub:"You avoided FOMO.",
          body:"You chose the ₹400 Celebration Box instead of being rushed by the “Only 1 left” ₹550 Premium Box."},
-        {name:"Premium Box", price:550, cue:"ONLY 1 LEFT", urgent:true, good:false,
-         head:"Oops!", sub:"You fell for FOMO.",
+        {name:"Premium Box", price:550, tag:"Only 1 left", hot:true, win:false, head:"Oops!", sub:"You fell for FOMO.",
          body:"“Only 1 left” may have made the ₹550 Premium Box feel urgent, despite ₹300 and ₹400 options being available."}
       ]
     },
     {
+      headline:"Read the label again.",
       bias:"Framing Effect",
       defn:"The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels.",
       bridge:"A food product may sound more attractive when a benefit is highlighted positively, even though another label gives you more direct information about what the product actually contains.",
       places:["Food labels","Health claims","Advertising claims"],
       cards:[
-        {name:"Box A", price:600, claim:"70% sugar-free", good:false,
-         head:"Oops!", sub:"You may have fallen for the Framing Effect.",
+        {name:"Box A", price:600, claim:"70% sugar-free", win:false, head:"Oops!", sub:"You may have fallen for the Framing Effect.",
          body:"“70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar."},
-        {name:"Box B", price:450, claim:"Contains 25% sugar", good:true,
-         head:"Great!", sub:"You looked beyond the positive frame.",
+        {name:"Box B", price:450, claim:"Contains 25% sugar", win:true, head:"Great!", sub:"You looked beyond the positive frame.",
          body:"You chose the ₹450 box with 25% sugar instead of being drawn towards the ₹600 box described as “70% sugar-free.”"}
       ]
     }
   ];
 
-  var MENU = [
-    {label:"Start game", go:"play"},
-    {label:"How to play", go:"howto"},
-    {label:"About The Orange Book", go:"about"}
-  ];
-
-  var SCREENS = ["menu","howto","about","round","results"];
-  var state = {screen:"menu", round:0, results:[], picked:false, menuIndex:0};
+  var PAGES = ["cover","intro","round","close","feedback"];
+  var state = {page:"cover", round:0, results:[], picked:false};
 
   var $ = function(id){ return document.getElementById(id); };
   var rupee = function(n){ return "₹" + n.toLocaleString("en-IN"); };
 
+  function show(name){
+    state.page = name;
+    PAGES.forEach(function(p){
+      var el = $("p-" + p);
+      if (el) el.hidden = (p !== name);
+    });
+    window.scrollTo(0,0);
+  }
+
   function boxArt(){
     return '<svg class="boxart" viewBox="0 0 64 64" aria-hidden="true">' +
-      '<rect x="5.5" y="5.5" width="53" height="53" rx="7" fill="var(--surface-2)" stroke="var(--accent)" stroke-width="2"/>' +
-      '<circle cx="21" cy="21" r="7.2" fill="var(--gold)"/>' +
-      '<rect x="35" y="14" width="14.5" height="14.5" rx="2.5" fill="var(--accent)"/>' +
-      '<rect x="14.5" y="35.5" width="14.5" height="14.5" rx="2.5" fill="var(--accent)"/>' +
-      '<circle cx="43" cy="43" r="7.2" fill="var(--gold)"/></svg>';
+      '<path d="M8 22h48l-3 30a4 4 0 0 1-4 3.5H15a4 4 0 0 1-4-3.5Z" fill="#E4601A"/>' +
+      '<rect x="6" y="16" width="52" height="9" rx="2.5" fill="#F07C1E"/>' +
+      '<rect x="13" y="25" width="38" height="24" rx="2" fill="#FBE3C0"/>' +
+      '<circle cx="23" cy="32.5" r="5" fill="#E89A2E"/>' +
+      '<rect x="36" y="27.5" width="10" height="10" rx="1.6" fill="#FFF6E2" stroke="#E3C88E"/>' +
+      '<rect x="18" y="39" width="10" height="10" rx="1.6" fill="#FFF6E2" stroke="#E3C88E"/>' +
+      '<circle cx="41" cy="44" r="5" fill="#E89A2E"/></svg>';
   }
 
-  function cursorSvg(){
-    return '<svg class="cursor" viewBox="0 0 16 18" aria-hidden="true">' +
-      '<path d="M8 1c1.9 2.6 2.9 3.9 2.9 5.5a2.9 2.9 0 1 1-5.8 0C5.1 4.9 6.1 3.6 8 1Z" fill="var(--accent)"/>' +
-      '<path d="M1.5 11h13c-.9 3.4-3.4 5.5-6.5 5.5S2.4 14.4 1.5 11Z" fill="var(--accent-deep)"/></svg>';
-  }
-
-  /* ---------- screens ---------- */
-  function show(name){
-    state.screen = name;
-    SCREENS.forEach(function(s){
-      var el = $("screen-" + s);
-      if (el) el.hidden = (s !== name);
-    });
-    window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
-  }
-
-  function buildMenu(){
-    var ul = $("menu");
-    ul.innerHTML = "";
-    MENU.forEach(function(item, i){
-      var li = document.createElement("li");
-      var btn = document.createElement("button");
-      btn.className = "menu-item";
-      btn.type = "button";
-      btn.setAttribute("role","option");
-      btn.setAttribute("aria-selected", i === state.menuIndex ? "true" : "false");
-      btn.innerHTML = cursorSvg() + "<span>" + item.label + "</span>";
-      btn.addEventListener("mouseenter", function(){ state.menuIndex = i; paintMenu(); });
-      btn.addEventListener("click", function(){ route(item.go); });
-      li.appendChild(btn);
-      ul.appendChild(li);
-    });
-  }
-
-  function paintMenu(){
-    var items = $("menu").querySelectorAll(".menu-item");
-    for (var i = 0; i < items.length; i++){
-      items[i].setAttribute("aria-selected", i === state.menuIndex ? "true" : "false");
+  function face(c){
+    var h = "";
+    if (c.tag) h += '<span class="tag' + (c.hot ? " hot" : "") + '">' + c.tag + "</span>";
+    h += boxArt();
+    h += '<p class="cname">' + c.name + "</p>";
+    if (c.was){
+      h += '<span class="cwas">' + rupee(c.was) + "</span>";
+      h += '<div class="cprice">Now ' + rupee(c.price) + "</div>";
+    } else {
+      h += '<div class="cprice">' + rupee(c.price) + "</div>";
     }
+    if (c.claim) h += '<div class="cclaim">' + c.claim + "</div>";
+    return h;
   }
 
-  function route(go){
-    if (go === "play"){ startGame(); }
-    else if (go === "menu"){ show("menu"); }
-    else { show(go); }
+  function back(c, r){
+    return '<p class="vhead">' + c.head + "</p>" +
+      '<p class="vsub">' + c.sub + "</p>" +
+      '<p class="vbody">' + c.body + "</p>" +
+      '<div class="vdef"><p class="q">What is ' + r.bias + "?</p><p>" + r.defn + "</p></div>";
   }
 
-  function startGame(){
-    state.round = 0;
-    state.results = [];
-    renderRound();
-  }
-
-  /* ---------- round ---------- */
   function renderRound(){
     var r = ROUNDS[state.round];
     state.picked = false;
 
-    $("hud-round").textContent = ("0" + (state.round + 1)) + "/05";
-    $("hud-budget").textContent = rupee(BUDGET);
-    $("hud-score").textContent = String(state.results.filter(function(x){ return x.good; }).length);
-
-    var pips = $("pips");
-    pips.innerHTML = "";
-    for (var i = 0; i < ROUNDS.length; i++){
-      var p = document.createElement("span");
-      p.className = "pip" + (i < state.results.length ? (state.results[i].good ? " done" : " miss") : (i === state.round ? " now" : ""));
-      pips.appendChild(p);
-    }
-
-    $("scenario").innerHTML = "It’s festive season and you’re choosing a mithai box. You planned to spend <span class=\"budget\">" +
+    $("r-pageno").textContent = "The Sweet Pick · Pick " + (state.round + 1) + " of " + ROUNDS.length;
+    $("r-headline").innerHTML = r.headline;
+    $("r-scenario").innerHTML = "It’s festive season and you’re choosing a mithai box. You planned to spend <span class=\"amount\">" +
       rupee(BUDGET) + "</span>. Which one would you go for?";
 
-    var wrap = $("cards");
+    var wrap = $("r-cards");
     wrap.className = "cards" + (r.cards.length === 2 ? " duo" : "");
     wrap.innerHTML = "";
-
-    r.cards.forEach(function(card, idx){
-      var el = document.createElement("button");
-      el.type = "button";
-      el.className = "card";
-      el.setAttribute("data-idx", String(idx));
-      el.innerHTML = cardFace(card, idx);
-      el.addEventListener("click", function(){ pick(idx); });
-      wrap.appendChild(el);
+    r.cards.forEach(function(c, i){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "card";
+      b.innerHTML = face(c);
+      b.addEventListener("click", function(){ pick(i); });
+      wrap.appendChild(b);
     });
 
-    $("bridge-slot").innerHTML = "";
-    $("round-actions").hidden = true;
-    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See results" : "Next round";
+    $("r-bridge").innerHTML = "";
+    $("r-actions").hidden = true;
+    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Turn the page";
     show("round");
   }
 
-  function cardFace(card, idx){
-    var html = "";
-    if (card.cue){
-      html += '<span class="cue' + (card.urgent ? " urgent" : "") + '">' + card.cue + "</span>";
-    }
-    html += boxArt();
-    html += '<p class="card-name">' + card.name + "</p>";
-    if (card.was){
-      html += '<span class="card-was">' + rupee(card.was) + "</span>";
-      html += '<div class="card-price">Now ' + rupee(card.price) + "</div>";
-    } else {
-      html += '<div class="card-price">' + rupee(card.price) + "</div>";
-    }
-    if (card.claim){
-      html += '<div class="card-claim">' + card.claim + "</div>";
-    }
-    html += '<div class="card-pick pix">PRESS ' + (idx + 1) + " &middot; PICK</div>";
-    return html;
-  }
-
-  function cardReveal(card, bias, defn){
-    return '<div class="verdict"><span class="sigil">' + (card.good ? "✓" : "✕") + "</span>" +
-      "<h3>" + card.head + "</h3></div>" +
-      '<p class="verdict-sub">' + card.sub + "</p>" +
-      '<p class="verdict-body">' + card.body + "</p>" +
-      '<div class="defn"><h4>What is ' + bias + "?</h4><p>" + defn + "</p></div>";
-  }
-
-  function pick(idx){
+  function pick(i){
     if (state.picked) return;
     state.picked = true;
 
     var r = ROUNDS[state.round];
-    var card = r.cards[idx];
-    var nodes = $("cards").querySelectorAll(".card");
+    var c = r.cards[i];
+    var nodes = $("r-cards").querySelectorAll(".card");
 
-    for (var i = 0; i < nodes.length; i++){
-      nodes[i].classList.add("locked");
-      if (i !== idx) nodes[i].classList.add("dim");
+    for (var k = 0; k < nodes.length; k++){
+      nodes[k].classList.add("locked");
+      if (k !== i) nodes[k].classList.add("dim");
     }
 
-    var chosen = nodes[idx];
-    chosen.classList.add("flipping");
+    var chosen = nodes[i];
+    chosen.classList.add("turning");
 
     window.setTimeout(function(){
-      chosen.innerHTML = cardReveal(card, r.bias, r.defn);
-      chosen.classList.remove("flipping");
-      chosen.classList.add("revealed", card.good ? "good" : "bad");
+      chosen.innerHTML = back(c, r);
+      chosen.classList.remove("turning");
+      chosen.classList.add("revealed");
+      if (c.win) chosen.classList.add("win");
 
-      state.results.push({bias:r.bias, good:!!card.good, choice:card.name});
-      $("hud-score").textContent = String(state.results.filter(function(x){ return x.good; }).length);
+      state.results.push({bias:r.bias, win:!!c.win});
 
-      var pips = $("pips").children;
-      if (pips[state.round]) pips[state.round].className = "pip " + (card.good ? "done" : "miss");
+      $("r-bridge").innerHTML =
+        '<div class="bridge"><p class="eyebrow">Where else you meet it</p><p class="wide">' + r.bridge + "</p>" +
+        '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul></div>";
 
-      $("bridge-slot").innerHTML =
-        '<div class="bridge"><span class="k">WHERE ELSE YOU MEET IT</span><p>' + r.bridge + "</p>" +
-        '<ul class="places">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul></div>";
-
-      $("round-actions").hidden = false;
+      $("r-actions").hidden = false;
       $("next-btn").focus();
-    }, 300);
+    }, 280);
   }
 
-  function nextRound(){
-    if (state.round < ROUNDS.length - 1){
-      state.round++;
-      renderRound();
-    } else {
-      renderResults();
-    }
+  function next(){
+    if (state.round < ROUNDS.length - 1){ state.round++; renderRound(); }
+    else { renderClose(); }
   }
 
-  /* ---------- results ---------- */
-  function renderResults(){
-    var good = state.results.filter(function(x){ return x.good; }).length;
-    $("final-score").textContent = String(good);
-
-    var tally = $("tally");
-    tally.innerHTML = "";
-    state.results.forEach(function(res, i){
+  function renderClose(){
+    var n = state.results.filter(function(x){ return x.win; }).length;
+    $("scoreline").textContent = "You made " + n + " mindful " + (n === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + ".";
+    var t = $("tally");
+    t.innerHTML = "";
+    state.results.forEach(function(res){
       var li = document.createElement("li");
-      li.innerHTML = '<span class="n pix">0' + (i + 1) + "</span>" +
-        '<span class="nm">' + res.bias + "</span>" +
-        '<span class="st ' + (res.good ? "good" : "bad") + '">' + (res.good ? "Avoided" : "Fell for it") + "</span>";
-      tally.appendChild(li);
+      li.innerHTML = '<span class="nm">' + res.bias + "</span>" +
+        '<span class="st ' + (res.win ? "ok" : "") + '">' + (res.win ? "Avoided" : "Fell for it") + "</span>";
+      t.appendChild(li);
     });
-
-    show("results");
+    show("close");
   }
 
-  /* ---------- wiring ---------- */
-  document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-go]");
-    if (t) route(t.getAttribute("data-go"));
-  });
-  $("next-btn").addEventListener("click", nextRound);
+  function restart(){ state.round = 0; state.results = []; renderRound(); }
 
-  document.addEventListener("keydown", function(e){
-    if (state.screen === "menu"){
-      if (e.key === "ArrowDown"){ e.preventDefault(); state.menuIndex = (state.menuIndex + 1) % MENU.length; paintMenu(); }
-      else if (e.key === "ArrowUp"){ e.preventDefault(); state.menuIndex = (state.menuIndex - 1 + MENU.length) % MENU.length; paintMenu(); }
-      else if (e.key === "Enter"){ e.preventDefault(); route(MENU[state.menuIndex].go); }
-      return;
-    }
-    if (state.screen === "round"){
-      var n = parseInt(e.key, 10);
-      if (!state.picked && n >= 1 && n <= ROUNDS[state.round].cards.length){ e.preventDefault(); pick(n - 1); }
-      else if (state.picked && e.key === "Enter"){ e.preventDefault(); nextRound(); }
-    }
+  $("open-btn").addEventListener("click", function(){ show("intro"); });
+  $("start-btn").addEventListener("click", restart);
+  $("next-btn").addEventListener("click", next);
+  $("again-btn").addEventListener("click", restart);
+  $("tofb-btn").addEventListener("click", function(){ show("feedback"); });
+  $("fb-btn").addEventListener("click", function(){
+    window.open("https://www.icici.bank.in/blogs/the-orange-book", "_blank", "noopener");
   });
 
-  /* ---------- boot ---------- */
   function start(saved){
-    buildMenu();
-    if (saved && saved.screen === "round" && typeof saved.round === "number"){
+    if (saved && saved.page === "round" && typeof saved.round === "number"){
       state.round = saved.round;
       state.results = saved.results || [];
       renderRound();
     } else {
-      show("menu");
+      show("cover");
     }
   }
 
   if (window.claude && window.claude.hot){
     window.claude.hot.snapshot(function(){
-      return {screen:state.screen, round:state.round, results:state.results};
+      return {page:state.page, round:state.round, results:state.results};
     });
   }
   if (window.claude && window.claude.hot && window.claude.hot.ready){
