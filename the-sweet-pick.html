@@ -104,8 +104,12 @@
     display:flex;flex-direction:column;gap:12px;
   }
   @keyframes boot{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-  .lockup,.stagearea,.cover-title,.coverstat,.keyhint,.taphint{
+  .cover.boot .lockup,.cover.boot .stagearea,.cover.boot .cover-title,.cover.boot .coverstat{
     animation:boot .55s cubic-bezier(.2,.85,.3,1) both;
+  }
+  .cover.boot .mitem{animation:boot .5s cubic-bezier(.2,.85,.3,1) both}
+  .cover.boot .keyhint,.cover.boot .taphint{
+    animation:boot .55s cubic-bezier(.2,.85,.3,1) .56s both,hintBlink 3.6s ease-in-out .56s infinite;
   }
   .lockup{animation-delay:.04s}
   .stagearea{animation-delay:.12s}
@@ -200,7 +204,6 @@
     font-size:.92rem;letter-spacing:.06em;text-transform:uppercase;
     color:rgba(255,255,255,.82);cursor:pointer;text-align:left;
     transition:background .16s,color .16s,transform .16s,border-color .16s,box-shadow .16s;
-    animation:boot .5s cubic-bezier(.2,.85,.3,1) both;
   }
   .mitem .lbl{flex:1}
   .mitem .note{
@@ -239,7 +242,7 @@
     color:rgba(255,255,255,.74);
     font-family:Mulish,system-ui,sans-serif;font-weight:600;
     font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
-    animation:boot .55s cubic-bezier(.2,.85,.3,1) both,hintBlink 3.6s ease-in-out .56s infinite;
+    animation:hintBlink 3.6s ease-in-out infinite;
   }
   .keyhint kbd{
     display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 5px;
@@ -251,7 +254,7 @@
     display:none;text-align:center;color:rgba(255,255,255,.74);
     font-family:Mulish,system-ui,sans-serif;font-weight:600;
     font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
-    animation:boot .55s cubic-bezier(.2,.85,.3,1) both,hintBlink 3.6s ease-in-out .56s infinite;
+    animation:hintBlink 3.6s ease-in-out infinite;
   }
   @keyframes hintBlink{0%,100%{opacity:.6}50%{opacity:1}}
   /* arrow keys mean nothing on a touch screen */
@@ -712,6 +715,15 @@
   }
   var rupee = function(n){ return "₹" + n.toLocaleString("en-IN"); };
 
+  /* replays the title screen: the boot animations hang off .boot, so dropping
+     and re-adding the class starts them from the top */
+  function bootCover(){
+    var c = $("p-cover");
+    c.classList.remove("boot");
+    void c.offsetWidth;
+    c.classList.add("boot");
+  }
+
   function show(name){
     state.page = name;
     PAGES.forEach(function(p){
@@ -720,6 +732,7 @@
     });
     /* the printed edition carries the issue line on the cover only */
     $("issue").hidden = (name !== "cover");
+    if (name === "cover") bootCover();
     window.scrollTo(0,0);
   }
 
@@ -944,30 +957,28 @@
 
   /* ---------- first-run edition note (one view, one tap) ---------- */
   var SEEN_KEY = "tob-vol65-note-seen";
-  var introPlay = false, lastFocus = null;
-
   function introOpen(){ return !$("intro").hidden; }
   function openIntro(fromMenu){
-    /* opened from the menu, the reader came to look, not to start a round */
-    introPlay = !fromMenu;
-    lastFocus = document.activeElement;
-    $("intro-done").textContent = fromMenu ? "Back to menu" : "Got it, let’s play";
+    $("intro-done").textContent = fromMenu ? "Back to menu" : "Got it";
     $("intro").hidden = false;
     focusQuiet($("intro-done"));
   }
-  function closeIntro(andPlay){
+  /* the note always hands back to the title screen, never straight into a
+     round: choosing where to start is the menu's job */
+  function closeIntro(){
     $("intro").hidden = true;
     try { window.localStorage.setItem(SEEN_KEY, "1"); } catch(e){}
-    if (andPlay) act("play");
-    else if (lastFocus && lastFocus.focus) lastFocus.focus();
+    bootCover();
+    var menu = $("menu");
+    focusQuiet(menu.querySelector('.mitem[aria-selected="true"]') || menu.querySelector(".mitem"));
   }
 
   $("intro-done").addEventListener("click", function(e){
     e.stopPropagation();
-    closeIntro(introPlay);
+    closeIntro();
   });
   /* a tap anywhere also dismisses, so the note never needs hunting down */
-  $("intro").addEventListener("click", function(){ closeIntro(false); });
+  $("intro").addEventListener("click", function(){ closeIntro(); });
 
   /* ---------- wiring ---------- */
   document.addEventListener("click", function(e){
@@ -979,7 +990,7 @@
 
   document.addEventListener("keydown", function(e){
     if (introOpen()){
-      if (e.key === "Escape"){ e.preventDefault(); closeIntro(false); }
+      if (e.key === "Escape"){ e.preventDefault(); closeIntro(); }
       return;
     }
     if (state.page === "cover"){
