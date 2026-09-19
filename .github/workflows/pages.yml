@@ -2,6 +2,13 @@ name: Publish the edition
 
 # Pages serves whatever this workflow uploads, so the site never depends on
 # which branch the repository happens to default to.
+#
+# ONE-TIME STEP, needs a repository admin: Settings -> Pages -> Source ->
+# "GitHub Actions". The configure-pages step below asks for the site to be
+# created automatically, but GITHUB_TOKEN is refused that call here
+# ("Resource not accessible by integration"), because creating a Pages site
+# is an admin operation. Once the source is set, every push to this branch
+# deploys on its own and this workflow needs no further attention.
 on:
   push:
     branches: [claude/repo-file-exploration-yw0p4b]
