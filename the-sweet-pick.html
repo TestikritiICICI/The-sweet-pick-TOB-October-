@@ -499,6 +499,10 @@
   }
   .tally .st.ok{background:var(--good)}
   .scoreline{font-size:1.5rem;color:var(--orange);margin-bottom:18px}
+  /* the send-off and its link belong together; the replay row is a separate thought */
+  .outro{margin-top:26px}
+  .outro p{color:var(--orange);font-size:1.2rem;margin:0 0 12px}
+  .outro .pill{margin:0}
 
   /* ---------- feedback page ---------- */
   .fb{text-align:center;max-width:520px;margin:0 auto}
@@ -535,10 +539,11 @@
   /* ---------- first-run edition note (one view, one tap) ---------- */
   .intro{
     position:fixed;inset:0;z-index:60;
-    /* the cover blurs back into warm texture and the darkness pools behind the
-       note, so the type stays crisp without a card under it */
-    -webkit-backdrop-filter:blur(9px);
-    backdrop-filter:blur(9px);
+    /* the cover softens rather than dissolves: the title, the box and the menu
+       stay recognisable behind the note, and the darkness pooling behind the
+       type keeps it crisp without a card under it */
+    -webkit-backdrop-filter:blur(3px);
+    backdrop-filter:blur(3px);
     background:
       radial-gradient(ellipse 360px 320px at 50% 47%, rgba(22,6,0,.58), rgba(22,6,0,0) 72%),
       rgba(38,11,2,.74);
@@ -632,22 +637,6 @@
   </div>
 </div>
 
-<!-- ================= ABOUT ================= -->
-<section id="p-about" class="ruled" hidden>
-  <div class="page">
-    <div class="pageno">The Sweet Pick &middot; About this edition</div>
-    <h1 class="headline">About this edition</h1>
-    <p class="subhead">Five festive biases, drawn from The Orange Book&rsquo;s own back catalogue.</p>
-    <p>Festive season means more shopping, gifting, offers and impulse decisions. In the process, behavioural biases can quietly influence what feels like the &ldquo;better&rdquo; choice.</p>
-    <p>This edition lets you experience five of them through simple mithai choices, so you can make more considered festive decisions.</p>
-    <p class="wide" style="opacity:.8;font-size:1rem;margin-top:22px">The five biases here first appeared in The Orange Book Vol. 17 (October 2022) and Vol. 30 (November 2023).</p>
-    <div class="btnrow">
-      <button class="pill" data-go="play">Make my first pick</button>
-      <button class="pill plain" data-go="cover">Back to menu</button>
-    </div>
-  </div>
-</section>
-
 <!-- ================= ROUNDS ================= -->
 <section id="p-round" class="ruled" hidden>
   <div class="page">
@@ -681,9 +670,11 @@
     <ul class="tally" id="tally"></ul>
     <p>The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned.</p>
     <p>The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always.</p>
-    <p style="color:var(--orange);font-size:1.2rem">For more such interesting money lessons, explore The Orange Book.</p>
-    <div class="btnrow">
+    <div class="outro">
+      <p>For more such interesting money lessons, explore The Orange Book.</p>
       <a class="pill" href="https://www.icici.bank.in/campaigns/TOBalleditions/index" target="_blank" rel="noopener">Read all editions</a>
+    </div>
+    <div class="btnrow">
       <button class="pill plain" data-go="play">Play again</button>
       <button class="pill plain" data-go="feedback">Turn the page</button>
     </div>
@@ -878,7 +869,7 @@
     return out;
   }
 
-  var PAGES = ["cover","about","round","close","feedback"];
+  var PAGES = ["cover","round","close","feedback"];
   var state = {page:"cover", round:0, results:[], picked:false, mi:0};
 
   var $ = function(id){ return document.getElementById(id); };
@@ -1219,8 +1210,7 @@
   /* the picks are this edition's articles, so the panel lists them by their
      own headlines; naming the bias instead would give the round away */
   function buildNav(){
-    var h = '<li><button type="button" data-go="cover">Home</button></li>' +
-            '<li><button type="button" data-go="about">About this edition</button></li>';
+    var h = '<li><button type="button" data-go="cover">Home</button></li>';
     ROUNDS.forEach(function(r, i){
       h += '<li><button type="button" data-pick="' + i + '">' + r.headline + "</button></li>";
     });
