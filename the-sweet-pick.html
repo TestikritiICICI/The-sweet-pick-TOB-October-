@@ -1332,6 +1332,13 @@
   /* ---- the result card, drawn once the last page renders so Share can hand it
      over inside the tap that asks for it ---- */
   var SHARE = {file:null, dataUrl:"", text:""};
+  /* inside the claude.ai viewer a save goes through its downloads capability, which
+     arrives later or not at all; anywhere else the link is an ordinary download */
+  var DL = null;
+  function initDownloads(){
+    if (!(window.claude && typeof window.claude.use === "function")) return;
+    try { window.claude.use("downloads").then(function(ns){ DL = ns || null; }).catch(function(){}); } catch(e){}
+  }
   function shareUrl(){ var h = window.location.href; return /^https?:/.test(h) ? h.split("#")[0] : ""; }
   function ensureFonts(){
     if (!(document.fonts && document.fonts.load)) return Promise.resolve();
@@ -1393,6 +1400,11 @@
       var pv = $("share-preview");
       pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + total + " of " + MAX_STARS + ' stars">' +
         '<a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>';
+      pv.querySelector("a[download]").addEventListener("click", function(e){
+        if (!DL || !SHARE.file) return;
+        e.preventDefault();
+        DL.save({filename:"the-sweet-pick.png", data:SHARE.file}).catch(function(){});
+      });
       pv.hidden = false;
     });
   }
@@ -1862,6 +1874,7 @@
     fitHeader();
     initSound();
     initShareBand();
+    initDownloads();
     $("share-btn").addEventListener("click", shareResult);
     paintHero();
     buildNav();
