@@ -309,7 +309,7 @@
   .cards.duo{grid-template-columns:repeat(auto-fit,minmax(238px,1fr));max-width:600px}
   .card{
     display:block;width:100%;padding:0;cursor:pointer;
-    font-family:Mulish,system-ui,sans-serif;color:var(--card-body);
+    font-family:inherit;color:var(--card-body);
     background:var(--card-cream);
     border:6px solid var(--card-frame);border-radius:22px;
     box-shadow:0 7px 20px rgba(122,48,10,.2);
@@ -352,14 +352,21 @@
   .cfront .cslot.lowrule-at{top:88.3%}
   .cfront .frule{margin:0 auto}
 
-  .cname{margin:0;font-weight:800;line-height:1;letter-spacing:-.015em;color:var(--card-head)}
-  .cprice{font-weight:800;line-height:1;letter-spacing:-.03em;color:var(--card-price)}
-  .cwas{display:block;font-weight:700;line-height:1;color:var(--card-head);opacity:.55;text-decoration:line-through}
-  .cclaim{margin:0;font-weight:700;line-height:1.2;color:var(--card-body)}
+  .cname{margin:0;line-height:1.06;color:var(--card-head)}
+  .cprice{
+    font-family:Mulish,system-ui,sans-serif;font-weight:800;
+    line-height:1;letter-spacing:-.03em;color:var(--card-price);
+  }
+  .cwas{
+    display:block;font-family:Mulish,system-ui,sans-serif;font-weight:700;
+    line-height:1;color:var(--card-head);opacity:.55;text-decoration:line-through;
+  }
+  .cclaim{margin:0;line-height:1.24;color:var(--card-body)}
   .tag{
     display:inline-block;padding:.35em .9em;border-radius:999px;
     background:var(--card-frame);color:#fff;
-    font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+    font-family:Mulish,system-ui,sans-serif;font-weight:800;
+    letter-spacing:.09em;text-transform:uppercase;
   }
   .tag.hot{background:var(--card-head)}
 
@@ -371,38 +378,41 @@
   }
   .vbadge.bad{background:var(--card-head)}
   .vbadge svg{width:54%;height:54%;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
-  .vhead{margin:9% 0 0;font-weight:800;line-height:1;color:var(--card-head)}
-  .vsub{margin:3.4% 0 0;font-weight:800;line-height:1.16;color:var(--card-head)}
+  .vhead{margin:9% 0 0;line-height:1.04;color:var(--card-head)}
+  .vsub{margin:3.4% 0 0;line-height:1.22;color:var(--card-head)}
   .cback .frule{width:42.9%;margin:5.4% auto 0}
-  .vbody{margin:5.6% 0 0;font-weight:400;line-height:1.21;color:var(--card-body)}
+  .vbody{margin:5.6% 0 0;line-height:1.32;color:var(--card-body)}
   .vdef{margin-top:6.5%;padding-top:5.5%;border-top:1px dashed rgba(206,13,13,.38)}
-  .vdef .q{margin:0 0 1.5%;font-weight:800;color:var(--card-price)}
-  .vdef p{margin:0;font-weight:400;line-height:1.24;color:var(--card-body)}
+  .vdef .q{margin:0 0 1.5%;color:var(--card-price)}
+  .vdef p{margin:0;line-height:1.32;color:var(--card-body)}
 
   /* type scaled off the card itself, so the reference's proportions survive
      at any card width; the clamps are the fallback where cqw is unsupported */
-  .cname{font-size:clamp(1.15rem,7.4vw,2.1rem)}
+  .cname{font-size:clamp(.9rem,5.9vw,1.66rem)}
   .cprice{font-size:clamp(2rem,13.4vw,3.8rem)}
+  .anchored .cprice{font-size:clamp(1.55rem,10.4vw,2.95rem)}
   .cwas{font-size:clamp(.85rem,4vw,1.15rem)}
-  .cclaim{font-size:clamp(.85rem,4vw,1.1rem)}
+  .cclaim{font-size:clamp(.98rem,4.6vw,1.28rem)}
   .tag{font-size:clamp(.52rem,2.4vw,.62rem)}
-  .vhead{font-size:clamp(1.35rem,6.8vw,2rem)}
-  .vsub{font-size:clamp(.98rem,3.8vw,1.22rem)}
-  .vbody{font-size:clamp(.9rem,2.8vw,1.02rem)}
-  .vdef .q{font-size:clamp(.88rem,2.7vw,.99rem)}
-  .vdef p{font-size:clamp(.84rem,2.6vw,.95rem)}
+  .vhead{font-size:clamp(1.6rem,8.1vw,2.4rem)}
+  .vsub{font-size:clamp(1.14rem,4.4vw,1.42rem)}
+  .vbody{font-size:clamp(1.04rem,3.2vw,1.18rem)}
+  .vdef .q{font-size:clamp(1.02rem,3.1vw,1.15rem)}
+  .vdef p{font-size:clamp(.97rem,3vw,1.1rem)}
   @supports (width:1cqw){
     .cframe{container-type:inline-size}
-    .cname{font-size:16.4cqw}
+    .cname{font-size:13cqw}
     .cprice{font-size:29.7cqw}
+    /* an anchor price above it needs the pair to stay clear of the rule */
+    .anchored .cprice{font-size:23cqw}
     .cwas{font-size:8.6cqw}
-    .cclaim{font-size:7.4cqw}
+    .cclaim{font-size:8.6cqw}
     .tag{font-size:4.2cqw}
-    .vhead{font-size:15.2cqw}
-    .vsub{font-size:8.4cqw}
-    .vbody{font-size:6.2cqw}
-    .vdef .q{font-size:6cqw}
-    .vdef p{font-size:5.7cqw}
+    .vhead{font-size:18cqw}
+    .vsub{font-size:9.8cqw}
+    .vbody{font-size:7.2cqw}
+    .vdef .q{font-size:7cqw}
+    .vdef p{font-size:6.6cqw}
   }
   .bridge{margin-top:26px;padding-top:20px;border-top:2px solid var(--rule-line)}
   .bridge .eyebrow{color:var(--orange);font-size:1.12rem;margin-bottom:6px}
@@ -780,7 +790,6 @@
     } else {
       out.push({label:"Play", act:"play"});
     }
-    out.push({label:"How to play", act:"howto"});
     return out;
   }
 
@@ -923,7 +932,6 @@
     }
     else if (a === "cover"){ buildMenu(); show("cover"); }
     else if (a === "feedback"){ show("feedback"); }
-    else if (a === "howto"){ openIntro(true); }
     else { show(a); }
   }
 
@@ -960,7 +968,7 @@
     if (c.tag) h += slot("tag-at", '<span class="tag' + (c.hot ? " hot" : "") + '">' + c.tag + "</span>");
     h += slot("name-at", '<p class="cname">' + c.name + "</p>");
     h += slot("rule-at", fleuron());
-    h += slot("price-at",
+    h += slot("price-at" + (c.was ? " anchored" : ""),
       (c.was ? '<span class="cwas">' + rupee(c.was) + "</span>" : "") +
       '<span class="cprice">' + rupee(c.price) + "</span>");
     if (c.claim) h += slot("claim-at", '<p class="cclaim">' + c.claim + "</p>");
@@ -978,6 +986,25 @@
       '<p class="vbody">' + c.body + "</p>" +
       '<div class="vdef"><p class="q">What is ' + r.bias + "?</p><p>" + r.defn + "</p></div>" +
       "</span>";
+  }
+
+  /* shrink a box name until it sits inside the band the reference gives it,
+     measured against the live rule position rather than assumed */
+  function fitNames(){
+    var cards = $("r-cards").querySelectorAll(".cfront");
+    for (var i = 0; i < cards.length; i++){
+      var nm = cards[i].querySelector(".cname"), rule = cards[i].querySelector(".rule-at");
+      if (!nm || !rule) continue;
+      nm.style.fontSize = "";
+      var fr = cards[i].getBoundingClientRect();
+      var room = (rule.getBoundingClientRect().top - (fr.top + fr.height * 0.37) - 3) * 2;
+      if (room <= 0) continue;
+      var size = parseFloat(window.getComputedStyle(nm).fontSize), guard = 0;
+      while (nm.scrollHeight > room && size > 9 && guard++ < 48){
+        size -= 0.75;
+        nm.style.fontSize = size + "px";
+      }
+    }
   }
 
   function renderRound(){
@@ -1004,6 +1031,7 @@
     $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Keep shopping";
     saveGame();
     show("round");
+    fitNames();
   }
 
   function pick(i){
@@ -1063,8 +1091,7 @@
   /* ---------- first-run edition note (one view, one tap) ---------- */
   var SEEN_KEY = "tob-vol65-note-seen";
   function introOpen(){ return !$("intro").hidden; }
-  function openIntro(fromMenu){
-    $("intro-done").textContent = fromMenu ? "Back to menu" : "Got it";
+  function openIntro(){
     $("intro").hidden = false;
     focusQuiet($("intro-done"));
   }
@@ -1092,6 +1119,8 @@
   });
   $("next-btn").addEventListener("click", next);
   $("again-btn").addEventListener("click", again);
+  /* card widths change with the viewport, so the names are re-fitted */
+  window.addEventListener("resize", function(){ if (state.page === "round") fitNames(); });
 
   document.addEventListener("keydown", function(e){
     if (introOpen()){
@@ -1122,7 +1151,7 @@
       show("cover");
       var seen = false;
       try { seen = window.localStorage.getItem(SEEN_KEY) === "1"; } catch(e){ seen = false; }
-      if (!seen) openIntro(false);
+      if (!seen) openIntro();
     }
   }
 
