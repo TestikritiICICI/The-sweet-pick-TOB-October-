@@ -419,14 +419,13 @@
   /* the illustration sits beside the text where there is room for it */
   .bwrap{display:grid;gap:18px}
   @media (min-width:760px){
-    .bwrap.withfig{grid-template-columns:minmax(0,1fr) 330px;gap:26px;align-items:start}
+    .bwrap.withfig{grid-template-columns:330px minmax(0,1fr);gap:26px;align-items:start}
   }
   .bridgefig{margin:0;max-width:430px}
   .bridgefig img{
     width:100%;height:auto;display:block;
     border:1.5px solid var(--card-line);border-radius:12px;box-shadow:var(--shadow);
   }
-  .bridgefig figcaption{margin-top:8px;font-size:.92rem;line-height:1.3;opacity:.68}
   .srclink{margin:16px 0 0;max-width:none}
   .srclink a{
     color:var(--orange);text-decoration:none;
@@ -617,7 +616,7 @@
       <ol>
         <li>Trust your gut and make your Sweet Pick.</li>
         <li>Flip only your choice to see what was at play.</li>
-        <li>Keep shopping for your next box.</li>
+        <li>On to your next pick.</li>
       </ol>
     </div>
     <h1 class="headline" id="r-headline"></h1>
@@ -626,7 +625,7 @@
     <div class="cards" id="r-cards"></div>
     <div id="r-bridge"></div>
     <div class="btnrow" id="r-actions" hidden>
-      <button class="pill" id="next-btn">Keep shopping</button>
+      <button class="pill" id="next-btn">Next pick</button>
       <button class="pill plain" id="again-btn">Pick again</button>
     </div>
   </div>
@@ -720,8 +719,7 @@
       bridge:"A festive rail shows a shirt at ₹5,000, now ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
       places:["Festive sales","Hotel deals","Electronics with crossed-out MRPs"],
       source:{img:"anchoring", url:TOB17, vol:"17", sect:"Anchoring Effect",
-        alt:"A shirt marked down from \u20b95,000 to \u20b93,000. He calls it a steal; she points out it is still over their \u20b92,000 budget.",
-        cap:"Anchoring Effect, as it ran in The Orange Book Vol. 17"},
+        alt:"A shirt marked down from \u20b95,000 to \u20b93,000. He calls it a steal; she points out it is still over their \u20b92,000 budget."},
       cards:[
         {name:"Classic Box", price:400, win:true, head:"Great!", sub:"You avoided Anchoring Bias.",
          body:"The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box."},
@@ -738,8 +736,7 @@
       bridge:"At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one.",
       places:["Meal sizes","Subscription plans","Phone storage options"],
       source:{img:"decoy", url:TOB17, vol:"17", sect:"Decoy Effect",
-        alt:"Three popcorn tubs at \u20b955, \u20b964 and \u20b970, with the medium marked as the decoy that makes the large look worth it.",
-        cap:"Decoy Effect, as it ran in The Orange Book Vol. 17"},
+        alt:"Three popcorn tubs at \u20b955, \u20b964 and \u20b970, with the medium marked as the decoy that makes the large look worth it."},
       cards:[
         {name:"Small Box", price:300, win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
          body:"The ₹500 Medium and ₹575 Large boxes make Large look like a tempting upgrade. But you still chose the ₹300 Small Box and remained under budget."},
@@ -756,8 +753,7 @@
       bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
       places:["Trending restaurants","Bestseller products","Popular gadgets"],
       source:{img:"bandwagon", url:TOB17, vol:"17", sect:"Bandwagon Effect",
-        alt:"A boy asks his mother for a \u20b945,000 gaming console because all his friends are getting one.",
-        cap:"Bandwagon Effect, as it ran in The Orange Book Vol. 17"},
+        alt:"A boy asks his mother for a \u20b945,000 gaming console because all his friends are getting one."},
       cards:[
         {name:"Traditional Mithai Box", price:425, win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
          body:"The ₹600 Signature Fusion Box was marked “Office Favourite Today”. You ignored the popularity cue and chose the ₹425 box."},
@@ -774,8 +770,7 @@
       bridge:"Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine.",
       places:["Flash sales","Ticket bookings","Limited-stock messages"],
       source:{img:"fomo", url:TOB30, vol:"30", sect:"the FOMO Effect",
-        alt:"A couple on a sofa. He holds a 20% off flyer and points at a 65-inch smart TV; she says the one they own is working fine.",
-        cap:"The FOMO Effect, as it ran in The Orange Book Vol. 30"},
+        alt:"A couple on a sofa. He holds a 20% off flyer and points at a 65-inch smart TV; she says the one they own is working fine."},
       cards:[
         {name:"Classic Box", price:300, win:true, head:"Great!", sub:"You avoided FOMO.",
          body:"The ₹550 Premium Box said “Only 1 left”. You ignored the urgency and chose the ₹300 Classic Box."},
@@ -792,8 +787,7 @@
       bridge:"One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much.",
       places:["Food labels","Health claims","Advertising claims"],
       source:{img:"framing", url:TOB30, vol:"30", sect:"the Framing Effect",
-        alt:"Festive hampers labelled “only 10% preservatives” and “70% preservative free”; a shopper decides the second sounds healthier.",
-        cap:"The Framing Effect, as it ran in The Orange Book Vol. 30"},
+        alt:"Festive hampers labelled “only 10% preservatives” and “70% preservative free”; a shopper decides the second sounds healthier."},
       cards:[
         {name:"Box A", price:600, claim:"70% sugar-free", win:false, head:"Oops!", sub:"You may have fallen for the Framing Effect.",
          body:"“70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar."},
@@ -1076,7 +1070,7 @@
     });
     $("r-bridge").innerHTML = "";
     $("r-actions").hidden = true;
-    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Keep shopping";
+    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next pick";
     saveGame();
     show("round");
     fitNames();
@@ -1102,16 +1096,16 @@
       saveGame();
       var src = r.source;
       $("r-bridge").innerHTML =
-        '<div class="bridge"><p class="eyebrow">Where else you meet it</p>' +
-        '<div class="bwrap' + (src ? " withfig" : "") + '"><div class="btext">' +
+        '<div class="bridge"><p class="eyebrow">Not just mithai</p>' +
+        '<div class="bwrap' + (src ? " withfig" : "") + '">' +
+        (src ? '<figure class="bridgefig"><img src="' + SRC_IMG[src.img] + '" alt="' + src.alt +
+               '" loading="lazy"></figure>' : "") +
+        '<div class="btext">' +
         '<p class="wide">' + r.bridge + "</p>" +
         '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul>" +
         (src ? '<p class="srclink"><a href="' + src.url + '" target="_blank" rel="noopener">' +
                "Read " + src.sect + " in The Orange Book Vol.&nbsp;" + src.vol + "&nbsp;&rarr;</a></p>" : "") +
-        "</div>" +
-        (src ? '<figure class="bridgefig"><img src="' + SRC_IMG[src.img] + '" alt="' + src.alt +
-               '" loading="lazy"><figcaption>' + src.cap + "</figcaption></figure>" : "") +
-        "</div></div>";
+        "</div></div></div>";
       $("r-actions").hidden = false;
       focusQuiet($("next-btn"));
     }, 280);
