@@ -29,6 +29,13 @@
     --card-line:#F0C9A8;
     --card-face:#FFFFFF;
     --good:#0F7A4A;
+    /* the pick cards are printed pieces: cream stock, orange frame, red rule */
+    --card-cream:#FCF4E4;
+    --card-frame:#F0641E;
+    --card-hair:#C33A22;
+    --card-head:#8E1A14;
+    --card-body:#3A2E28;
+    --good-badge:#188A3B;
     --shadow:0 3px 14px rgba(24,62,109,.12);
   }
 
@@ -291,40 +298,89 @@
   .pill.plain:hover{background:rgba(240,100,35,.08)}
   .btnrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px}
 
-  /* ---------- pick cards ---------- */
+  /* ---------- pick cards: a printed festive card, front and back ---------- */
   .pickline{font-size:1.02rem;opacity:.8;margin-bottom:6px}
-  .cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:start;margin-bottom:8px}
-  .cards.duo{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));max-width:600px}
+  .cards{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));align-items:start;margin-bottom:8px}
+  .cards.duo{grid-template-columns:repeat(auto-fit,minmax(244px,1fr));max-width:620px}
+  /* the thick orange frame; the hairline rule inside it is on .cframe */
   .card{
-    font-family:inherit;color:var(--navy);text-align:center;background:var(--card-face);
-    border:2px solid var(--card-line);border-radius:14px;padding:20px 16px 18px;cursor:pointer;
-    box-shadow:var(--shadow);transition:transform .28s ease,opacity .28s ease,border-color .16s;
+    display:block;width:100%;padding:0;cursor:pointer;
+    font-family:Mulish,system-ui,sans-serif;color:var(--card-body);
+    background:var(--card-cream);
+    border:6px solid var(--card-frame);border-radius:22px;
+    box-shadow:0 7px 20px rgba(122,48,10,.2);
+    transition:transform .28s ease,opacity .28s ease,box-shadow .18s;
   }
-  .card:hover:not(.locked){border-color:var(--orange);transform:translateY(-3px)}
-  .card:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  .cframe{
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    margin:7px;padding:30px 18px 54px;
+    min-height:clamp(252px,66vw,304px);
+    border:1.5px solid var(--card-hair);border-radius:13px;
+  }
+  .card:hover:not(.locked){transform:translateY(-4px);box-shadow:0 12px 26px rgba(122,48,10,.28)}
+  .card:focus-visible{outline:3px solid var(--maroon);outline-offset:3px}
   .card.dim{opacity:.36;pointer-events:none}
   .card.turning{transform:rotateY(90deg)}
   .card.locked{cursor:default}
-  .card.revealed{text-align:left;border-color:var(--orange)}
-  .card.revealed.win{border-color:var(--good)}
-  .boxart{width:82px;height:82px;margin:0 auto 10px;display:block}
-  .cname{font-size:1.18rem;line-height:1.2;margin-bottom:2px}
-  .cprice{font-family:Mulish,system-ui,sans-serif;font-weight:900;font-size:1.8rem;color:var(--orange);letter-spacing:-.02em}
-  .cwas{display:block;font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:1rem;opacity:.6;text-decoration:line-through}
-  .cclaim{margin-top:10px;padding-top:9px;border-top:1px dashed var(--card-line);font-size:1.02rem}
+
+  /* mehndi corners: a small floral at the top, a lotus fan at the foot */
+  .orn{position:absolute;pointer-events:none;color:var(--card-frame);opacity:.6}
+  .orn.tl,.orn.tr{top:7px;width:31px}
+  .orn.tl{left:8px}
+  .orn.tr{right:8px;transform:scaleX(-1)}
+  .orn.bl,.orn.br{bottom:4px;width:76px}
+  .orn.bl{left:4px}
+  .orn.br{right:4px;transform:scaleX(-1)}
+
+  /* the flourish rule that brackets the price */
+  .frule{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:min(196px,86%);margin:14px auto;color:var(--card-hair);
+  }
+  .frule i{flex:1;height:1.5px;background:currentColor;opacity:.8}
+  .frule svg{flex:none;width:40px;height:12px;fill:currentColor}
+
+  .cbody{position:relative;z-index:1;display:block;width:100%;text-align:center}
+  .cname{
+    margin:0;font-weight:800;letter-spacing:-.01em;line-height:1.14;
+    font-size:clamp(1.3rem,4.7vw,1.66rem);color:var(--card-head);
+  }
+  .cprice{
+    font-weight:900;letter-spacing:-.025em;line-height:1;
+    font-size:clamp(2.1rem,8.2vw,2.75rem);color:var(--card-frame);
+  }
+  .cwas{
+    display:block;margin-bottom:3px;font-weight:700;font-size:1.02rem;
+    color:var(--card-body);opacity:.6;text-decoration:line-through;
+  }
+  .cclaim{margin:14px 0 0;font-weight:600;font-size:.99rem;line-height:1.32;color:var(--card-body)}
   .tag{
-    display:inline-block;margin-bottom:9px;padding:3px 11px;border-radius:999px;
-    background:var(--orange);color:#fff;font-family:Mulish,system-ui,sans-serif;
-    font-weight:700;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;
+    display:inline-block;margin:0 auto 12px;padding:4px 12px;border-radius:999px;
+    background:var(--card-frame);color:#fff;
+    font-weight:800;font-size:.58rem;letter-spacing:.09em;text-transform:uppercase;
   }
   .tag.hot{background:var(--maroon)}
-  .vhead{font-size:1.5rem;color:var(--maroon);margin-bottom:2px}
-  .win .vhead{color:var(--good)}
-  .vsub{font-size:1.12rem;margin-bottom:8px}
-  .vbody{font-size:1.02rem;margin:0}
-  .vdef{margin-top:12px;padding-top:11px;border-top:1px dashed var(--card-line)}
-  .vdef .q{color:var(--orange);font-size:1.06rem;margin-bottom:2px}
-  .vdef p{font-size:1rem;margin:0}
+
+  /* the reveal: a verdict badge, the finding, then what the bias is */
+  .vbadge{
+    width:52px;height:52px;margin:0 auto 13px;display:grid;place-items:center;
+    border-radius:50%;background:var(--good-badge);
+  }
+  .vbadge.bad{background:var(--maroon)}
+  .vbadge svg{
+    width:28px;height:28px;fill:none;stroke:#fff;
+    stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;
+  }
+  .vhead{margin:0 0 5px;font-weight:900;line-height:1.04;
+    font-size:clamp(1.5rem,5.6vw,1.95rem);color:var(--card-head)}
+  .vsub{margin:0;font-weight:800;line-height:1.2;
+    font-size:clamp(1.02rem,3.7vw,1.18rem);color:var(--card-head)}
+  .vbody{margin:0;font-weight:400;line-height:1.42;
+    font-size:clamp(.96rem,3.2vw,1.05rem);color:var(--card-body)}
+  .vdef{width:100%;margin-top:15px;padding-top:13px;border-top:1px dashed rgba(195,58,34,.42)}
+  .vdef .q{margin:0 0 3px;font-weight:800;font-size:.98rem;color:var(--card-frame)}
+  .vdef p{margin:0;font-weight:400;font-size:.94rem;line-height:1.4;color:var(--card-body)}
   .bridge{margin-top:26px;padding-top:20px;border-top:2px solid var(--rule-line)}
   .bridge .eyebrow{color:var(--orange);font-size:1.12rem;margin-bottom:6px}
   .chips{display:flex;flex-wrap:wrap;gap:9px;list-style:none;margin:14px 0 0;padding:0}
@@ -849,31 +905,83 @@
   }
 
   /* ---------- rounds ---------- */
-  function boxArt(){
-    return '<svg class="boxart" viewBox="0 0 64 64" aria-hidden="true">' +
-      '<path d="M8 22h48l-3 30a4 4 0 0 1-4 3.5H15a4 4 0 0 1-4-3.5Z" fill="#E4601A"/>' +
-      '<rect x="6" y="16" width="52" height="9" rx="2.5" fill="#F07C1E"/>' +
-      '<rect x="13" y="25" width="38" height="24" rx="2" fill="#FBE3C0"/>' +
-      '<circle cx="23" cy="32.5" r="5" fill="#E89A2E"/>' +
-      '<rect x="36" y="27.5" width="10" height="10" rx="1.6" fill="#FFF6E2" stroke="#E3C88E"/>' +
-      '<rect x="18" y="39" width="10" height="10" rx="1.6" fill="#FFF6E2" stroke="#E3C88E"/>' +
-      '<circle cx="41" cy="44" r="5" fill="#E89A2E"/></svg>';
+  /* ---------- the card stock: mehndi corners, flourish rules, verdict badge ---------- */
+
+  /* a lotus fan swung around the foot of the card, mirrored on the right */
+  function mehndiFan(){
+    var s = "", i;
+    /* three tiers of petals and a dotted rim, swung through 68 degrees so the
+       fan spreads along the foot of the card instead of climbing into the rule */
+    for (i = 0; i < 6; i++){
+      s += '<ellipse cx="48" cy="94" rx="16" ry="5" transform="rotate(' + (-i * 13.6) + ' 10 94)"/>';
+    }
+    for (i = 0; i < 5; i++){
+      s += '<ellipse cx="27" cy="94" rx="9" ry="3.6" transform="rotate(' + (-6.8 - i * 13.6) + ' 10 94)"/>';
+    }
+    for (i = 0; i < 6; i++){
+      s += '<circle cx="69" cy="94" r="2" transform="rotate(' + (-i * 13.6) + ' 10 94)"/>';
+    }
+    for (i = 0; i < 3; i++){
+      s += '<circle cx="36" cy="94" r="1.3" transform="rotate(' + (-13.6 - i * 20.4) + ' 10 94)"/>';
+    }
+    return s + '<circle cx="10" cy="94" r="4.2"/>';
   }
+  var ORN_SMALL =
+    '<circle cx="15" cy="15" r="3.5"/>' +
+    '<ellipse cx="15" cy="8.4" rx="3.3" ry="4.5"/><ellipse cx="15" cy="21.6" rx="3.3" ry="4.5"/>' +
+    '<ellipse cx="8.4" cy="15" rx="4.5" ry="3.3"/><ellipse cx="21.6" cy="15" rx="4.5" ry="3.3"/>' +
+    '<circle cx="27.6" cy="9.2" r="1.8"/><circle cx="9.2" cy="27.6" r="1.8"/>' +
+    '<circle cx="24.6" cy="23.4" r="1.3"/><circle cx="29.4" cy="17.4" r="1.1"/><circle cx="17.4" cy="29.4" r="1.1"/>';
+
+  function ornSvg(cls, box, inner){
+    return '<svg class="orn ' + cls + '" viewBox="' + box + '" aria-hidden="true">' +
+           '<g fill="currentColor">' + inner + "</g></svg>";
+  }
+  var CORNERS = null;
+  function corners(){
+    if (!CORNERS){
+      var fan = mehndiFan();
+      CORNERS = ornSvg("tl", "0 0 34 34", ORN_SMALL) + ornSvg("tr", "0 0 34 34", ORN_SMALL) +
+                ornSvg("bl", "0 0 100 100", fan) + ornSvg("br", "0 0 100 100", fan);
+    }
+    return CORNERS;
+  }
+
+  function fleuron(){
+    return '<span class="frule" aria-hidden="true"><i></i>' +
+      '<svg viewBox="0 0 40 12"><g fill="currentColor">' +
+      '<path d="M20 .9l2.7 5.1L20 11.1 17.3 6z"/>' +
+      '<path d="M15.2 6c-1.9-1.9-4.2-2.7-6.9-2.5 1.6.7 2.5 1.5 2.9 2.5-.4 1-1.3 1.8-2.9 2.5 2.7.2 5-.6 6.9-2.5Z"/>' +
+      '<path d="M24.8 6c1.9-1.9 4.2-2.7 6.9-2.5-1.6.7-2.5 1.5-2.9 2.5.4 1 1.3 1.8 2.9 2.5-2.7.2-5-.6-6.9-2.5Z"/>' +
+      '<circle cx="4.6" cy="6" r="1.3"/><circle cx="35.4" cy="6" r="1.3"/>' +
+      "</g></svg><i></i></span>";
+  }
+  function verdictBadge(win){
+    return '<span class="vbadge' + (win ? "" : " bad") + '" aria-hidden="true"><svg viewBox="0 0 24 24">' +
+      (win ? '<path d="M5.4 12.6l4.5 4.5L18.8 7.6"/>'
+           : '<path d="M12 5.8v8.5"/><path d="M12 18.2v.2"/>') +
+      "</svg></span>";
+  }
+  function cardStock(inner){
+    return '<span class="cframe">' + corners() + '<span class="cbody">' + inner + "</span></span>";
+  }
+
   function face(c){
     var h = "";
     if (c.tag) h += '<span class="tag' + (c.hot ? " hot" : "") + '">' + c.tag + "</span>";
-    h += boxArt() + '<p class="cname">' + c.name + "</p>";
-    if (c.was){
-      h += '<span class="cwas">' + rupee(c.was) + '</span><div class="cprice">Now ' + rupee(c.price) + "</div>";
-    } else {
-      h += '<div class="cprice">' + rupee(c.price) + "</div>";
-    }
-    if (c.claim) h += '<div class="cclaim">' + c.claim + "</div>";
-    return h;
+    h += '<p class="cname">' + c.name + "</p>" + fleuron();
+    /* the struck-out price above the live one carries the anchor on its own */
+    if (c.was) h += '<span class="cwas">' + rupee(c.was) + "</span>";
+    h += '<div class="cprice">' + rupee(c.price) + "</div>" + fleuron();
+    if (c.claim) h += '<p class="cclaim">' + c.claim + "</p>";
+    return cardStock(h);
   }
   function back(c, r){
-    return '<p class="vhead">' + c.head + '</p><p class="vsub">' + c.sub + '</p><p class="vbody">' + c.body + "</p>" +
-      '<div class="vdef"><p class="q">What is ' + r.bias + "?</p><p>" + r.defn + "</p></div>";
+    return cardStock(verdictBadge(!!c.win) +
+      '<p class="vhead">' + c.head + "</p>" +
+      '<p class="vsub">' + c.sub + "</p>" + fleuron() +
+      '<p class="vbody">' + c.body + "</p>" +
+      '<div class="vdef"><p class="q">What is ' + r.bias + "?</p><p>" + r.defn + "</p></div>");
   }
 
   function renderRound(){
