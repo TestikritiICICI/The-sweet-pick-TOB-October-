@@ -1,0 +1,45 @@
+name: Publish the edition
+
+# Pages serves whatever this workflow uploads, so the site never depends on
+# which branch the repository happens to default to.
+on:
+  push:
+    branches: [claude/repo-file-exploration-yw0p4b]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # served at the bare site root, so the link is short enough to share
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp the-sweet-pick.html _site/index.html
+
+      # enablement turns Pages on for the repository, so nobody has to go
+      # through Settings by hand
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
