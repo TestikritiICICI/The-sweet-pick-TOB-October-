@@ -587,7 +587,7 @@
   <div class="intro-note">
     <p class="intro-kicker">Interactive edition &middot; Vol. 65</p>
     <h2 id="intro-h">This one, you play.</h2>
-    <p class="intro-lede">Five festive mithai choices, each hiding a behavioural nudge. Pick the box you&rsquo;d actually buy, then flip it to meet the bias that swayed you.</p>
+    <p class="intro-lede">Five festive mithai choices, each with a behavioural nudge hidden behind it &mdash; the quiet sort that decides what festive shopping ends up costing.</p>
     <button class="pill" id="intro-done">Got it</button>
   </div>
 </div>
@@ -713,7 +713,7 @@
       headline:"Which box would you pick?",
       bias:"Anchoring Bias",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
-      bridge:"A jacket is marked ₹4,999, now ₹2,499. The ₹4,999 becomes the reference point, making ₹2,499 feel like a bargain even if you had planned to spend much less.",
+      bridge:"A festive rail shows a shirt at ₹5,000, now ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
       places:["Festive sales","Hotel deals","Electronics with crossed-out MRPs"],
       source:{img:"anchoring", url:TOB17, sect:"Anchoring Effect",
         alt:"A shirt marked down from \u20b95,000 to \u20b93,000. He calls it a steal; she points out it is still over their \u20b92,000 budget.",
@@ -731,7 +731,7 @@
       headline:"Small, medium or large?",
       bias:"Decoy Effect",
       defn:"The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison.",
-      bridge:"At the movies, Small popcorn is ₹180, Medium is ₹290 and Large is ₹320. Since Large is only ₹30 more than Medium, Medium can make Large feel like the obvious deal.",
+      bridge:"At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one.",
       places:["Meal sizes","Subscription plans","Phone storage options"],
       source:{img:"decoy", url:TOB17, sect:"Decoy Effect",
         alt:"Three popcorn tubs at \u20b955, \u20b964 and \u20b970, with the medium marked as the decoy that makes the large look worth it.",
@@ -749,7 +749,7 @@
       headline:"Everyone&rsquo;s picking one of these.",
       bias:"Bandwagon Effect",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
-      bridge:"You are choosing between two gadgets. One suits what you need, but the other is marked “Bestseller” and everyone seems to own it. Popularity can start to feel like proof that it is the better choice.",
+      bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
       places:["Trending restaurants","Bestseller products","Popular gadgets"],
       source:{img:"bandwagon", url:TOB17, sect:"Bandwagon Effect",
         alt:"A boy asks his mother for a \u20b945,000 gaming console because all his friends are getting one.",
@@ -1097,7 +1097,7 @@
         '<p class="wide">' + r.bridge + "</p>" +
         '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul>" +
         (src ? '<p class="srclink"><a href="' + src.url + '" target="_blank" rel="noopener">' +
-               "Read " + src.sect + " in The Orange Book Vol. 17 &rarr;</a></p>" : "") +
+               "Read " + src.sect + " in The Orange Book Vol.&nbsp;17&nbsp;&rarr;</a></p>" : "") +
         "</div>" +
         (src ? '<figure class="bridgefig"><img src="' + SRC_IMG[src.img] + '" alt="' + src.alt +
                '" loading="lazy"><figcaption>' + src.cap + "</figcaption></figure>" : "") +
