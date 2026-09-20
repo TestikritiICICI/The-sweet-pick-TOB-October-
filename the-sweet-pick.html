@@ -958,11 +958,11 @@
       source:{img:"anchoring", url:TOB17 + "Article1", sect:"the Anchoring Effect",
         alt:"A shirt marked down from \u20b95,000 to \u20b93,000. He calls it a steal; she points out it is still over their \u20b92,000 budget."},
       cards:[
-        {name:"Classic Box", price:400, win:true, head:"Great!", sub:"You avoided Anchoring Bias.",
+        {name:"Classic Box", price:400, win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
          body:"The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box."},
-        {name:"Celebration Box", price:475, win:true, head:"Great!", sub:"You avoided Anchoring Bias.",
+        {name:"Celebration Box", price:475, win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
          body:"The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box."},
-        {name:"Premium Box", price:750, was:1000, win:false, head:"Oops!", sub:"You fell for Anchoring Bias.",
+        {name:"Premium Box", price:750, was:1000, win:false, head:"Oops!", sub:"You fell for the Anchoring Bias.",
          body:"The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget."}
       ]
     },
@@ -1626,7 +1626,7 @@
       fleuron() +
       '<p class="vbody">' + c.body + "</p>" +
       (note ? '<p class="vclock">' + note + "</p>" : "") +
-      '<div class="vdef"><p class="q">What is ' + r.bias + "?</p><p>" + r.defn + "</p></div>" +
+      '<div class="vdef"><p class="q">What is ' + (r.bias === "FOMO" ? "" : "the ") + r.bias + "?</p><p>" + r.defn + "</p></div>" +
       "</span>";
   }
 
