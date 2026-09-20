@@ -591,6 +591,7 @@
   @media (max-width:480px){ #p-feedback .distext p{font-size:13px} }
 
   /* ---------- game feel ---------- */
+  .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   /* the stars a pick earns float off the card */
   .starpop{
     position:absolute;left:50%;top:16%;z-index:6;pointer-events:none;
@@ -603,18 +604,63 @@
     18%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}
     100%{opacity:0;transform:translate(-50%,-70px) scale(1)}
   }
-  /* the Orange peeks over the chosen card from behind it */
-  .card.turning,.card.revealed{z-index:3}
-  .peek{
-    position:absolute;z-index:2;pointer-events:none;
-    transform:translate(-50%,6%);transition:transform .5s cubic-bezier(.2,.9,.3,1.15);
+  /* a speech bubble off the chosen card, the way the editions' illustrations talk */
+  .quip{
+    position:absolute;z-index:4;pointer-events:none;
+    width:max-content;max-width:min(250px,72vw);padding:10px 14px 11px;
+    background:#fff;border:2px solid var(--navy);border-radius:18px;
+    color:var(--navy);font-size:1.02rem;line-height:1.28;
+    box-shadow:0 8px 22px rgba(24,62,109,.18);
+    transform:translate(-92%,-72%);transform-origin:90% 100%;
+    animation:quipIn .45s cubic-bezier(.2,.9,.3,1.25) both;
   }
-  .peek img{display:block;width:100%;height:auto}
-  .peek.up{transform:translate(-50%,-72%)}
-  .peek.cheer{transform:translate(-50%,-96%) rotate(-6deg);animation:cheer .42s ease-in-out .15s 3 alternate}
-  .peek.oops{transform:translate(-50%,-46%) rotate(12deg);transition-duration:.9s}
-  .peek.down{transform:translate(-50%,6%)}
-  @keyframes cheer{from{margin-top:0}to{margin-top:-12px}}
+  .quip::after{
+    content:"";position:absolute;left:auto;right:26px;bottom:-9px;width:14px;height:14px;
+    background:#fff;border-right:2px solid var(--navy);border-bottom:2px solid var(--navy);transform:rotate(45deg);
+  }
+  .quip.oops{color:var(--card-head);border-color:var(--card-head)}
+  .quip.oops::after{border-color:var(--card-head)}
+  @keyframes quipIn{from{opacity:0;transform:translate(-92%,-72%) scale(.35)}to{opacity:1;transform:translate(-92%,-72%) scale(1)}}
+  /* the festive box: five paper cups, one per pick */
+  .boxtray{
+    display:flex;align-items:center;gap:10px;margin:-8px 0 20px;
+    font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);
+  }
+  .boxtray .slots{display:flex;gap:6px}
+  .boxtray .slot{
+    width:34px;height:34px;border-radius:50%;background:#FFF6E6;border:2px dashed #E4B27E;box-sizing:border-box;
+    display:grid;place-items:center;
+  }
+  .boxtray .slot.on{border-style:solid;border-color:#E1601A;background:#FFF1DC}
+  .boxtray .slot svg{width:26px;height:26px;display:block}
+  .boxtray .slot.pop svg{animation:slotpop .5s cubic-bezier(.2,.9,.3,1.4) both}
+  @keyframes slotpop{from{transform:scale(.2)}to{transform:none}}
+  .flysweet{position:fixed;z-index:66;width:44px;height:44px;pointer-events:none;transition:transform .72s cubic-bezier(.3,.7,.25,1),opacity .72s}
+  .flysweet svg{width:100%;height:100%;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+  .yourbox{margin:4px 0 18px}
+  .yourbox .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 6px}
+  .yourbox .boxsvg{display:block;width:min(360px,100%);height:auto}
+  .yourbox .boxcap{margin:8px 0 0;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--orange)}
+  /* badges, kept across plays */
+  .badges{margin:0 0 26px}
+  .badges .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 10px}
+  .badges ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .badge{
+    display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;
+    padding:10px 12px;border-radius:14px;background:#fff;border:1.5px solid var(--card-line);box-shadow:var(--shadow);
+  }
+  .badge .medal{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#E5E7EB;position:relative}
+  .badge .medal svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .badge.on .medal{background:linear-gradient(180deg,#FFC94D 0%,#F0891F 55%,#D95B14 100%);box-shadow:0 3px 0 #A5400C,inset 0 1px 0 rgba(255,255,255,.55)}
+  .badge .bname{font-size:1.04rem;line-height:1.15;color:var(--navy)}
+  .badge .bhint{display:block;font-size:.82rem;line-height:1.3;opacity:.7;margin-top:2px}
+  .badge:not(.on){opacity:.66}
+  .badge.new .medal::after{
+    content:"New";position:absolute;top:-8px;right:-10px;padding:2px 6px;border-radius:999px;
+    background:var(--good);color:#fff;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+  }
+  .badge.new .medal{animation:slotpop .55s cubic-bezier(.2,.9,.3,1.4) both}
+
   /* each pick is dealt out of the cover's box */
   .dealart{
     position:absolute;left:50%;top:-6px;z-index:2;pointer-events:none;
@@ -847,6 +893,7 @@
 <section id="p-round" class="ruled" hidden>
   <div class="page">
     <div class="pageno" id="r-pageno"></div>
+    <div class="boxtray" id="boxtray" role="img" aria-label="Your box"></div>
     <div class="howbox" id="howbox">
       <div class="lbl">How to play</div>
       <ol>
@@ -875,10 +922,15 @@
     <div class="result" id="result">
       <p class="rtitle" id="rtitle"></p>
       <p class="rsub" id="rsub"></p>
+      <div class="yourbox" id="yourbox"></div>
       <div class="rstars" id="rstars"></div>
       <p class="scoreline" id="scoreline"></p>
     </div>
     <ul class="tally" id="tally"></ul>
+    <section class="badges" id="badges" aria-labelledby="badges-h">
+      <p class="eyebrow" id="badges-h">Badges</p>
+      <ul id="badgelist"></ul>
+    </section>
     <div class="sharerow">
       <button class="pill" id="share-btn" type="button">Share my result</button>
     </div>
@@ -951,58 +1003,58 @@
   var ROUNDS = [
     {
       headline:"Which box would you pick?",
-      bias:"Anchoring Bias",
+      bias:"Anchoring Bias", sweet:"laddoo",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
       bridge:"A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
       places:["Festive sales","Hotel deals","Electronics with crossed-out MRPs"],
       source:{img:"anchoring", url:TOB17 + "Article1", sect:"the Anchoring Effect",
         alt:"A shirt marked down from \u20b95,000 to \u20b93,000. He calls it a steal; she points out it is still over their \u20b92,000 budget."},
       cards:[
-        {name:"Classic Box", price:400, win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
+        {name:"Classic Box", price:400, quip:"Arre wah. \u20b91,000 sticker, zero effect on you.", win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
          body:"The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box."},
-        {name:"Celebration Box", price:475, win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
+        {name:"Celebration Box", price:475, quip:"Right up to the line, not a rupee over. Neat.", win:true, head:"Great!", sub:"You avoided the Anchoring Bias.",
          body:"The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box."},
-        {name:"Premium Box", price:750, was:1000, win:false, head:"Oops!", sub:"You fell for the Anchoring Bias.",
+        {name:"Premium Box", price:750, quip:"That crossed-out \u20b91,000 did all the talking.", was:1000, win:false, head:"Oops!", sub:"You fell for the Anchoring Bias.",
          body:"The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget."}
       ]
     },
     {
       headline:"Small, medium or large?",
-      bias:"Decoy Effect",
+      bias:"Decoy Effect", sweet:"barfi",
       defn:"The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison.",
       bridge:"At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one.",
       places:["Meal sizes","Subscription plans","Phone storage options"],
       source:{img:"decoy", url:TOB17 + "Article3", sect:"the Decoy Effect",
         alt:"Three popcorn tubs at \u20b955, \u20b964 and \u20b970, with the medium marked as the decoy that makes the large look worth it."},
       cards:[
-        {name:"Small Box", price:300, win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
+        {name:"Small Box", price:300, quip:"Small box. Big brain.", win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
          body:"The ₹500 Medium and ₹575 Large boxes make Large look like a tempting upgrade. But you still chose the ₹300 Small Box and remained under budget."},
-        {name:"Medium Box", price:500, win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
+        {name:"Medium Box", price:500, quip:"You looked at the large\u2026 and didn\u2019t blink.", win:true, head:"Great!", sub:"You avoided the Decoy Effect.",
          body:"The ₹575 Large Box is only ₹75 more. You still chose the ₹500 Medium Box instead of automatically upgrading."},
-        {name:"Large Box", price:575, win:false, head:"Oops!", sub:"You fell for the Decoy Effect.",
+        {name:"Large Box", price:575, quip:"\u2018Only \u20b975 more,\u2019 whispered the medium box. Job done.", win:false, head:"Oops!", sub:"You fell for the Decoy Effect.",
          body:"The ₹500 Medium Box may have made the ₹575 Large Box feel like the obvious upgrade for just ₹75 more."}
       ]
     },
     {
       headline:"Everyone&rsquo;s picking one of these.",
-      bias:"Bandwagon Effect",
+      bias:"Bandwagon Effect", sweet:"katli",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
       bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
       places:["Trending restaurants","Bestseller products","Popular gadgets"],
       source:{img:"bandwagon", url:TOB17 + "Article2", sect:"the Bandwagon Effect",
         alt:"A boy asks his mother for a \u20b945,000 gaming console because all his friends are getting one."},
       cards:[
-        {name:"Traditional Mithai Box", price:425, win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
+        {name:"Traditional Mithai Box", price:425, quip:"Everyone\u2019s picking one. You picked yours.", win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
          body:"The ₹600 Signature Fusion Box was marked “Office Favourite Today”. You ignored the popularity cue and chose the ₹425 box."},
-        {name:"Signature Fusion Mithai Box", price:600, tag:"Office Favourite Today", win:false, head:"Oops!", sub:"You fell for the Bandwagon Effect.",
+        {name:"Signature Fusion Mithai Box", price:600, quip:"Office favourite. Not your wallet\u2019s, though.", tag:"Office Favourite Today", win:false, head:"Oops!", sub:"You fell for the Bandwagon Effect.",
          body:"“Office Favourite Today” may have pulled you towards the ₹600 box, even though ₹425 and ₹475 options were available within budget."},
-        {name:"Dry Fruit Mithai Box", price:475, win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
+        {name:"Dry Fruit Mithai Box", price:475, quip:"The crowd went one way. You went home happy.", win:true, head:"Great!", sub:"You avoided the Bandwagon Effect.",
          body:"You chose the ₹475 Dry Fruit Box instead of automatically following the ₹600 “Office Favourite”."}
       ]
     },
     {
       headline:"Better hurry &mdash; one left.",
-      bias:"FOMO",
+      bias:"FOMO", sweet:"peda",
       clock:15,
       defn:"FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to.",
       bridge:"Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine.",
@@ -1010,26 +1062,26 @@
       source:{img:"fomo", url:TOB30 + "Article2", sect:"the FOMO Effect",
         alt:"A couple on a sofa. He holds a 20% off flyer and points at a 65-inch smart TV; she says the one they own is working fine."},
       cards:[
-        {name:"Classic Box", price:300, win:true, head:"Great!", sub:"You avoided FOMO.",
+        {name:"Classic Box", price:300, quip:"Only one left? Let someone else hurry.", win:true, head:"Great!", sub:"You avoided FOMO.",
          body:"The ₹550 Premium Box said “Only 1 left”. You ignored the urgency and chose the ₹300 Classic Box."},
-        {name:"Celebration Box", price:400, win:true, head:"Great!", sub:"You avoided FOMO.",
+        {name:"Celebration Box", price:400, quip:"The clock ran. You strolled.", win:true, head:"Great!", sub:"You avoided FOMO.",
          body:"You chose the ₹400 Celebration Box instead of being rushed by the “Only 1 left” ₹550 Premium Box."},
-        {name:"Premium Box", price:550, tag:"Only 1 left", hot:true, win:false, head:"Oops!", sub:"You fell for FOMO.",
+        {name:"Premium Box", price:550, quip:"One left, they said. There always is.", tag:"Only 1 left", hot:true, win:false, head:"Oops!", sub:"You fell for FOMO.",
          body:"“Only 1 left” may have made the ₹550 Premium Box feel urgent, despite ₹300 and ₹400 options being available."}
       ]
     },
     {
       headline:"Read the label again.",
-      bias:"Framing Effect",
+      bias:"Framing Effect", sweet:"jalebi",
       defn:"The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels.",
       bridge:"One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much.",
       places:["Food labels","Health claims","Advertising claims"],
       source:{img:"framing", url:TOB30 + "Article2", sect:"the Framing Effect",
         alt:"Festive hampers labelled “only 10% preservatives” and “70% preservative free”; a shopper decides the second sounds healthier."},
       cards:[
-        {name:"Box A", price:600, claim:"70% sugar-free", win:false, head:"Oops!", sub:"You may have fallen for the Framing Effect.",
+        {name:"Box A", price:600, quip:"70% sugar-free is 30% sugar. Sneaky label.", claim:"70% sugar-free", win:false, head:"Oops!", sub:"You may have fallen for the Framing Effect.",
          body:"“70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar."},
-        {name:"Box B", price:450, claim:"Contains 25% sugar", win:true, head:"Great!", sub:"You looked beyond the positive frame.",
+        {name:"Box B", price:450, quip:"You read the label like a detective.", claim:"Contains 25% sugar", win:true, head:"Great!", sub:"You looked beyond the positive frame.",
          body:"You chose the ₹450 box with 25% sugar instead of being drawn towards the ₹600 box described as “70% sugar-free.”"}
       ]
     }
@@ -1252,21 +1304,125 @@
     return beat ? "The clock was never real. It never is." : "You waited the clock out. Nothing happened \u2014 it never does.";
   }
 
-  /* ---- the Orange peeks over the chosen card ---- */
-  var MASCOT_HEAD = "data:image/webp;base64,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";
-  function peek(card, mode){
-    if (reducedMotion()) return;
-    var wrap = $("r-cards"), el = $("peek");
-    if (!el){
-      el = document.createElement("span"); el.id = "peek"; el.className = "peek";
-      el.innerHTML = '<img src="' + MASCOT_HEAD + '" alt="" width="340" height="280">';
-      wrap.appendChild(el);
-    }
-    /* layout geometry, not the bounding box: mid-turn the card is edge-on and measures 0 wide */
-    el.style.left = (card.offsetLeft + card.offsetWidth / 2) + "px";
+  /* ---- a speech bubble off the chosen card ---- */
+  function quip(card, text, good){
+    var wrap = $("r-cards"), el = document.createElement("span");
+    el.className = "quip" + (good ? "" : " oops"); el.textContent = text;
+    /* layout geometry, not the bounding box: the card may still be turning */
+    el.style.left = (card.offsetLeft + card.offsetWidth) + "px";
     el.style.top = card.offsetTop + "px";
-    el.style.width = Math.round(Math.min(150, card.offsetWidth * 0.6)) + "px";
-    el.className = "peek " + mode;
+    wrap.appendChild(el);
+  }
+
+  /* ---- the festive box: a mithai for every mindful pick ---- */
+  var SWEET_ART = {
+    laddoo:'<circle cx="24" cy="25" r="17" fill="#EF8A1E"/><circle cx="17" cy="19" r="5" fill="#FFB35C" opacity=".75"/>' +
+      '<g fill="#D46F14"><circle cx="15" cy="27" r="1.6"/><circle cx="22" cy="33" r="1.6"/><circle cx="30" cy="30" r="1.6"/><circle cx="33" cy="21" r="1.6"/><circle cx="25" cy="15" r="1.4"/><circle cx="21" cy="24" r="1.3"/></g>' +
+      '<ellipse cx="28" cy="24" rx="3.2" ry="1.7" fill="#7BB661" transform="rotate(-30 28 24)"/>',
+    barfi:'<rect x="8" y="12" width="32" height="28" rx="4" fill="#9CCB7A"/><rect x="8" y="12" width="32" height="9" rx="4" fill="#B6DC98"/>' +
+      '<path d="M12 15h23l-2 7H13z" fill="#EDEDF2" opacity=".92"/><circle cx="24" cy="31" r="2.6" fill="#4E8A3A"/>',
+    katli:'<path d="M24 6l17 18-17 18L7 24z" fill="#E4BE93"/><path d="M24 6l17 18H7z" fill="#EFD3B0"/><path d="M14 24l10-11 10 11-10 11z" fill="#F4F4F7" opacity=".6"/>',
+    peda:'<ellipse cx="24" cy="28" rx="17" ry="11" fill="#B4713A"/><ellipse cx="24" cy="24" rx="17" ry="11" fill="#D08E4A"/><ellipse cx="24" cy="24" rx="6" ry="3.4" fill="#B4713A"/>' +
+      '<path d="M19 21l3 3M28 20l-2 4M24 30l2 2" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round"/>',
+    jalebi:'<path d="M24 22a2 2 0 1 1 2 2a5 5 0 1 1-5 5a9 9 0 1 1 9-9a13 13 0 1 1-13 13" fill="none" stroke="#C8651A" stroke-width="7.5" stroke-linecap="round"/>' +
+      '<path d="M24 22a2 2 0 1 1 2 2a5 5 0 1 1-5 5a9 9 0 1 1 9-9a13 13 0 1 1-13 13" fill="none" stroke="#F6A623" stroke-width="4.5" stroke-linecap="round"/>'
+  };
+  var SWEET_NAME = {laddoo:"a laddoo", barfi:"a barfi", katli:"a kaju katli", peda:"a peda", jalebi:"a jalebi"};
+  function sweetSvg(kind){
+    return '<svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">' + SWEET_ART[kind] + "</svg>";
+  }
+  function filledCount(){ return state.results.filter(function(x){ return x && x.win; }).length; }
+  /* the box itself: lid back, tray of five cups; the same drawing on the page and on the card */
+  function boxSvg(label){
+    var h = '<svg class="boxsvg" viewBox="0 0 320 200" role="img" aria-label="' + label + '" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M30 46L290 46L310 12L10 12Z" fill="#E9721F"/><path d="M10 12L310 12L305 21L15 21Z" fill="#F5A25A" opacity=".9"/>' +
+      '<rect x="14" y="46" width="292" height="142" rx="10" fill="#E1601A"/><rect x="14" y="46" width="292" height="14" fill="#C94E12"/>' +
+      '<rect x="30" y="66" width="260" height="108" rx="8" fill="#F7DDB0"/>';
+    for (var i = 0; i < ROUNDS.length; i++){
+      var cx = 56 + i * 52, cy = 120, res = state.results[i], on = res && res.win;
+      h += '<circle cx="' + cx + '" cy="' + cy + '" r="22" fill="#FFF6E6" stroke="' + (on ? "#E1601A" : "#E4B27E") + '" stroke-width="2"' + (on ? "" : ' stroke-dasharray="4 4"') + "/>";
+      if (on) h += '<g transform="translate(' + (cx - 18) + " " + (cy - 18) + ') scale(.75)">' + SWEET_ART[ROUNDS[i].sweet] + "</g>";
+    }
+    return h + "</svg>";
+  }
+  function paintTray(){
+    var el = $("boxtray"), h = '<span class="lbl">Your box</span><span class="slots">';
+    for (var i = 0; i < ROUNDS.length; i++){
+      var res = state.results[i], on = res && res.win;
+      h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetSvg(ROUNDS[i].sweet) : "") + "</span>";
+    }
+    el.innerHTML = h + "</span>";
+    el.setAttribute("aria-label", "Your box: " + filledCount() + " of " + ROUNDS.length + " filled");
+  }
+  /* the mithai leaves the card and lands in its cup */
+  function flySweet(card, i){
+    var slot = $("boxtray").querySelectorAll(".slot")[i];
+    if (!slot) return;
+    if (reducedMotion()){ paintTray(); return; }
+    var from = card.getBoundingClientRect(), to = slot.getBoundingClientRect();
+    var fl = document.createElement("span"); fl.className = "flysweet"; fl.innerHTML = sweetSvg(ROUNDS[i].sweet);
+    var x0 = from.left + from.width / 2 - 22, y0 = from.top + from.height * 0.3 - 22;
+    fl.style.left = x0 + "px"; fl.style.top = y0 + "px";
+    document.body.appendChild(fl);
+    var ty = Math.max(to.top + to.height / 2 - 22, -60);   /* an off-screen cup still pulls it upward */
+    window.requestAnimationFrame(function(){
+      fl.style.transform = "translate(" + (to.left + to.width / 2 - 22 - x0) + "px," + (ty - y0) + "px) scale(.6)";
+      fl.style.opacity = ".85";
+    });
+    window.setTimeout(function(){
+      if (fl.parentNode) fl.parentNode.removeChild(fl);
+      paintTray();
+      var s2 = $("boxtray").querySelectorAll(".slot")[i]; if (s2) s2.classList.add("pop");
+    }, 740);
+  }
+
+  /* ---- badges, kept across plays ---- */
+  var BADGE_KEY = "tob-vol65-badges";
+  function roundOf(bias){ for (var i = 0; i < ROUNDS.length; i++) if (ROUNDS[i].bias === bias) return state.results[i]; return null; }
+  var BADGES = [
+    {id:"anchor", name:"Anchors away", hint:"Kept the crossed-out price out of your head.",
+     icon:'<path d="M24 10v26M14 24h20M16 30c2 5 5 7 8 7s6-2 8-7"/><circle cx="24" cy="7" r="3"/>',
+     test:function(){ var r = roundOf("Anchoring Bias"); return !!(r && r.win); }},
+    {id:"decoy", name:"Saw through the decoy", hint:"The middle option didn’t move you.",
+     icon:'<path d="M4 24s8-11 20-11 20 11 20 11-8 11-20 11S4 24 4 24z"/><circle cx="24" cy="24" r="5"/>',
+     test:function(){ var r = roundOf("Decoy Effect"); return !!(r && r.win); }},
+    {id:"crowd", name:"Crowd-proof", hint:"Everyone else’s pick stayed everyone else’s.",
+     icon:'<circle cx="24" cy="15" r="5"/><circle cx="11" cy="19" r="4"/><circle cx="37" cy="19" r="4"/><path d="M15 38c0-7 4-11 9-11s9 4 9 11M4 34c0-5 3-8 7-8M44 34c0-5-3-8-7-8"/>',
+     test:function(){ var r = roundOf("Bandwagon Effect"); return !!(r && r.win); }},
+    {id:"clock", name:"Beat the clock", hint:"Some offers can wait. You let one.",
+     icon:'<circle cx="24" cy="26" r="15"/><path d="M24 17v9l6 4M19 6h10"/>',
+     test:function(){ var r = roundOf("FOMO"); return !!(r && r.waited); }},
+    {id:"label", name:"Label reader", hint:"Read the small print before the big one.",
+     icon:'<path d="M6 12h22l14 12-14 12H6z"/><circle cx="13" cy="24" r="2.5"/><path d="M20 20h10M20 28h8"/>',
+     test:function(){ var r = roundOf("Framing Effect"); return !!(r && r.win); }},
+    {id:"sweep", name:"Clean sweep", hint:"Five picks, five mindful. Not a crumb wasted.",
+     icon:'<path d="M8 18l6 20h20l6-20z"/><path d="M8 18c4-5 12-8 16-8s12 3 16 8"/><path d="M24 22l2 5h5l-4 3 2 5-5-3-5 3 2-5-4-3h5z"/>',
+     test:function(){ return mindful() === ROUNDS.length && state.results.length === ROUNDS.length; }}
+  ];
+  function storedBadges(){
+    try { return JSON.parse(window.localStorage.getItem(BADGE_KEY) || "{}") || {}; } catch(e){ return {}; }
+  }
+  /* awards this game's badges, keeps them, and says which are new */
+  function awardBadges(){
+    var had = storedBadges(), now = {}, fresh = [];
+    BADGES.forEach(function(b){
+      var earned = false;
+      try { earned = !!b.test(); } catch(e){}
+      now[b.id] = !!had[b.id] || earned;
+      if (earned && !had[b.id]) fresh.push(b);
+    });
+    try { window.localStorage.setItem(BADGE_KEY, JSON.stringify(now)); } catch(e){}
+    return {have:now, fresh:fresh};
+  }
+  function paintBadges(have, fresh){
+    var freshIds = {}; fresh.forEach(function(b){ freshIds[b.id] = true; });
+    $("badgelist").innerHTML = BADGES.map(function(b){
+      var on = !!have[b.id];
+      return '<li class="badge' + (on ? " on" : "") + (freshIds[b.id] ? " new" : "") + '">' +
+        '<span class="medal"><svg viewBox="0 0 48 48" aria-hidden="true">' + b.icon + "</svg></span>" +
+        '<span><span class="bname">' + b.name + (on ? "" : '<span class="vh"> (locked)</span>') + "</span>" +
+        '<span class="bhint">' + b.hint + "</span></span></li>";
+    }).join("");
   }
 
   /* ---- each pick is dealt out of the cover's box: the cards fly from where
@@ -1347,7 +1503,7 @@
     for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
     g.closePath();
   }
-  function drawResultCard(g, total, n, title){
+  function drawResultCard(g, total, n, title, boxImg){
     var W = 1080, H = 1080, seed = 7;
     function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
     var grad = g.createLinearGradient(0, 0, 0, H); grad.addColorStop(0, "#F6953F"); grad.addColorStop(1, "#E24F0E");
@@ -1364,32 +1520,36 @@
     try { g.letterSpacing = "6px"; } catch(e){}
     g.fillText("THE SWEET PICK", 540, 318);
     try { g.letterSpacing = "0px"; } catch(e){}
-    g.font = "124px Handlee, cursive"; g.fillText(title.t, 540, 470);
+    g.font = "116px Handlee, cursive"; g.fillText(title.t, 540, 440);
+    if (boxImg && boxImg.complete && boxImg.naturalWidth) g.drawImage(boxImg, 260, 452, 560, 350);
     /* five picks, three stars each */
-    var gap = 176, x0 = 540 - gap * 2;
+    var gap = 130, x0 = 540 - gap * 2;
     for (var k = 0; k < ROUNDS.length; k++){
       var earned = starsOf(state.results[k]);
       for (var j = 0; j < 3; j++){
-        var cx = x0 + k * gap + (j - 1) * 50, cy = 570;
-        starPath(g, cx, cy, 22);
+        var cx = x0 + k * gap + (j - 1) * 38, cy = 838;
+        starPath(g, cx, cy, 16);
         g.fillStyle = j < earned ? "#FFD23F" : "rgba(255,255,255,.28)"; g.fill();
         g.lineWidth = 3; g.strokeStyle = j < earned ? "#B8730A" : "rgba(255,255,255,.55)"; g.stroke();
       }
     }
-    g.fillStyle = "#fff"; g.font = "46px Handlee, cursive";
-    g.fillText(total + " of " + MAX_STARS + " stars  \u00b7  " + n + " of " + ROUNDS.length + " mindful picks", 540, 680);
+    g.fillStyle = "#fff"; g.font = "36px Handlee, cursive";
+    g.fillText(total + " of " + MAX_STARS + " stars  \u00b7  " + n + " of " + ROUNDS.length + " mindful picks", 540, 908);
     var m = document.querySelector("#p-feedback .feedgif img");
-    if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 400, H - 392, 360, 360);
-    g.textAlign = "left"; g.font = "600 32px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 150);
-    g.font = "500 26px Mulish, sans-serif"; g.fillStyle = "rgba(255,255,255,.9)";
-    g.fillText(shareUrl() || "The Orange Book \u00b7 Vol. 65 \u00b7 ICICI Bank", 64, H - 100);
+    if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
+    g.textAlign = "left"; g.font = "600 26px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 92);
+    g.font = "500 22px Mulish, sans-serif"; g.fillStyle = "rgba(255,255,255,.9)";
+    g.fillText(shareUrl() || "The Orange Book \u00b7 Vol. 65 \u00b7 ICICI Bank", 64, H - 56);
   }
   function prepareShare(total, n, title){
     SHARE.file = null; SHARE.dataUrl = "";
     SHARE.text = "I scored " + total + " of " + MAX_STARS + " stars on The Sweet Pick, this month\u2019s interactive Orange Book from ICICI Bank. Can you spot the festive tricks?";
-    ensureFonts().then(function(){
+    /* the box is drawn as an image of its own SVG, so the card shows the same box as the page */
+    var boxImg = new Image(), boxReady = new Promise(function(res){ boxImg.onload = function(){ res(boxImg); }; boxImg.onerror = function(){ res(null); }; });
+    try { boxImg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(boxSvg("Your festive box")); } catch(e){}
+    Promise.all([ensureFonts(), boxReady]).then(function(parts){
       var cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1080;
-      try { drawResultCard(cv.getContext("2d"), total, n, title); SHARE.dataUrl = cv.toDataURL("image/png"); } catch(e){ return; }
+      try { drawResultCard(cv.getContext("2d"), total, n, title, parts[1]); SHARE.dataUrl = cv.toDataURL("image/png"); } catch(e){ return; }
       try {
         var bin = window.atob(SHARE.dataUrl.split(",")[1]), arr = new Uint8Array(bin.length);
         for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
@@ -1673,6 +1833,7 @@
     $("r-actions").hidden = true;
     $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next pick";
     saveGame();
+    paintTray();
     show("round");
     fitNames();
     startClock(r);
@@ -1695,22 +1856,21 @@
     if (hadClock) bustClock(beatClock);
     var stars = c.win ? (state.tries ? 2 : 3) : 0;   /* a miss earns nothing */
     whoosh(); buzz(12);
-    peek(chosen, "up");
     chosen.classList.add("turning");
     window.setTimeout(function(){
       chosen.innerHTML = back(c, r, hadClock ? clockNote(beatClock) : "");
       chosen.classList.remove("turning");
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
-      state.results[state.round] = {bias:r.bias, win:!!c.win, stars:stars};
+      state.results[state.round] = {bias:r.bias, win:!!c.win, stars:stars, waited:hadClock && !beatClock};
       saveGame();
       paintProgress();
-      if (c.win){ chime(); buzz([10,30,10]); peek(chosen, "cheer"); }
-      else { thud(); buzz(40); peek(chosen, "oops"); }
+      if (c.win){ chime(); buzz([10,30,10]); flySweet(chosen, state.round); }
+      else { thud(); buzz(40); paintTray(); }
       if (stars) starPop(chosen, stars);
+      if (c.quip) window.setTimeout(function(){ quip(chosen, c.quip, !!c.win); }, 260);
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
-      window.setTimeout(function(){ peek(chosen, "down"); }, 2300);
       var src = r.source;
       $("r-bridge").innerHTML =
         '<div class="bridge"><p class="eyebrow">The same trick, elsewhere.</p>' +
@@ -1747,6 +1907,12 @@
     recordBest(total);
     $("rtitle").textContent = title.t;
     $("rsub").textContent = title.s;
+    var filled = filledCount();
+    $("yourbox").innerHTML = '<p class="eyebrow">Your festive box</p>' +
+      boxSvg("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") +
+      '<p class="boxcap">' + (filled === ROUNDS.length ? "Full box!" : filled + " of " + ROUNDS.length + " filled") + "</p>";
+    var badges = awardBadges();
+    paintBadges(badges.have, badges.fresh);
     $("rstars").innerHTML = state.results.map(function(res){ return starRow(starsOf(res)); }).join("") +
       '<span class="starline">' + total + " of " + MAX_STARS + " stars</span>";
     $("scoreline").textContent = "You made " + n + " mindful " + (n === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + ".";
@@ -1761,6 +1927,9 @@
     $("share-preview").hidden = true;
     show("close");
     prepareShare(total, n, title);
+    if (badges.fresh.length) window.setTimeout(function(){
+      toast(badges.fresh.length === 1 ? "New badge: " + badges.fresh[0].name : badges.fresh.length + " new badges!");
+    }, n === ROUNDS.length ? 2600 : 900);
     if (n === ROUNDS.length) window.setTimeout(confetti, 350);
   }
 
