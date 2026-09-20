@@ -543,6 +543,7 @@ textarea.fld{
         <div class="seg" id="expWhich"><button class="on" data-v="all">All slides</button><button data-v="one">Current only</button></div>
       </div>
       <label class="chk"><input type="checkbox" id="expZip" checked> Bundle as .zip (numbered for upload order)</label>
+      <div id="expZipNote" style="font-size:11px;color:var(--ink-3);line-height:1.45;margin-top:-6px"></div>
       <div id="expProg" style="display:none;gap:7px;flex-direction:column" class="grp">
         <div class="lbl"><span id="expProgT">Rendering…</span></div><div class="bar"><i id="expProgB"></i></div>
       </div>
@@ -2356,11 +2357,36 @@ async function renderExport(si,scale){
   drawSlide(x,si,scale);
   return c;
 }
-const dl=(blob,name)=>{
+/* Saving a file differs by host. Inside the claude.ai artifact viewer a plain
+   <a download> does nothing, so go through the downloads capability there and
+   fall back to the anchor everywhere else (file://, self-hosted, PWA). */
+let _dlProbe=null;
+function dlCap(){
+  return _dlProbe ||= (async()=>{
+    try{ return window.claude?.use ? await window.claude.use('downloads') : null; }
+    catch(e){ return null; }
+  })();
+}
+async function dl(blob,name){
+  const cap = await dlCap();
+  if(cap){
+    for(let attempt=0;attempt<2;attempt++){
+      try{ await cap.save({filename:name, data:blob}); return true; }
+      catch(err){
+        const code = err?.code;
+        if(code==='declined'){ toast('Download cancelled'); return false; }
+        if(code==='rate_limited' && attempt===0){ await new Promise(r=>setTimeout(r,1000)); continue; }
+        toast('Could not save '+name+(code?' — '+code:''),'err',4000);
+        return false;
+      }
+    }
+    return false;
+  }
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-};
+  return true;
+}
 async function doExport(){
   const fmt   = $('#expFmt .on').dataset.v;
   const scale = +$('#expScale .on').dataset.v;
@@ -2389,9 +2415,13 @@ async function doExport(){
     bar.style.width='100%';
     if(zip && files.length>1){
       ptxt.textContent='Zipping…';
-      dl(await makeZip(files), safe+'.zip');
+      await dl(await makeZip(files), safe+'.zip');
     }else{
-      for(const f of files){ dl(f.blob,f.name); await new Promise(r=>setTimeout(r,220)); }
+      for(const f of files){
+        const okSave = await dl(f.blob,f.name);
+        if(okSave===false) break;                 /* viewer declined — stop asking */
+        await new Promise(r=>setTimeout(r,220));
+      }
     }
     toast(`Exported ${files.length} slide${files.length>1?'s':''}`,'ok');
     $('#expModal').classList.add('hide');
@@ -2459,7 +2489,14 @@ $('#docname').oninput=e=>{ P.name=e.target.value; saveSoon(); };
 $('#bUndo').onclick=undo; $('#bRedo').onclick=redo;
 $('#bPreview').onclick=openPreview;
 $('#pvClose').onclick=()=>$('#preview').classList.add('hide');
-$('#bExport').onclick=()=>$('#expModal').classList.remove('hide');
+$('#bExport').onclick=async()=>{
+  $('#expModal').classList.remove('hide');
+  if(await dlCap()){
+    const n=P.slides.length;
+    $('#expZipNote').textContent = n>1
+      ? `Recommended here — a bundle asks once instead of ${n} times.` : '';
+  }
+};
 $('#expGo').onclick=doExport;
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hide'));
 for(const id of ['expFmt','expScale','expWhich']){
@@ -2514,10 +2551,11 @@ async function boot(){
   if(isMobile()){ $('#panel').classList.add('hide'); $('#insp').classList.add('hide'); }
   push(); updUndo();
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  dlCap();                                   /* resolve the save path in the background */
   window.__ready=true;
 }
 /* expose a little surface for automated checks */
-window.__studio={ cutoutSelected, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
+window.__studio={ cutoutSelected, dl, dlCap, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
   set cur(v){cur=v}, addText, addLayer, baseLayer, sliceAcross, addImage, drawSlide,
   renderExport, applyTemplate, TEMPLATES, redraw, renderFilm, renderInspector, renderPanel, IMG,
   select:ids=>{sel=ids;drawChrome();renderInspector()} };
