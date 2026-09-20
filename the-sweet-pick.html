@@ -1111,9 +1111,9 @@
     return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }
 
-  /* ---- stars: three for a mindful pick first time, two after a Pick again, one for finishing ---- */
+  /* ---- stars: three for a mindful pick first time, two after a Pick again, none for a miss ---- */
   var MAX_STARS = ROUNDS.length * 3;
-  function starsOf(res){ return res ? (typeof res.stars === "number" ? res.stars : (res.win ? 3 : 1)) : 0; }
+  function starsOf(res){ return res ? (typeof res.stars === "number" ? res.stars : (res.win ? 3 : 0)) : 0; }
   function totalStars(){ return state.results.reduce(function(a, r){ return a + starsOf(r); }, 0); }
   function mindful(){ return state.results.filter(function(x){ return x && x.win; }).length; }
   function titleFor(total){
@@ -1693,7 +1693,7 @@
     var beatClock = state.clockLeft > 0, hadClock = !!r.clock;
     stopClock();
     if (hadClock) bustClock(beatClock);
-    var stars = c.win ? (state.tries ? 2 : 3) : 1;
+    var stars = c.win ? (state.tries ? 2 : 3) : 0;   /* a miss earns nothing */
     whoosh(); buzz(12);
     peek(chosen, "up");
     chosen.classList.add("turning");
@@ -1707,7 +1707,7 @@
       paintProgress();
       if (c.win){ chime(); buzz([10,30,10]); peek(chosen, "cheer"); }
       else { thud(); buzz(40); peek(chosen, "oops"); }
-      starPop(chosen, stars);
+      if (stars) starPop(chosen, stars);
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
       window.setTimeout(function(){ peek(chosen, "down"); }, 2300);
