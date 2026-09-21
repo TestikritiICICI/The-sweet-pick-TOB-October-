@@ -460,15 +460,15 @@
     box-shadow:0 0 0 0 rgba(196,33,42,.55);animation:hotring 2.4s ease-out infinite;
   }
   @keyframes hotbeat{
-    0%,45%,70%,100%{transform:scale(1) rotate(0)}
-    10%,30%{transform:scale(1.1)}
-    20%{transform:scale(1)}
-    76%{transform:rotate(-4deg)}
-    82%{transform:rotate(4deg)}
-    88%{transform:rotate(-2deg)}
+    0%,45%,70%,100%{transform:scale(1) rotate(0);filter:brightness(1)}
+    10%,30%{transform:scale(1.12);filter:brightness(1.35)}
+    20%{transform:scale(1);filter:brightness(1)}
+    76%{transform:rotate(-5deg)}
+    82%{transform:rotate(5deg)}
+    88%{transform:rotate(-3deg)}
     94%{transform:rotate(0)}
   }
-  @keyframes hotring{0%{box-shadow:0 0 0 0 rgba(196,33,42,.55)}45%,100%{box-shadow:0 0 0 12px rgba(196,33,42,0)}}
+  @keyframes hotring{0%{box-shadow:0 0 0 0 rgba(196,33,42,.6)}45%,100%{box-shadow:0 0 0 14px rgba(196,33,42,0)}}
   .card.locked .tag.hot,.card.locked .tag.hot::after{animation:none}
 
   /* the reveal: badge, verdict, one rule, the finding, then the bias itself.
