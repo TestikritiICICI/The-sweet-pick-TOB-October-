@@ -1052,6 +1052,7 @@
   var ROUNDS = [
     {
       headline:"Which box would you pick?",
+      scene:"Diwali week, and the neighbours have already sent a box over. Now it is your turn, and the shop has its sale board out.",
       bias:"Anchoring Bias", sweet:"laddoo",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
       bridge:"A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
@@ -1069,6 +1070,7 @@
     },
     {
       headline:"Small, medium or large?",
+      scene:"The cousins are over after the puja. One box has to go around the whole room.",
       bias:"Decoy Effect", sweet:"modak",
       defn:"The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison.",
       bridge:"At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one.",
@@ -1086,6 +1088,7 @@
     },
     {
       headline:"Everyone&rsquo;s picking one of these.",
+      scene:"Your turn to bring the Diwali box for the office. Whatever you carry in will be noticed.",
       bias:"Bandwagon Effect", sweet:"barfi",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
       bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
@@ -1103,6 +1106,7 @@
     },
     {
       headline:"Better hurry &mdash; one left.",
+      scene:"The evening before Diwali. The shelves are thinning and the queue behind you is growing.",
       bias:"FOMO", sweet:"peda",
       clock:15,
       defn:"FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to.",
@@ -1121,6 +1125,7 @@
     },
     {
       headline:"Read the label again.",
+      scene:"A box for your parents. Your father has been told to watch his sugar, so this year you are reading labels.",
       bias:"Framing Effect", sweet:"jalebi",
       defn:"The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels.",
       bridge:"One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much.",
@@ -1897,9 +1902,9 @@
     /* the condensed rules sit on the first pick only; every round keeps the one-line instruction */
     $("howbox").hidden = (state.round !== 0);
     $("r-headline").innerHTML = r.headline;
-    /* the approved scenario line, laid out as a ticket: the question on the cream half, the plan on the stub */
+    /* the brief, laid out as a ticket: this pick's scene on the cream half, the plan on the stub */
     $("r-scenario").className = "subhead brief";
-    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Your brief</span><span class="chit-t">It’s festive season and you’re choosing a mithai box. Which one would you go for?</span></span>' +
+    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Your brief</span><span class="chit-t">' + r.scene + '</span></span>' +
       '<span class="chit-r"><span class="chit-k">You plan to spend around</span><span class="chit-n">' + rupee(BUDGET) + "</span></span></span>";
 
     var wrap = $("r-cards");
