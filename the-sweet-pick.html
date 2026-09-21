@@ -183,6 +183,7 @@
   .chit-r{flex:none;padding:10px 16px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:var(--orange);color:#fff;position:relative;text-align:center}
   .chit-r::before{content:"";position:absolute;left:-1px;top:7px;bottom:7px;border-left:2px dashed rgba(255,255,255,.75)}
   .chit-k{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;max-width:7.5em;color:rgba(255,255,255,.92)}
+  .chit-l .chit-k{color:var(--orange);max-width:none;margin-bottom:5px}
   .chit-t{font-size:.98rem;font-weight:600;color:var(--navy);line-height:1.32}
   .chit-n{font-size:1.75rem;font-weight:800;line-height:1;letter-spacing:-.02em}
   @keyframes chitin{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
@@ -945,9 +946,9 @@
     <div class="howbox" id="howbox">
       <div class="lbl">How to play</div>
       <ol>
-        <li>Trust your sweet tooth. Tap the box you&rsquo;d take home.</li>
-        <li>Peek at the back. Every box keeps a little secret.</li>
-        <li>Still hungry? Tap Next pick.</li>
+        <li>Read the brief on the ticket.</li>
+        <li>Size up the boxes, then tap the one you&rsquo;d buy.</li>
+        <li>Read the back of the box. Then Next&nbsp;pick.</li>
       </ol>
     </div>
     <h1 class="headline" id="r-headline"></h1>
@@ -1898,7 +1899,7 @@
     $("r-headline").innerHTML = r.headline;
     /* the approved scenario line, laid out as a ticket: the question on the cream half, the plan on the stub */
     $("r-scenario").className = "subhead brief";
-    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-t">It’s festive season and you’re choosing a mithai box. Which one would you go for?</span></span>' +
+    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Your brief</span><span class="chit-t">It’s festive season and you’re choosing a mithai box. Which one would you go for?</span></span>' +
       '<span class="chit-r"><span class="chit-k">You plan to spend around</span><span class="chit-n">' + rupee(BUDGET) + "</span></span></span>";
 
     var wrap = $("r-cards");
