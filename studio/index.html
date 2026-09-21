@@ -598,7 +598,7 @@ textarea.fld{
 </div>
 
 <div class="toast" id="toast"></div>
-<input type="file" id="filePick" accept="image/*,video/*" multiple hidden>
+<input type="file" id="filePick" accept="image/*,video/*,.mov,.qt,.mp4,.m4v,.webm,.mkv,.avi,.3gp,.mts,.heic,.heif" multiple hidden>
 
 <script type="module">
 /* ============================================================
@@ -1148,6 +1148,7 @@ function redraw(){
   drawSlide(ctx2d, cur, view*dpr);
   drawChrome();
   renderFilmOne(cur);
+  drawTransport();          /* a clip may have just been added, removed or hidden */
 }
 
 /* ============================================================
@@ -2180,11 +2181,14 @@ function pCarousel(b){
   g1.appendChild(el('div','lbl','Flow one image across slides'));
   const drop=el('div','drop',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 16V4m0 0L8 8m4-4l4 4M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Drop a wide photo<br>or tap to choose`);
-  drop.onclick=()=>pickFiles(async files=>{
-    const key = await addImage(files[0],files[0].name);
-    sliceAcross(key);
-  });
-  wireDrop(drop, async files=>{ const k=await addImage(files[0],files[0].name); sliceAcross(k); });
+  const takeWide=async files=>{
+    const still=files.find(f=>kindOf(f)==='i');
+    if(!still) return toast('The slicer needs a photo — for a clip, place it and use Grab frame','err',5200);
+    try{ sliceAcross(await addImage(still,still.name)); }
+    catch(e){ toast(still.name+' — '+e.message,'err',4000); }
+  };
+  drop.onclick=()=>pickFiles(takeWide);
+  wireDrop(drop,takeWide);
   g1.appendChild(drop);
   b.appendChild(g1);
 
@@ -2360,7 +2364,7 @@ function wireDrop(node,cb){
   node.addEventListener('dragleave',()=>node.classList.remove('over'));
   node.addEventListener('drop',async e=>{
     e.preventDefault(); node.classList.remove('over');
-    const f=[...e.dataTransfer.files].filter(x=>x.type.startsWith('image/')||x.type.startsWith('video/'));
+    const f=[...e.dataTransfer.files].filter(x=>kindOf(x));
     if(f.length) await cb(f);
   });
 }
@@ -2708,7 +2712,7 @@ function inspVideo(b,L){
   const row=el('div','row');
   const rep=el('button','btn','Replace');
   rep.onclick=()=>pickFiles(async f=>{
-    const v=f.find(x=>x.type.startsWith('video/'));
+    const v=f.find(x=>kindOf(x)==='v');
     if(!v) return toast('Pick a video file','err');
     toast('Reading clip…','load',0);
     try{ L.vid=await addVideo(v,v.name); const nr=VID.get(L.vid);
@@ -2972,14 +2976,33 @@ async function grabFrame(L){
   toast('Frame grabbed as a photo','ok');
 }
 
-/* ingest a mixed drop of photos and clips */
+/* Phone pickers routinely hand over a File with an empty type (IMG_4021.MOV),
+   so fall back to the extension, and never drop a file silently. */
+const VIDEO_EXT=/\.(mp4|m4v|mov|qt|webm|mkv|avi|3gp2?|3gpp?|mts|m2ts|hevc|ogv)$/i;
+const IMAGE_EXT=/\.(jpe?g|png|webp|gif|avif|heic|heif|bmp|tiff?|svg)$/i;
+function kindOf(f){
+  const t=(f.type||'').toLowerCase();
+  if(t.startsWith('video/')) return 'v';
+  if(t.startsWith('image/')) return 'i';
+  const n=f.name||'';
+  if(VIDEO_EXT.test(n)) return 'v';
+  if(IMAGE_EXT.test(n)) return 'i';
+  return null;
+}
 async function ingest(files){
-  const out=[];
+  const out=[], skipped=[];
   for(const f of files){
+    const k=kindOf(f);
+    if(!k){ skipped.push(`${f.name||'file'} — unsupported type`); continue; }
     try{
-      if(f.type.startsWith('video/'))      out.push({kind:'v', key:await addVideo(f,f.name)});
-      else if(f.type.startsWith('image/')) out.push({kind:'i', key:await addImage(f,f.name)});
-    }catch(e){ toast(f.name+' — '+e.message,'err',4000); }
+      out.push({ kind:k, key: k==='v' ? await addVideo(f,f.name) : await addImage(f,f.name) });
+    }catch(e){
+      skipped.push(`${f.name||'file'} — ${e.message}`);
+    }
+  }
+  if(skipped.length){
+    toast('Could not add '+skipped.length+': '+skipped.slice(0,2).join('; ')
+          +(skipped.length>2?` +${skipped.length-2} more`:''),'err',6000);
   }
   return out;
 }
@@ -3466,7 +3489,7 @@ async function boot(){
   window.__ready=true;
 }
 /* expose a little surface for automated checks */
-window.__studio={ drawLayer, packSlide, STYLE_PACKS, FORMAT_PACKS, exportVideo, pickVMime, recordSlide, cutoutSelected, dl, dlCap, VID, addVideo, ingest, placeMedia, grabFrame,
+window.__studio={ kindOf, drawTransport, drawLayer, packSlide, STYLE_PACKS, FORMAT_PACKS, exportVideo, pickVMime, recordSlide, cutoutSelected, dl, dlCap, VID, addVideo, ingest, placeMedia, grabFrame,
   slideDur, vidLayers, trimOf, startPlay, stopPlay, scrubTo, srcOf, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
   set cur(v){cur=v}, addText, addLayer, baseLayer, sliceAcross, addImage, drawSlide,
   renderExport, applyTemplate, TEMPLATES, redraw, renderFilm, renderInspector, renderPanel, IMG,
