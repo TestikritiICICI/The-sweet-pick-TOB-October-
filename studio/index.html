@@ -156,6 +156,11 @@ svg{display:block}
   color:rgba(75,141,255,.9);letter-spacing:.05em;
 }
 
+.transport{
+  flex:0 0 40px;height:40px;display:flex;align-items:center;gap:9px;padding:0 12px;
+  background:var(--panel);border-top:1px solid var(--line);
+}
+.transport .rng{margin:0}
 /* ---------- filmstrip ---------- */
 .film{
   flex:0 0 var(--film);height:var(--film);background:var(--panel);border-top:1px solid var(--line);
@@ -291,6 +296,10 @@ textarea.fld{
 }
 .acard:hover{border-color:var(--accent)}
 .acard img{width:100%;height:100%;object-fit:cover}
+.acard .vbadge{
+  position:absolute;left:3px;bottom:3px;background:rgba(0,0,0,.72);color:#fff;font-size:8.5px;
+  font-weight:800;padding:1px 4px;border-radius:4px;backdrop-filter:blur(4px);letter-spacing:.02em;
+}
 .acard .x{
   position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:5px;background:rgba(0,0,0,.7);
   display:none;place-items:center;color:#fff;
@@ -486,6 +495,16 @@ textarea.fld{
         <div class="overlay" id="overlay"></div>
       </div>
     </div>
+    <div class="transport" id="transport" style="display:none">
+      <button class="btn sq" id="tpPlay" title="Play / pause (Space)">
+        <svg id="tpIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" width="15" height="15"></svg>
+      </button>
+      <input type="range" class="rng" id="tpRange" min="0" max="10" step="0.02" value="0">
+      <span class="num" id="tpTime" style="width:74px;flex:0 0 74px">0.0 / 0.0s</span>
+      <button class="btn sq" id="tpGrab" title="Grab this frame as a photo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="15" height="15" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.4"/></svg>
+      </button>
+    </div>
     <div class="film" id="film"></div>
   </div>
 
@@ -529,20 +548,31 @@ textarea.fld{
       <button class="btn sq" data-close="expModal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="14" height="14" stroke-width="2.2"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
     </div>
     <div class="modal-b">
-      <div class="grp"><div class="lbl">Format</div>
+      <div class="grp"><div class="lbl">Export as</div>
+        <div class="seg" id="expMode"><button class="on" data-v="img">Images</button><button data-v="vid">Video</button></div>
+      </div>
+      <div class="grp expimg"><div class="lbl">Format</div>
         <div class="seg" id="expFmt"><button class="on" data-v="png">PNG</button><button data-v="jpeg">JPG</button><button data-v="webp">WebP</button></div>
       </div>
-      <div class="grp"><div class="lbl">Resolution</div>
+      <div class="grp expimg"><div class="lbl">Resolution</div>
         <div class="seg" id="expScale"><button data-v="1">1080px</button><button class="on" data-v="2">2160px HD</button><button data-v="3">3240px 4K</button></div>
       </div>
-      <div class="grp" id="expQGrp" style="display:none">
+      <div class="grp expimg" id="expQGrp" style="display:none">
         <div class="lbl"><span>Quality</span><span class="num" id="expQN">92</span></div>
         <input type="range" class="rng" id="expQ" min="50" max="100" value="92">
       </div>
       <div class="grp"><div class="lbl">Slides</div>
         <div class="seg" id="expWhich"><button class="on" data-v="all">All slides</button><button data-v="one">Current only</button></div>
       </div>
-      <label class="chk"><input type="checkbox" id="expZip" checked> Bundle as .zip (numbered for upload order)</label>
+      <div class="grp expvid" style="display:none"><div class="lbl">Video size</div>
+        <div class="seg" id="expVScale"><button class="on" data-v="1">1080p</button><button data-v="1.5">1620p</button></div>
+      </div>
+      <div class="grp expvid" style="display:none">
+        <div class="lbl"><span>Seconds per still slide</span><span class="num" id="expStillN">3</span></div>
+        <input type="range" class="rng" id="expStill" min="1" max="10" step="0.5" value="3">
+        <div style="font-size:11px;color:var(--ink-3);line-height:1.45">Slides holding a clip use the clip's own trimmed length. Recording runs in real time.</div>
+      </div>
+      <label class="chk expimg"><input type="checkbox" id="expZip" checked> Bundle as .zip (numbered for upload order)</label>
       <div id="expZipNote" style="font-size:11px;color:var(--ink-3);line-height:1.45;margin-top:-6px"></div>
       <div id="expProg" style="display:none;gap:7px;flex-direction:column" class="grp">
         <div class="lbl"><span id="expProgT">Rendering…</span></div><div class="bar"><i id="expProgB"></i></div>
@@ -568,7 +598,7 @@ textarea.fld{
 </div>
 
 <div class="toast" id="toast"></div>
-<input type="file" id="filePick" accept="image/*" multiple hidden>
+<input type="file" id="filePick" accept="image/*,video/*" multiple hidden>
 
 <script type="module">
 /* ============================================================
@@ -626,11 +656,12 @@ const DB = {
   _p:null,
   open(){
     return this._p ||= new Promise((res,rej)=>{
-      const r = indexedDB.open('carousel-studio',1);
+      const r = indexedDB.open('carousel-studio',2);
       r.onupgradeneeded = e => {
         const d = e.target.result;
         if(!d.objectStoreNames.contains('imgs')) d.createObjectStore('imgs');
         if(!d.objectStoreNames.contains('docs')) d.createObjectStore('docs');
+        if(!d.objectStoreNames.contains('vids')) d.createObjectStore('vids');
       };
       r.onsuccess = ()=>res(r.result); r.onerror = ()=>rej(r.error);
     });
@@ -682,6 +713,74 @@ async function restoreImages(){
     }
   }catch(e){ /* private mode / blocked storage — app still works, just no persistence */ }
 }
+
+/* ============================================================
+   2b. VIDEO STORE — clips live as <video> elements the canvas samples
+   ============================================================ */
+const VID = new Map();   // key -> {el, url, w, h, dur, name, blob, thumb}
+
+const seekTo = (el,t) => new Promise(res=>{
+  if(Math.abs(el.currentTime-t) < 0.001 && el.readyState>=2) return res();
+  let done=false;
+  const h=()=>{ if(done) return; done=true; el.removeEventListener('seeked',h); res(); };
+  el.addEventListener('seeked',h);
+  setTimeout(h,1200);                        /* never hang on a stubborn decoder */
+  try{ el.currentTime=t; }catch(e){ h(); }
+});
+
+function makeVideoEl(url){
+  const el=document.createElement('video');
+  el.src=url; el.muted=true; el.playsInline=true; el.preload='auto';
+  el.setAttribute('playsinline',''); el.setAttribute('webkit-playsinline','');
+  el.loop=false; el.crossOrigin='anonymous';
+  return el;
+}
+async function addVideo(file,name){
+  const url=URL.createObjectURL(file);
+  const el=makeVideoEl(url);
+  await new Promise((res,rej)=>{
+    el.onloadedmetadata=()=>res();
+    el.onerror=()=>rej(new Error('could not read that video'));
+    setTimeout(()=>rej(new Error('video took too long to load')),20000);
+  });
+  await seekTo(el, Math.min(0.12, (el.duration||1)/2));
+  const key=uid();
+  const rec={ el, url, w:el.videoWidth||1080, h:el.videoHeight||1920,
+              dur:isFinite(el.duration)?el.duration:0, name:(name||'video').slice(0,40), blob:file };
+  rec.thumb = await thumbFromSource(el, rec.w, rec.h);
+  VID.set(key,rec);
+  DB.put('vids',key,{blob:file,name:rec.name}).catch(()=>{});
+  return key;
+}
+async function thumbFromSource(src,w,h){
+  const s=120/Math.max(w,h);
+  const c=new OffscreenCanvas(Math.max(1,Math.round(w*s)),Math.max(1,Math.round(h*s)));
+  try{ c.getContext('2d').drawImage(src,0,0,c.width,c.height); }catch(e){}
+  return URL.createObjectURL(await c.convertToBlob({type:'image/webp',quality:.8}));
+}
+async function restoreVideos(){
+  try{
+    for(const k of await DB.keys('vids')){
+      const v=await DB.get('vids',k); if(!v?.blob) continue;
+      const url=URL.createObjectURL(v.blob);
+      const el=makeVideoEl(url);
+      await new Promise(res=>{ el.onloadedmetadata=res; el.onerror=res; setTimeout(res,8000); });
+      if(!el.videoWidth) continue;
+      await seekTo(el, Math.min(0.12,(el.duration||1)/2));
+      VID.set(k,{el,url,w:el.videoWidth,h:el.videoHeight,
+                 dur:isFinite(el.duration)?el.duration:0,name:v.name||'video',blob:v.blob,
+                 thumb:await thumbFromSource(el,el.videoWidth,el.videoHeight)});
+    }
+  }catch(e){ /* storage blocked — clips just won't survive a reload */ }
+}
+
+/* one accessor so video layers inherit every image feature */
+function srcOf(L){
+  if(L.type==='video'){ const r=VID.get(L.vid); return r ? {bmp:r.el, w:r.w, h:r.h, rec:r} : null; }
+  const r=IMG.get(L.img); return r ? {bmp:r.bmp, w:r.w, h:r.h, rec:r} : null;
+}
+const mediaThumb = L => (L.type==='video' ? VID.get(L.vid) : IMG.get(L.img))?.thumb || null;
+const isMedia = L => L.type==='image' || L.type==='video';
 
 /* ============================================================
    3. DOCUMENT MODEL
@@ -806,8 +905,78 @@ function filterStr(f){
   return p.length?p.join(' '):'none';
 }
 
+/* ---- decorative primitives used by the style families ---- */
+let _grainTile=null;
+function grainTile(){
+  if(_grainTile) return _grainTile;
+  const n=180, c=new OffscreenCanvas(n,n), x=c.getContext('2d');
+  const d=x.createImageData(n,n);
+  for(let i=0;i<n*n;i++){
+    const v=Math.random()*255|0;
+    d.data[i*4]=d.data[i*4+1]=d.data[i*4+2]=v; d.data[i*4+3]=255;
+  }
+  x.putImageData(d,0,0);
+  return _grainTile=c;
+}
+function paintGrain(ctx,x,y,w,h,amount){
+  const pat=ctx.createPattern(grainTile(),'repeat'); if(!pat) return;
+  ctx.save();
+  ctx.globalAlpha=clamp(amount,0,1)*0.5;
+  ctx.globalCompositeOperation='overlay';
+  ctx.fillStyle=pat; ctx.fillRect(x,y,w,h);
+  ctx.restore();
+}
+/* washi tape: translucent strip with torn ends */
+function drawTape(ctx,L){
+  const w=L.w,h=L.h,n=Math.max(4,Math.round(h/7));
+  ctx.save();
+  ctx.globalAlpha=(L.op??1)*0.86;
+  ctx.fillStyle=L.fill||'#F2E6C8';
+  ctx.beginPath();
+  ctx.moveTo(0,0);
+  for(let i=0;i<=n;i++) ctx.lineTo(w*(i/n), (i%2?1:-1)*h*0.035);
+  ctx.lineTo(w,h);
+  for(let i=n;i>=0;i--) ctx.lineTo(w*(i/n), h+(i%2?-1:1)*h*0.035);
+  ctx.closePath(); ctx.fill();
+  if(L.stripe){
+    ctx.globalAlpha=(L.op??1)*0.3; ctx.strokeStyle=L.stripe; ctx.lineWidth=h*0.16;
+    for(let i=-h;i<w+h;i+=h*0.5){ ctx.beginPath(); ctx.moveTo(i,h); ctx.lineTo(i+h,0); ctx.stroke(); }
+  }
+  ctx.restore();
+}
+/* 35mm sprocket rails down both long edges */
+function drawFilmRail(ctx,L){
+  ctx.save();
+  ctx.fillStyle=L.fill||'#17171B';
+  rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
+  const hole=L.h*0.055, gap=hole*1.1, pad=L.h*0.045;
+  ctx.fillStyle=L.holeColor||'#F5F5F0';
+  for(let x=gap; x<L.w-hole-gap*0.4; x+=hole+gap){
+    rrect(ctx,x,pad,hole,hole*0.72,hole*0.2); ctx.fill();
+    rrect(ctx,x,L.h-pad-hole*0.72,hole,hole*0.72,hole*0.2); ctx.fill();
+  }
+  ctx.restore();
+}
+/* Y2K gloss: a bright blob with a specular highlight */
+function drawGloss(ctx,L){
+  ctx.save();
+  const g=ctx.createLinearGradient(0,0,0,L.h);
+  g.addColorStop(0,L.fill||'#FF7AC6'); g.addColorStop(1,L.fill2||'#7C5CFF');
+  ctx.fillStyle=g;
+  if(L.shape==='ellipse'){ ctx.beginPath(); ctx.ellipse(L.w/2,L.h/2,L.w/2,L.h/2,0,0,7); }
+  else rrect(ctx,0,0,L.w,L.h,L.radius??L.h/2);
+  ctx.fill();
+  const hi=ctx.createLinearGradient(0,0,0,L.h*0.5);
+  hi.addColorStop(0,'rgba(255,255,255,.75)'); hi.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hi;
+  ctx.save(); ctx.beginPath();
+  ctx.ellipse(L.w/2,L.h*0.3,L.w*0.38,L.h*0.26,0,0,7); ctx.clip();
+  ctx.fillRect(0,0,L.w,L.h*0.6); ctx.restore();
+  ctx.restore();
+}
+
 function drawImg(ctx,L){
-  const rec = L.img && IMG.get(L.img);
+  const rec = srcOf(L);
   if(!rec){
     const g=ctx.createLinearGradient(0,0,L.w,L.h);
     g.addColorStop(0,L.ph?.[0]||'#C8CEDA'); g.addColorStop(1,L.ph?.[1]||'#9AA6BC');
@@ -828,24 +997,41 @@ function drawImg(ctx,L){
     ctx.fillStyle = '#000'; rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
     ctx.restore();
   }
+  /* an asymmetric mount: polaroid has a deep chin, a matte is even */
+  const F = L.frame;
+  let ix=0, iy=0, iw=L.w, ih=L.h;
+  if(F){
+    const t=F.t||0, r=F.r??t, bm=F.b??t, l=F.l??t;
+    ctx.fillStyle=F.c||'#fff';
+    rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
+    ix=l; iy=t; iw=Math.max(1,L.w-l-r); ih=Math.max(1,L.h-t-bm);
+  }
   ctx.save();
-  rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.clip();
+  rrect(ctx,ix,iy,iw,ih,F?0:(L.radius||0)); ctx.clip();
+  ctx.translate(ix,iy);
+  const LW=L.w, LH=L.h; if(F) L={...L, w:iw, h:ih};
   ctx.filter = filterStr(L.filter);
   const im = rec.bmp;
+  if(im instanceof HTMLVideoElement && im.readyState < 2){   /* not decodable yet */
+    ctx.restore();
+    ctx.fillStyle='#1A1A22'; rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
+    return;
+  }
   if(L.fit==='fill'){
     ctx.drawImage(im,0,0,L.w,L.h);
   }else{
-    const base = L.fit==='contain' ? Math.min(L.w/im.width,L.h/im.height)
-                                   : Math.max(L.w/im.width,L.h/im.height);
-    const s = base*(L.oz||1), dw = im.width*s, dh = im.height*s;
+    const base = L.fit==='contain' ? Math.min(L.w/rec.w,L.h/rec.h)
+                                   : Math.max(L.w/rec.w,L.h/rec.h);
+    const s = base*(L.oz||1), dw = rec.w*s, dh = rec.h*s;
     ctx.drawImage(im,(L.w-dw)/2+(L.ox||0)*L.w,(L.h-dh)/2+(L.oy||0)*L.h,dw,dh);
   }
   ctx.filter='none';
   if(L.tint){ ctx.globalCompositeOperation='source-atop'; ctx.fillStyle=L.tint; ctx.fillRect(0,0,L.w,L.h); }
+  if(L.grain) paintGrain(ctx,0,0,L.w,L.h,L.grain);
   ctx.restore();
   if(L.stroke && L.sw>0){
     ctx.strokeStyle=L.stroke; ctx.lineWidth=L.sw;
-    rrect(ctx,L.sw/2,L.sw/2,L.w-L.sw,L.h-L.sw,Math.max(0,(L.radius||0)-L.sw/2)); ctx.stroke();
+    rrect(ctx,L.sw/2,L.sw/2,LW-L.sw,LH-L.sw,Math.max(0,(L.radius||0)-L.sw/2)); ctx.stroke();
   }
 }
 
@@ -884,6 +1070,10 @@ function drawText(ctx,L){
 }
 
 function drawShape(ctx,L){
+  if(L.type==='tape')  return drawTape(ctx,L);
+  if(L.type==='rail')  return drawFilmRail(ctx,L);
+  if(L.type==='gloss') return drawGloss(ctx,L);
+  if(L.type==='grain'){ paintGrain(ctx,0,0,L.w,L.h,L.amount??0.5); return; }
   const fill = L.grad
     ? (()=>{ const g=ctx.createLinearGradient(0,0,L.grad.ang===0?L.w:0,L.grad.ang===0?0:L.h);
              g.addColorStop(0,L.grad.a); g.addColorStop(1,L.grad.b); return g; })()
@@ -912,7 +1102,7 @@ function drawLayer(ctx,L,offX){
   ctx.translate(L.x+offX+L.w/2, L.y+L.h/2);
   if(L.rot) ctx.rotate(rad(L.rot));
   ctx.translate(-L.w/2,-L.h/2);
-  if(L.type==='image')      drawImg(ctx,L);
+  if(L.type==='image'||L.type==='video') drawImg(ctx,L);
   else if(L.type==='text')  drawText(ctx,L);
   else                      drawShape(ctx,L);
   ctx.restore();
@@ -1414,7 +1604,7 @@ const PACKS = [
   }
 },
 {
-  id:'checklist', name:'Checklist', sub:'Tips and listicles',
+  id:'checklist', cat:'format', name:'Checklist', sub:'Tips and listicles',
   chips:['#F2F7F4','#12634A','#2ECC8F'],
   build(W,H,n){
     const out=[], tick=(y)=>[
@@ -1462,6 +1652,390 @@ const PACKS = [
   }
 },
 ];
+
+/* ---- helpers for the style families ---- */
+const tape  = (x,y,w,h,rot,c,stripe)=>T({type:'tape',x,y,w,h,rot,fill:c||'#EFE2C4',stripe,name:'Tape'});
+const rail  = (x,y,w,h,c)=>T({type:'rail',x,y,w,h,fill:c||'#17171B',name:'Film rail'});
+const gloss = (x,y,w,h,a,bq,shape)=>T({type:'gloss',x,y,w,h,fill:a,fill2:bq,shape,name:'Gloss'});
+const grain = (w,h,amt,span)=>T({type:'grain',x:0,y:0,w,h,amount:amt??.45,span:span||1,name:'Grain'});
+const polaroid = (x,y,w,rot,ph,cap,W)=>{
+  const h=w*1.2, chin=w*0.19;
+  const out=[ img(x,y,w,h+chin,{rot,ph,frame:{t:w*.055,r:w*.055,l:w*.055,b:chin,c:'#FCFBF7'},
+              shadow:{a:.26,b:30,y:12},name:'Instant'}) ];
+  if(cap) out.push(txt(x,y+h+chin*0.12,w,cap,{rot,fs:w*.1,fw:700,ff:'Caveat',fc:'#3A3A44',align:'center',h:chin*.8}));
+  return out;
+};
+
+const STYLE_PACKS = [
+{
+  id:'scrapbook', cat:'style', name:'Scrapbook', sub:'Paper, tape, handwriting',
+  chips:['#F3EADA','#C25B3F','#3A3A44'],
+  build(W,H,n){
+    const out=[];
+    out.push(packSlide('#F3EADA',[
+      grain(W,H,.35),
+      ...polaroid(W*.24,H*.11,W*.5,-6,PH.sand,'where it started',W),
+      tape(W*.33,H*.08,W*.22,H*.035,-8,'#E9D6A8','#C9A86B'),
+      txt(W*.1,H*.74,W*.8,'a little recap',{fs:96,fw:700,ff:'Caveat',fc:'#C25B3F',align:'center',h:H*.12}),
+      txt(W*.1,H*.86,W*.8,'swipe through →',{fs:40,fw:500,ff:'Caveat',fc:'#7A6A58',align:'center',h:56}),
+    ]));
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#F3EADA',[
+      grain(W,H,.35),
+      ...polaroid(W*.06,H*.08,W*.46,-5,PH.warm,'',W),
+      ...polaroid(W*.48,H*.355,W*.46,7,PH.sage,'',W),
+      tape(W*.11,H*.06,W*.2,H*.03,-7,'#D9E3CF','#A8BC9C'),
+      tape(W*.53,H*.335,W*.2,H*.03,9,'#F0D2C4','#D19C88'),
+      txt(W*.08,H*.90,W*.84,'a line in your own hand',{fs:52,fw:700,ff:'Caveat',fc:'#3A3A44',h:74}),
+    ]));
+    out.push(packSlide('#C25B3F',[
+      grain(W,H,.4),
+      txt(W*.1,H*.38,W*.8,'thanks for\nlooking',{fs:104,fw:700,ff:'Caveat',fc:'#F3EADA',lh:1.05,align:'center',h:H*.22}),
+      txt(W*.1,H*.66,W*.8,'@yourhandle',{fs:42,fw:500,ff:'Caveat',fc:'rgba(243,234,218,.8)',align:'center',h:58}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'film', cat:'style', name:'Film', sub:'35mm rails and grain',
+  chips:['#0E0E10','#E8B84B','#F5F5F0'],
+  build(W,H,n){
+    const out=[];
+    const railed = inner => [
+      rail(0,0,W,H*.075), rail(0,H*.925,W,H*.075), ...inner, grain(W,H,.5),
+    ];
+    out.push(packSlide('#0E0E10', railed([
+      img(0,H*.075,W,H*.85,{ph:PH.ink,name:'Frame',filter:{br:96,ct:112,sa:88}}),
+      box(0,H*.5,W,H*.425,'#000',{op:.5}),
+      txt(W*.08,H*.62,W*.84,'ROLL 01',{fs:26,fw:800,ls:6,fc:'#E8B84B',h:36}),
+      txt(W*.08,H*.69,W*.84,'Shot on\na quiet street',{fs:88,fw:900,fc:'#F5F5F0',lh:1.06,h:H*.18}),
+    ])));
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#0E0E10', railed([
+      img(W*.06,H*.13,W*.88,H*.62,{ph:i%2?PH.cool:PH.sand,name:'Frame '+i,filter:{br:97,ct:110,sa:85}}),
+      txt(W*.06,H*.79,W*.5,'FRAME '+String(i+1).padStart(2,'0'),{fs:24,fw:800,ls:5,fc:'#E8B84B',h:34}),
+      txt(W*.06,H*.845,W*.88,'A caption in the margin',{fs:34,fw:500,fc:'#C9C9C2',h:48}),
+    ])));
+    out.push(packSlide('#0E0E10', railed([
+      txt(W*.1,H*.42,W*.8,'END OF\nROLL',{fs:100,fw:900,fc:'#F5F5F0',align:'center',lh:1.02,h:H*.2}),
+      txt(W*.1,H*.64,W*.8,'@yourhandle',{fs:30,fw:800,ls:4,fc:'#E8B84B',align:'center',h:42}),
+    ])));
+    return out;
+  }
+},
+{
+  id:'instant', cat:'style', name:'Instant', sub:'Polaroid frames',
+  chips:['#E7E3DA','#2B2B31','#D98E73'],
+  build(W,H,n){
+    const out=[];
+    out.push(packSlide('#E7E3DA',[
+      ...polaroid(W*.22,H*.09,W*.56,-3,PH.blush,'hello there',W),
+      txt(W*.1,H*.79,W*.8,'A FEW MOMENTS',{fs:28,fw:800,ls:5,fc:'#8A8378',align:'center',h:38}),
+      txt(W*.1,H*.85,W*.8,'swipe →',{fs:44,fw:700,ff:'Caveat',fc:'#D98E73',align:'center',h:60}),
+    ]));
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#E7E3DA',[
+      ...polaroid(W*.21,H*.09,W*.58,i%2?4:-4,[PH.warm,PH.sage,PH.cool][i%3],'no. '+String(i+1).padStart(2,'0'),W),
+      txt(W*.1,H*.87,W*.8,'a short note underneath',{fs:38,fw:500,ff:'Caveat',fc:'#5F5A52',align:'center',h:54}),
+    ]));
+    out.push(packSlide('#2B2B31',[
+      txt(W*.1,H*.4,W*.8,'that\'s all',{fs:104,fw:700,ff:'Caveat',fc:'#E7E3DA',align:'center',h:H*.14}),
+      txt(W*.1,H*.6,W*.8,'@YOURHANDLE',{fs:26,fw:800,ls:5,fc:'#D98E73',align:'center',h:36}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'plastic', cat:'style', name:'Plastic', sub:'Y2K gloss and candy',
+  chips:['#FF7AC6','#7C5CFF','#34E5FF'],
+  build(W,H,n){
+    const out=[];
+    out.push(packSlide('#1A0B2E',[
+      gloss(-W*.2,H*.05,W*.7,W*.7,'#34E5FF','#7C5CFF','ellipse'),
+      gloss(W*.55,H*.62,W*.6,W*.6,'#FF7AC6','#FF5A36','ellipse'),
+      txt(W*.08,H*.33,W*.84,'SHINY\nNEW\nTHING',{fs:128,fw:900,ff:'Archivo Black',fc:'#fff',lh:.96,h:H*.34,
+          stroke:'#1A0B2E',sw:3,shadow:{a:.5,b:30,y:8}}),
+      gloss(W*.08,H*.72,W*.42,H*.075,'#FFE14D','#FF9F1C'),
+      txt(W*.08,H*.735,W*.42,'SWIPE',{fs:38,fw:900,fc:'#1A0B2E',align:'center',ls:3,h:52}),
+    ]));
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#150A26',[
+      gloss(W*.6,-W*.1,W*.6,W*.6,'#7C5CFF','#34E5FF','ellipse'),
+      img(W*.1,H*.12,W*.8,H*.44,{radius:W*.09,ph:PH.blush,stroke:'#fff',sw:8,shadow:{a:.5,b:36,y:14}}),
+      txt(W*.1,H*.62,W*.8,'point '+(i)+' goes here',{fs:74,fw:900,fc:'#fff',lh:1.08,h:H*.16}),
+      txt(W*.1,H*.79,W*.8,'a bright line of supporting copy',{fs:36,fw:600,fc:'#C9B6FF',lh:1.4,h:H*.12}),
+    ]));
+    out.push(packSlide('#FF7AC6',[
+      gloss(W*.15,H*.28,W*.7,W*.7,'#FFE14D','#FF5A36','ellipse'),
+      txt(W*.1,H*.44,W*.8,'FOLLOW\nFOR MORE',{fs:96,fw:900,ff:'Archivo Black',fc:'#1A0B2E',align:'center',lh:1,h:H*.2}),
+      txt(W*.1,H*.68,W*.8,'@yourhandle',{fs:38,fw:800,fc:'#fff',align:'center',h:52}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'timeless', cat:'style', name:'Timeless', sub:'Quiet serif classic',
+  chips:['#FAF8F3','#1C1C1A','#9A8F7D'],
+  build(W,H,n){
+    const out=[];
+    out.push(packSlide('#FAF8F3',[
+      box(W*.1,H*.1,W*.8,1,'#D8D2C6'),
+      txt(W*.1,H*.13,W*.8,'ESTABLISHED TODAY',{fs:22,fw:700,ls:5,fc:'#9A8F7D',h:32}),
+      txt(W*.1,H*.34,W*.8,'The art of\nsaying less',{fs:106,fw:400,ff:'Playfair Display',fc:'#1C1C1A',lh:1.05,h:H*.24}),
+      box(W*.1,H*.66,W*.14,1,'#1C1C1A'),
+      txt(W*.1,H*.7,W*.8,'An essay in five parts',{fs:32,fw:400,ff:'Instrument Serif',italic:true,fc:'#6E675C',h:46}),
+      box(W*.1,H*.9,W*.8,1,'#D8D2C6'),
+    ]));
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#FAF8F3',[
+      txt(W*.1,H*.11,W*.8,'—  '+String(i).padStart(2,'0'),{fs:24,fw:700,ls:4,fc:'#9A8F7D',h:34}),
+      img(W*.1,H*.17,W*.8,H*.34,{ph:PH.sand,name:'Plate'}),
+      txt(W*.1,H*.56,W*.8,'A considered heading',{fs:66,fw:400,ff:'Playfair Display',fc:'#1C1C1A',lh:1.12,h:H*.14}),
+      box(W*.1,H*.72,W*.1,1,'#C7BFAE'),
+      txt(W*.1,H*.76,W*.8,'Body copy set at a comfortable measure, unhurried, with room to breathe on the page.',
+          {fs:32,fw:400,fc:'#5D564C',lh:1.6,h:H*.18}),
+    ]));
+    out.push(packSlide('#1C1C1A',[
+      txt(W*.1,H*.4,W*.8,'Fin.',{fs:110,fw:400,ff:'Playfair Display',fc:'#FAF8F3',align:'center',h:H*.14}),
+      txt(W*.1,H*.6,W*.8,'@yourhandle',{fs:24,fw:700,ls:5,fc:'#9A8F7D',align:'center',h:34}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'recap', cat:'style', name:'Recap', sub:'Photo dump grid',
+  chips:['#101014','#FFFFFF','#FF5A36'],
+  build(W,H,n){
+    const out=[];
+    out.push(packSlide('#101014',[
+      img(0,0,W,H,{ph:PH.cool,op:.75,name:'Cover'}),
+      box(0,0,W,H,'#000',{op:.42}),
+      txt(W*.08,H*.38,W*.84,'THE\nRECAP',{fs:140,fw:900,ff:'Archivo Black',fc:'#fff',lh:.94,align:'center',h:H*.26}),
+      box(W*.38,H*.68,W*.24,5,'#FF5A36'),
+      txt(W*.08,H*.73,W*.84,'everything, in order',{fs:34,fw:600,fc:'#C9C9D4',align:'center',h:48}),
+    ]));
+    const grids=[
+      [[0,0,.5,.5],[.5,0,.5,.5],[0,.5,1,.5]],
+      [[0,0,1,.5],[0,.5,.5,.5],[.5,.5,.5,.5]],
+      [[0,0,.5,.34],[.5,0,.5,.34],[0,.34,.5,.33],[.5,.34,.5,.33],[0,.67,1,.33]],
+    ];
+    for(let i=1;i<Math.max(2,n-1);i++){
+      const cells=grids[(i-1)%grids.length];
+      const themes=[PH.warm,PH.cool,PH.sage,PH.blush,PH.sand];
+      out.push(packSlide('#101014',[
+        ...cells.map((c,k)=>{
+          const l=grid(W,H*.9,[c],10,16)[0];
+          l.y+=H*.05; l.ph=themes[(i+k)%themes.length]; l.radius=10; return l;
+        }),
+        txt(W*.06,H*.955,W*.5,String(i).padStart(2,'0')+' / '+String(Math.max(2,n-2)).padStart(2,'0'),
+            {fs:24,fw:800,ls:3,fc:'#FF5A36',h:34}),
+      ]));
+    }
+    out.push(packSlide('#FF5A36',[
+      txt(W*.08,H*.38,W*.84,'SEE YOU\nNEXT TIME',{fs:100,fw:900,ff:'Archivo Black',fc:'#fff',lh:1,align:'center',h:H*.2}),
+      txt(W*.08,H*.64,W*.84,'@yourhandle',{fs:36,fw:800,fc:'#1A0B0B',align:'center',h:50}),
+    ]));
+    return out;
+  }
+},
+];
+
+PACKS.push(...STYLE_PACKS);
+
+const FORMAT_PACKS = [
+{
+  id:'beforeafter', cat:'format', name:'Before / After', sub:'Transformations',
+  chips:['#0E1116','#2ECC8F','#FFFFFF'],
+  build(W,H,n){
+    const out=[packSlide('#0E1116',[
+      img(0,0,W,H*.5,{ph:PH.ink,name:'Before'}),
+      img(0,H*.5,W,H*.5,{ph:PH.sage,name:'After'}),
+      box(0,H*.5-3,W,6,'#fff'),
+      txt(W*.06,H*.06,W*.4,'BEFORE',{fs:30,fw:900,ls:4,fc:'#fff',bgfill:'rgba(0,0,0,.55)',bgpad:16,bgr:8,h:44}),
+      txt(W*.06,H*.56,W*.4,'AFTER',{fs:30,fw:900,ls:4,fc:'#0E1116',bgfill:'#2ECC8F',bgpad:16,bgr:8,h:44}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#0E1116',[
+      img(0,0,W,H*.5,{ph:PH.ink,name:'Before '+i}),
+      img(0,H*.5,W,H*.5,{ph:PH.cool,name:'After '+i}),
+      box(0,H*.5-3,W,6,'#fff'),
+      txt(W*.06,H*.88,W*.88,'What changed, in one line',{fs:38,fw:700,fc:'#fff',
+          bgfill:'rgba(0,0,0,.6)',bgpad:18,bgr:10,h:54}),
+    ]));
+    out.push(packSlide('#2ECC8F',[
+      txt(W*.1,H*.36,W*.8,'WANT\nTHE SAME?',{fs:100,fw:900,ff:'Archivo Black',fc:'#0E1116',lh:1,align:'center',h:H*.2}),
+      txt(W*.1,H*.62,W*.8,'DM the word START',{fs:38,fw:800,fc:'#0E1116',align:'center',h:52}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'steps', cat:'format', name:'Step by step', sub:'How-to guides',
+  chips:['#FFFFFF','#2D5BFF','#0B0B0F'],
+  build(W,H,n){
+    const out=[packSlide('#2D5BFF',[
+      txt(W*.09,H*.12,W*.6,'HOW TO',{fs:28,fw:800,ls:6,fc:'rgba(255,255,255,.8)',h:38}),
+      txt(W*.09,H*.3,W*.82,'Do the thing\nin 5 steps',{fs:100,fw:900,fc:'#fff',lh:1.02,h:H*.26}),
+      box(W*.09,H*.68,W*.18,6,'#fff'),
+      txt(W*.09,H*.75,W*.82,'Swipe for each step →',{fs:36,fw:700,fc:'#fff',h:50}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#FFFFFF',[
+      box(W*.09,H*.1,W*.17,W*.17,'#2D5BFF',{radius:W*.05}),
+      txt(W*.09,H*.1+W*.035,W*.17,String(i),{fs:W*.1,fw:900,fc:'#fff',align:'center',h:W*.11}),
+      txt(W*.09,H*.3,W*.82,'Name the step',{fs:74,fw:900,lh:1.08,h:H*.14}),
+      txt(W*.09,H*.45,W*.82,'Explain exactly what to do, in plain words, so it can be followed without guessing.',
+          {fs:36,fw:500,fc:'#5B5B6B',lh:1.5,h:H*.18}),
+      img(W*.09,H*.66,W*.82,H*.24,{radius:16,ph:PH.cool,name:'Step shot'}),
+    ]));
+    out.push(packSlide('#0B0B0F',[
+      txt(W*.09,H*.38,W*.82,'Save this\nfor later',{fs:94,fw:900,fc:'#fff',lh:1.05,h:H*.2}),
+      box(W*.09,H*.64,W*.18,6,'#2D5BFF'),
+      txt(W*.09,H*.71,W*.82,'@yourhandle',{fs:36,fw:700,fc:'#6E96FF',h:50}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'facts', cat:'format', name:'Facts & figures', sub:'Stats that land',
+  chips:['#0B1F3A','#FFD166','#FFFFFF'],
+  build(W,H,n){
+    const out=[packSlide('#0B1F3A',[
+      txt(W*.09,H*.13,W*.82,'BY THE NUMBERS',{fs:26,fw:800,ls:6,fc:'#FFD166',h:36}),
+      txt(W*.09,H*.32,W*.82,'What the\ndata says',{fs:102,fw:900,fc:'#fff',lh:1.04,h:H*.24}),
+      txt(W*.09,H*.68,W*.82,'5 figures worth knowing →',{fs:36,fw:600,fc:'#9DB4CE',h:50}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#0B1F3A',[
+      txt(W*.09,H*.2,W*.82,(i*17+23)+'%',{fs:190,fw:900,ff:'Archivo Black',fc:'#FFD166',lh:1,h:H*.22}),
+      box(W*.09,H*.47,W*.2,6,'#fff'),
+      txt(W*.09,H*.53,W*.82,'What that number actually means',{fs:60,fw:800,fc:'#fff',lh:1.14,h:H*.16}),
+      txt(W*.09,H*.72,W*.82,'One line of context so the figure is not floating on its own.',
+          {fs:32,fw:500,fc:'#9DB4CE',lh:1.45,h:H*.14}),
+      txt(W*.09,H*.9,W*.82,'SOURCE — add yours',{fs:22,fw:700,ls:3,fc:'#5E7A8C',h:32}),
+    ]));
+    out.push(packSlide('#FFD166',[
+      txt(W*.09,H*.4,W*.82,'Which one\nsurprised you?',{fs:88,fw:900,fc:'#0B1F3A',lh:1.06,align:'center',h:H*.2}),
+      txt(W*.09,H*.66,W*.82,'Tell me below ↓',{fs:38,fw:700,fc:'#0B1F3A',align:'center',h:52}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'product', cat:'format', name:'Product showcase', sub:'Features to CTA',
+  chips:['#F6F4F1','#1A1A1A','#C8553D'],
+  build(W,H,n){
+    const out=[packSlide('#F6F4F1',[
+      img(W*.08,H*.1,W*.84,H*.56,{radius:20,ph:PH.sand,name:'Hero shot'}),
+      txt(W*.08,H*.71,W*.84,'The product,\nin one line',{fs:80,fw:900,lh:1.06,fc:'#1A1A1A',h:H*.16}),
+      txt(W*.08,H*.88,W*.84,'FROM $00',{fs:30,fw:800,ls:4,fc:'#C8553D',h:42}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#F6F4F1',[
+      img(W*.08,H*.09,W*.84,H*.4,{radius:20,ph:[PH.warm,PH.sage,PH.cool][i%3],name:'Detail '+i}),
+      box(W*.08,H*.54,W*.14,W*.14,'#C8553D',{radius:W*.04}),
+      txt(W*.08,H*.545,W*.14,String(i),{fs:W*.08,fw:900,fc:'#fff',align:'center',h:W*.1}),
+      txt(W*.26,H*.55,W*.66,'The feature',{fs:62,fw:900,fc:'#1A1A1A',lh:1.1,h:H*.1}),
+      txt(W*.08,H*.72,W*.84,'Why it matters to the person buying, said plainly and without jargon.',
+          {fs:34,fw:500,fc:'#6B6156',lh:1.5,h:H*.16}),
+    ]));
+    out.push(packSlide('#1A1A1A',[
+      txt(W*.08,H*.34,W*.84,'Shop it',{fs:112,fw:900,ff:'Archivo Black',fc:'#fff',align:'center',h:H*.14}),
+      box(W*.24,H*.56,W*.52,H*.085,'#C8553D',{radius:999}),
+      txt(W*.24,H*.575,W*.52,'LINK IN BIO',{fs:34,fw:800,ls:3,fc:'#fff',align:'center',h:48}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'listicle', cat:'format', name:'Listicle', sub:'Numbered rundown',
+  chips:['#FFF8F0','#E4572E','#17181C'],
+  build(W,H,n){
+    const out=[packSlide('#E4572E',[
+      txt(W*.09,H*.16,W*.82,String(Math.max(3,n-2)),{fs:250,fw:900,ff:'Archivo Black',fc:'#fff',lh:.9,h:H*.26}),
+      txt(W*.09,H*.46,W*.82,'things I wish\nI knew sooner',{fs:76,fw:900,fc:'#fff',lh:1.08,h:H*.2}),
+      txt(W*.09,H*.78,W*.82,'SWIPE →',{fs:32,fw:900,ls:5,fc:'#FFD9CC',h:44}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#FFF8F0',[
+      txt(W*.09,H*.12,W*.82,String(i).padStart(2,'0'),{fs:120,fw:900,ff:'Archivo Black',fc:'#E4572E',h:H*.14}),
+      box(W*.09,H*.3,W*.82,2,'#F0CFC0'),
+      txt(W*.09,H*.36,W*.82,'The one-line claim',{fs:70,fw:900,fc:'#17181C',lh:1.1,h:H*.16}),
+      txt(W*.09,H*.56,W*.82,'Two or three lines that make the claim make sense, with a concrete example if you have one.',
+          {fs:36,fw:500,fc:'#6E6259',lh:1.5,h:H*.22}),
+    ]));
+    out.push(packSlide('#17181C',[
+      txt(W*.09,H*.36,W*.82,'Which one hit?',{fs:82,fw:900,fc:'#fff',lh:1.08,align:'center',h:H*.16}),
+      txt(W*.09,H*.6,W*.82,'Comment the number ↓',{fs:36,fw:700,fc:'#E4572E',align:'center',h:50}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'myth', cat:'format', name:'Myth vs fact', sub:'Bust a misconception',
+  chips:['#12121A','#FF4D6D','#2ECC8F'],
+  build(W,H,n){
+    const out=[packSlide('#12121A',[
+      txt(W*.09,H*.14,W*.82,'MYTHS, BUSTED',{fs:26,fw:800,ls:6,fc:'#FF4D6D',h:36}),
+      txt(W*.09,H*.32,W*.82,'What you\nheard is\nwrong',{fs:104,fw:900,fc:'#fff',lh:1,h:H*.3}),
+      txt(W*.09,H*.74,W*.82,'Swipe for the real answer →',{fs:34,fw:600,fc:'#9B9BAD',h:48}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#12121A',[
+      box(W*.08,H*.12,W*.84,H*.34,'#1E1E2A',{radius:22}),
+      txt(W*.12,H*.16,W*.76,'MYTH',{fs:26,fw:900,ls:4,fc:'#FF4D6D',h:36}),
+      txt(W*.12,H*.22,W*.76,'The thing people repeat without checking',{fs:46,fw:700,fc:'#E6E6EF',lh:1.25,h:H*.2}),
+      box(W*.08,H*.52,W*.84,H*.34,'#13291F',{radius:22}),
+      txt(W*.12,H*.56,W*.76,'FACT',{fs:26,fw:900,ls:4,fc:'#2ECC8F',h:36}),
+      txt(W*.12,H*.62,W*.76,'What is actually true, and the reason why',{fs:46,fw:700,fc:'#DFF5EA',lh:1.25,h:H*.2}),
+    ]));
+    out.push(packSlide('#2ECC8F',[
+      txt(W*.09,H*.38,W*.82,'Pass it on',{fs:104,fw:900,ff:'Archivo Black',fc:'#0B2419',align:'center',h:H*.14}),
+      txt(W*.09,H*.6,W*.82,'Share with someone who needs it',{fs:34,fw:700,fc:'#0B2419',align:'center',h:48}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'qa', cat:'format', name:'Q & A', sub:'Answer the DMs',
+  chips:['#FBF6EF','#3A2E7A','#E8A33D'],
+  build(W,H,n){
+    const out=[packSlide('#3A2E7A',[
+      txt(W*.09,H*.14,W*.82,'YOU ASKED',{fs:28,fw:800,ls:6,fc:'#E8A33D',h:38}),
+      txt(W*.09,H*.34,W*.82,'Answering\nyour DMs',{fs:104,fw:900,fc:'#fff',lh:1.03,h:H*.24}),
+      txt(W*.09,H*.72,W*.82,'The ones that kept coming up →',{fs:34,fw:600,fc:'#C3BAF0',h:48}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#FBF6EF',[
+      txt(W*.09,H*.12,W*.82,'Q',{fs:96,fw:900,ff:'Playfair Display',fc:'#E8A33D',h:H*.1}),
+      txt(W*.09,H*.24,W*.82,'The question, as it was asked?',{fs:56,fw:700,fc:'#241D4F',lh:1.2,h:H*.16}),
+      box(W*.09,H*.45,W*.82,1,'#E0D7C8'),
+      txt(W*.09,H*.5,W*.82,'A',{fs:96,fw:900,ff:'Playfair Display',fc:'#3A2E7A',h:H*.1}),
+      txt(W*.09,H*.62,W*.82,'The honest answer, including the part most people skip over.',
+          {fs:38,fw:500,fc:'#5B5468',lh:1.5,h:H*.24}),
+    ]));
+    out.push(packSlide('#3A2E7A',[
+      txt(W*.09,H*.38,W*.82,'Got another?',{fs:92,fw:900,fc:'#fff',align:'center',h:H*.14}),
+      txt(W*.09,H*.6,W*.82,'DM me — I read them all',{fs:36,fw:700,fc:'#E8A33D',align:'center',h:50}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'testimonial', cat:'format', name:'Testimonial', sub:'Social proof',
+  chips:['#F4F1EC','#1C1C22','#C9A227'],
+  build(W,H,n){
+    const out=[packSlide('#1C1C22',[
+      txt(W*.1,H*.16,W*.8,'★★★★★',{fs:48,fw:700,fc:'#C9A227',align:'center',ls:6,h:64}),
+      txt(W*.1,H*.32,W*.8,'“It actually\nworked.”',{fs:92,fw:400,ff:'Instrument Serif',italic:true,fc:'#fff',lh:1.14,align:'center',h:H*.26}),
+      txt(W*.1,H*.68,W*.8,'WHAT PEOPLE SAY',{fs:24,fw:800,ls:5,fc:'#8E8E9E',align:'center',h:34}),
+    ])];
+    for(let i=1;i<Math.max(2,n-1);i++) out.push(packSlide('#F4F1EC',[
+      txt(W*.1,H*.12,W*.8,'★★★★★',{fs:36,fw:700,fc:'#C9A227',ls:5,h:50}),
+      txt(W*.1,H*.22,W*.8,'“A real sentence in their own words, kept exactly as they said it.”',
+          {fs:52,fw:400,ff:'Instrument Serif',italic:true,fc:'#1C1C22',lh:1.3,h:H*.3}),
+      img(W*.1,H*.62,W*.16,W*.16,{radius:999,ph:PH.blush,name:'Avatar'}),
+      txt(W*.3,H*.645,W*.6,'Their name',{fs:40,fw:800,fc:'#1C1C22',h:54}),
+      txt(W*.3,H*.7,W*.6,'What they do',{fs:30,fw:500,fc:'#7A7268',h:42}),
+    ]));
+    out.push(packSlide('#C9A227',[
+      txt(W*.1,H*.38,W*.8,'Your turn',{fs:104,fw:900,ff:'Archivo Black',fc:'#1C1C22',align:'center',h:H*.14}),
+      txt(W*.1,H*.6,W*.8,'Link in bio',{fs:38,fw:800,fc:'#1C1C22',align:'center',h:52}),
+    ]));
+    return out;
+  }
+},
+];
+PACKS.push(...FORMAT_PACKS);
+
 
 function applyPack(pack){
   const specs = pack.build(P.w,P.h,Math.max(3,P.slides.length));
@@ -1557,10 +2131,12 @@ function renderPanel(){
 /* ---------- Layouts ---------- */
 function pTemplates(b){
   /* whole-carousel packs first — this is the plug-and-play path */
+  for(const [catKey,catLabel,catNote] of [['style','Styles','a whole look'],['format','Formats','a whole story']]){
+  const list=PACKS.filter(k=>(k.cat||'style')===catKey);
   const gp=el('div','grp');
-  gp.appendChild(el('div','lbl','<span>Ready-made packs</span><span style="color:var(--ink-3);font-weight:600;letter-spacing:0;text-transform:none">builds every slide</span>'));
+  gp.appendChild(el('div','lbl',`<span>${catLabel}</span><span style="color:var(--ink-3);font-weight:600;letter-spacing:0;text-transform:none">${catNote} · builds every slide</span>`));
   const gpr=el('div','tgrid');
-  for(const pk of PACKS){
+  for(const pk of list){
     const card=el('button','tcard');
     const c=el('canvas','pv'); card.appendChild(c);
     const nm=el('div','nm');
@@ -1573,6 +2149,7 @@ function pTemplates(b){
     gpr.appendChild(card);
   }
   gp.appendChild(gpr); b.appendChild(gp);
+  }
 
   const sep=el('div','lbl','Single slides');
   sep.style.cssText='font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding-top:4px;border-top:1px solid var(--line-soft);margin-top:4px';
@@ -1642,8 +2219,8 @@ function pCarousel(b){
     g4.appendChild(el('div','lbl','Spanning layers'));
     for(const L of spanning){
       const r=el('div','layer on');
-      const rec=L.img&&IMG.get(L.img);
-      r.innerHTML=`<div class="th">${rec?`<img src="${rec.thumb}">`:''}</div>
+      const th=mediaThumb(L);
+      r.innerHTML=`<div class="th">${th?`<img src="${th}">`:''}</div>
         <div class="nm">${L.name||'Panorama'}</div><div class="sp">${L.span}×</div>`;
       r.onclick=()=>{ const j=slideIdxOf(L.id); if(j>=0){cur=j;} sel=[L.id]; redraw(); drawChrome(); renderInspector(); renderFilm(); };
       g4.appendChild(r);
@@ -1699,48 +2276,65 @@ async function bakeSpans(){
   toast('Baked into separate slides','ok');
 }
 
-/* ---------- Photos ---------- */
+/* ---------- Media (photos + clips) ---------- */
 function pPhotos(b){
   const g=el('div','grp');
   const drop=el('div','drop',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Add photos<br>drop or tap`);
-  drop.onclick=()=>pickFiles(async files=>{
-    for(const f of files) await addImage(f,f.name);
-    renderPanel(); toast(`${files.length} photo${files.length>1?'s':''} added`,'ok');
-  });
-  wireDrop(drop, async files=>{
-    for(const f of files) await addImage(f,f.name);
-    renderPanel(); toast(`${files.length} added`,'ok');
-  });
+    Add photos or clips<br>drop or tap`);
+  const take=async files=>{
+    toast('Reading media…','load',0);
+    const added=await ingest(files); untoast();
+    renderPanel();
+    if(added.length) toast(`${added.length} added`,'ok');
+  };
+  drop.onclick=()=>pickFiles(take);
+  wireDrop(drop,take);
   g.appendChild(drop); b.appendChild(g);
 
-  if(!IMG.size){
-    b.appendChild(el('div','empty','No photos yet.<br>Add a few and tap to place them.'));
-    return;
+  if(!IMG.size && !VID.size){
+    b.appendChild(el('div','empty','Nothing here yet.<br>Add photos or video clips, then tap to place them.'));
   }
-  const g2=el('div','grp');
-  g2.appendChild(el('div','lbl',`Library (${IMG.size})`));
-  const gr=el('div','agrid');
-  for(const [k,rec] of IMG){
-    const a=el('button','acard');
-    a.innerHTML=`<img src="${rec.thumb}" alt=""><div class="x">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="10" height="10" stroke-width="2.6"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></div>`;
-    a.querySelector('.x').onclick=ev=>{ ev.stopPropagation();
-      IMG.delete(k); DB.del('imgs',k); renderPanel(); };
-    a.onclick=()=>placePhoto(k);
-    gr.appendChild(a);
+  if(IMG.size){
+    const g2=el('div','grp');
+    g2.appendChild(el('div','lbl',`Photos (${IMG.size})`));
+    const gr=el('div','agrid');
+    for(const [k,rec] of IMG){
+      const a=el('button','acard');
+      a.innerHTML=`<img src="${rec.thumb}" alt=""><div class="x">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="10" height="10" stroke-width="2.6"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></div>`;
+      a.querySelector('.x').onclick=ev=>{ ev.stopPropagation(); IMG.delete(k); DB.del('imgs',k); renderPanel(); };
+      a.onclick=()=>placeMedia('i',k);
+      gr.appendChild(a);
+    }
+    g2.appendChild(gr); b.appendChild(g2);
   }
-  g2.appendChild(gr); b.appendChild(g2);
+  if(VID.size){
+    const g3=el('div','grp');
+    g3.appendChild(el('div','lbl',`Clips (${VID.size})`));
+    const gr=el('div','agrid');
+    for(const [k,rec] of VID){
+      const a=el('button','acard');
+      a.innerHTML=`<img src="${rec.thumb}" alt="">
+        <div class="vbadge">${rec.dur?rec.dur.toFixed(1)+'s':'clip'}</div>
+        <div class="x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" width="10" height="10" stroke-width="2.6"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></div>`;
+      a.querySelector('.x').onclick=ev=>{ ev.stopPropagation();
+        try{ rec.el.pause(); URL.revokeObjectURL(rec.url); }catch(e){}
+        VID.delete(k); DB.del('vids',k); renderPanel(); };
+      a.onclick=()=>placeMedia('v',k);
+      gr.appendChild(a);
+    }
+    g3.appendChild(gr); b.appendChild(g3);
+  }
 
-  const g3=el('div','grp');
-  g3.appendChild(el('div','lbl','AI cutout'));
+  const g4=el('div','grp');
+  g4.appendChild(el('div','lbl','AI cutout'));
   const cutBtn=el('button','btn full',
     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z" stroke-dasharray="3 3"/><path d="M9 12a3 3 0 106 0 3 3 0 00-6 0z" fill="currentColor"/></svg> Remove background`);
   cutBtn.onclick=()=>cutoutSelected();
-  g3.appendChild(cutBtn);
-  g3.appendChild(el('div','',`<div style="font-size:11px;color:var(--ink-3);line-height:1.5">
-    Select a photo on the canvas first. The model downloads once (~40 MB) then runs on-device — no upload, works offline after.</div>`));
-  b.appendChild(g3);
+  g4.appendChild(cutBtn);
+  g4.appendChild(el('div','',`<div style="font-size:11px;color:var(--ink-3);line-height:1.5">
+    Select a photo on the canvas first. For a clip, grab a frame and cut that out. The model downloads once (~40 MB) then runs on-device.</div>`));
+  b.appendChild(g4);
 }
 
 function placePhoto(key){
@@ -1766,7 +2360,7 @@ function wireDrop(node,cb){
   node.addEventListener('dragleave',()=>node.classList.remove('over'));
   node.addEventListener('drop',async e=>{
     e.preventDefault(); node.classList.remove('over');
-    const f=[...e.dataTransfer.files].filter(x=>x.type.startsWith('image/'));
+    const f=[...e.dataTransfer.files].filter(x=>x.type.startsWith('image/')||x.type.startsWith('video/'));
     if(f.length) await cb(f);
   });
 }
@@ -1881,6 +2475,7 @@ function pBrand(b){
 
 /* ---------- Layers ---------- */
 const LICON={image:'<rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="M21 15l-5-5L5 21"/>',
+  video:'<rect x="2" y="5" width="14" height="14" rx="2.5"/><path d="M16 10l6-3v10l-6-3z" stroke-linejoin="round"/>',
   text:'<path d="M4 6V4h16v2M12 4v16M8 20h8"/>',rect:'<rect x="3" y="5" width="18" height="14" rx="2"/>',
   ellipse:'<circle cx="12" cy="12" r="8"/>',line:'<path d="M4 12h16"/>'};
 function pLayers(b){
@@ -1892,8 +2487,8 @@ function pLayers(b){
   g.appendChild(el('div','lbl',`Slide ${cur+1} — top layer first`));
   [...list].reverse().forEach(L=>{
     const r=el('div','layer'+(sel.includes(L.id)?' on':''));
-    const rec=L.img&&IMG.get(L.img);
-    r.innerHTML=`<div class="th">${rec?`<img src="${rec.thumb}">`:
+    const th=mediaThumb(L);
+    r.innerHTML=`<div class="th">${th?`<img src="${th}">`:
       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor">${LICON[L.type]||LICON.rect}</svg>`}</div>
       <div class="nm">${L.name||(L.type==='text'?(L.text||'Text').slice(0,22):L.type)}</div>
       ${(L.span||1)>1?`<div class="sp">${L.span}×</div>`:''}
@@ -1981,6 +2576,7 @@ function renderInspector(){
   /* ---- type-specific ---- */
   if(L.type==='text') inspText(b,L);
   if(L.type==='image') inspImage(b,L);
+  if(L.type==='video') inspVideo(b,L);
   if(L.type==='rect'||L.type==='ellipse'||L.type==='line') inspShape(b,L);
 
   /* ---- transform ---- */
@@ -2106,6 +2702,67 @@ function inspImage(b,L){
   inspEffects(b,L);
 }
 
+function inspVideo(b,L){
+  const r=VID.get(L.vid);
+  const g=grp('Clip');
+  const row=el('div','row');
+  const rep=el('button','btn','Replace');
+  rep.onclick=()=>pickFiles(async f=>{
+    const v=f.find(x=>x.type.startsWith('video/'));
+    if(!v) return toast('Pick a video file','err');
+    toast('Reading clip…','load',0);
+    try{ L.vid=await addVideo(v,v.name); const nr=VID.get(L.vid);
+         L.t0=0; L.t1=nr.dur; untoast(); commit(); renderInspector(); }
+    catch(e){ untoast(); toast(e.message,'err',4000); }
+  });
+  const grab=el('button','btn','Grab frame');
+  grab.onclick=()=>grabFrame(L);
+  row.append(rep,grab); g.appendChild(row);
+  g.appendChild(segCtl([['cover','Cover'],['contain','Fit'],['fill','Stretch']],L.fit||'cover',v=>{L.fit=v;commit()}));
+  b.appendChild(g);
+
+  if(r){
+    const [t0,t1,dur]=trimOf(L);
+    const gt=grp('Trim');
+    gt.appendChild(el('div','',`<div style="font-size:11px;color:var(--ink-3);margin-bottom:2px">
+      ${(t1-t0).toFixed(1)}s of ${dur.toFixed(1)}s</div>`));
+    gt.appendChild(rowRange('Start',t0,0,Math.max(0.1,dur-0.1),v=>{
+      L.t0=Math.min(v,(L.t1??dur)-0.1); scrubTo(0); },.05,'s'));
+    gt.appendChild(rowRange('End',t1,0.1,dur||0.1,v=>{
+      L.t1=Math.max(v,(L.t0||0)+0.1); scrubTo(0); },.05,'s'));
+    const reset=el('button','btn full','Use the whole clip');
+    reset.onclick=()=>{ L.t0=0; L.t1=dur; commit(); renderInspector(); drawTransport(); };
+    gt.appendChild(reset);
+    b.appendChild(gt);
+  }
+
+  const ga=grp('Audio');
+  const mute=el('label','chk');
+  mute.innerHTML=`<input type="checkbox"${L.muted===false?'':' checked'}> Muted`;
+  mute.querySelector('input').onchange=e=>{ L.muted=e.target.checked; commit(); renderInspector(); };
+  ga.appendChild(mute);
+  if(L.muted===false) ga.appendChild(rowRange('Volume',(L.vol??1)*100,0,100,v=>L.vol=v/100,1,'%'));
+  b.appendChild(ga);
+
+  b.appendChild(rowRange('Speed',(L.rate||1)*100,25,400,v=>{L.rate=v/100;drawTransport()},5,'%'));
+  if(L.fit!=='fill'){
+    b.appendChild(rowRange('Zoom',(L.oz||1)*100,100,400,v=>L.oz=v/100,1,'%'));
+    b.appendChild(rowRange('Pan X',(L.ox||0)*100,-60,60,v=>L.ox=v/100,.5,'%'));
+    b.appendChild(rowRange('Pan Y',(L.oy||0)*100,-60,60,v=>L.oy=v/100,.5,'%'));
+  }
+  b.appendChild(rowRange('Corner radius',L.radius||0,0,Math.round(Math.min(L.w,L.h)/2),v=>L.radius=v));
+
+  const gf=grp('Adjust');
+  L.filter ||= {br:100,ct:100,sa:100,bl:0,gr:0};
+  gf.appendChild(rowRange('Brightness',L.filter.br??100,40,180,v=>L.filter.br=v));
+  gf.appendChild(rowRange('Contrast',L.filter.ct??100,40,200,v=>L.filter.ct=v));
+  gf.appendChild(rowRange('Saturation',L.filter.sa??100,0,220,v=>L.filter.sa=v));
+  gf.appendChild(rowRange('Blur',L.filter.bl||0,0,40,v=>L.filter.bl=v));
+  gf.appendChild(rowRange('Grayscale',L.filter.gr||0,0,100,v=>L.filter.gr=v,1,'%'));
+  b.appendChild(gf);
+  inspEffects(b,L);
+}
+
 function inspShape(b,L){
   const g=grp('Fill');
   g.appendChild(swatches(L.fill,c=>{L.fill=c;commit();renderInspector()},true));
@@ -2201,7 +2858,8 @@ function renderFilm(){
         push(); redraw(); renderFilm(); renderInspector(); };
       t.appendChild(x);
     }
-    t.onclick=()=>{ cur=i; sel=[]; redraw(); drawChrome(); renderFilm(); renderInspector(); renderPanel(); };
+    t.onclick=()=>{ stopPlay(); playhead=0; cur=i; sel=[]; syncVideos(0,true);
+      redraw(); drawChrome(); renderFilm(); renderInspector(); renderPanel(); drawTransport(); };
     f.appendChild(t);
     drawSlide(c.getContext('2d'), i, c.width/P.w);
   });
@@ -2216,6 +2874,129 @@ function renderFilmOne(i){
   const c=t.querySelector('canvas'); if(!c) return;
   c.getContext('2d').clearRect(0,0,c.width,c.height);
   drawSlide(c.getContext('2d'), i, c.width/P.w);
+}
+
+/* ============================================================
+   10b. VIDEO PLAYBACK — a playhead the canvas samples clips against
+   ============================================================ */
+let playing=false, playhead=0, playT0=0, rafId=null;
+
+const vidLayers = si => visibleOn(si).map(v=>v.L).filter(L=>L.type==='video' && !L.hidden);
+const trimOf = L => {
+  const r=VID.get(L.vid); const dur=r?.dur||0;
+  const t0=clamp(L.t0||0,0,dur), t1=clamp(L.t1!=null?L.t1:dur,t0+0.05,dur||t0+0.05);
+  return [t0,t1,dur];
+};
+function slideDur(si){
+  let d=0;
+  for(const L of vidLayers(si)){ const [t0,t1]=trimOf(L); d=Math.max(d,(t1-t0)/(L.rate||1)); }
+  return d || 0;
+}
+function syncVideos(t,force){
+  for(const L of vidLayers(cur)){
+    const r=VID.get(L.vid); if(!r) continue;
+    const [t0,t1]=trimOf(L);
+    const want = Math.min(t1, t0 + t*(L.rate||1));
+    r.el.muted  = L.muted!==false;
+    r.el.volume = clamp(L.vol??1,0,1);
+    r.el.playbackRate = clamp(L.rate||1,.25,4);
+    if(playing){
+      if(r.el.paused && r.el.currentTime < t1-0.05){
+        if(force || Math.abs(r.el.currentTime-want)>0.3) r.el.currentTime=want;
+        r.el.play().catch(()=>{});
+      }
+      if(r.el.currentTime >= t1-0.02) r.el.pause();
+    }else{
+      if(!r.el.paused) r.el.pause();
+      if(Math.abs(r.el.currentTime-want) > 0.02) r.el.currentTime=want;
+    }
+  }
+}
+function tick(){
+  if(!playing) return;
+  const d=slideDur(cur);
+  playhead=(performance.now()-playT0)/1000;
+  if(d && playhead>=d){ playhead=d; stopPlay(); redraw(); drawTransport(); return; }
+  syncVideos(playhead);
+  redraw(); drawTransport();
+  rafId=requestAnimationFrame(tick);
+}
+function startPlay(){
+  if(!vidLayers(cur).length) return;
+  if(playhead >= slideDur(cur)-0.02) playhead=0;
+  playing=true; playT0=performance.now()-playhead*1000;
+  syncVideos(playhead,true);
+  rafId=requestAnimationFrame(tick);
+  drawTransport();
+}
+function stopPlay(){
+  playing=false;
+  if(rafId) cancelAnimationFrame(rafId); rafId=null;
+  for(const L of vidLayers(cur)){ const r=VID.get(L.vid); if(r && !r.el.paused) r.el.pause(); }
+  drawTransport();
+}
+const togglePlay = () => playing ? stopPlay() : startPlay();
+function scrubTo(t){
+  const d=slideDur(cur); if(!d) return;
+  stopPlay(); playhead=clamp(t,0,d); syncVideos(playhead,true);
+  setTimeout(()=>{ redraw(); drawTransport(); },30);
+}
+
+/* transport bar — only present when the slide actually holds a clip */
+function drawTransport(){
+  const bar=$('#transport'); if(!bar) return;
+  const d=slideDur(cur);
+  if(!d){ bar.style.display='none'; return; }
+  bar.style.display='flex';
+  $('#tpIcon').innerHTML = playing
+    ? '<path d="M7 5h3v14H7zM14 5h3v14h-3z" fill="currentColor" stroke="none"/>'
+    : '<path d="M8 5l11 7-11 7z" fill="currentColor" stroke="none"/>';
+  $('#tpRange').max = d.toFixed(2);
+  $('#tpRange').value = Math.min(playhead,d).toFixed(2);
+  $('#tpTime').textContent = `${playhead.toFixed(1)} / ${d.toFixed(1)}s`;
+}
+
+/* pull the current frame out as a still — the fast path to a Reels cover */
+async function grabFrame(L){
+  const r=VID.get(L.vid); if(!r) return toast('No clip on that layer','err');
+  const c=new OffscreenCanvas(r.w,r.h);
+  try{ c.getContext('2d').drawImage(r.el,0,0,r.w,r.h); }
+  catch(e){ return toast('Could not read that frame','err'); }
+  const key=await addImage(await c.convertToBlob({type:'image/png'}), (r.name||'clip')+' frame');
+  const slide=slideOf(L.id);
+  const still=baseLayer({...L, id:uid(), type:'image', img:key, vid:undefined,
+                         t0:undefined, t1:undefined, name:(L.name||'Clip')+' frame'});
+  slide.layers.splice(slide.layers.indexOf(L)+1,0,still);
+  sel=[still.id];
+  push(); redraw(); renderFilm(); renderInspector(); renderPanel();
+  toast('Frame grabbed as a photo','ok');
+}
+
+/* ingest a mixed drop of photos and clips */
+async function ingest(files){
+  const out=[];
+  for(const f of files){
+    try{
+      if(f.type.startsWith('video/'))      out.push({kind:'v', key:await addVideo(f,f.name)});
+      else if(f.type.startsWith('image/')) out.push({kind:'i', key:await addImage(f,f.name)});
+    }catch(e){ toast(f.name+' — '+e.message,'err',4000); }
+  }
+  return out;
+}
+function placeMedia(kind,key){
+  if(kind==='i') return placePhoto(key);
+  const r=VID.get(key); if(!r) return;
+  const s=selLayers()[0];
+  if(s && isMedia(s)){                       /* drop into the selected frame */
+    s.type='video'; s.vid=key; s.img=undefined; s.ox=s.oy=0; s.oz=1;
+    push(); redraw(); renderInspector(); renderFilm(); return;
+  }
+  const slot=P.slides[cur].layers.find(l=>l.type==='image'&&!l.img);
+  if(slot){ slot.type='video'; slot.vid=key; push(); redraw(); renderFilm();
+            toast('Clip filled the empty frame','ok',1400); return; }
+  const sc=Math.min(P.w*.8/r.w, P.h*.8/r.h), w=r.w*sc, h=r.h*sc;
+  addLayer(baseLayer({type:'video',vid:key,name:r.name,
+    x:(P.w-w)/2,y:(P.h-h)/2,w,h,fit:'cover',radius:0,t0:0,t1:r.dur,muted:true,vol:1,rate:1}));
 }
 
 /* ============================================================
@@ -2387,7 +3168,99 @@ async function dl(blob,name){
   setTimeout(()=>URL.revokeObjectURL(a.href),4000);
   return true;
 }
+/* ---- video export: record the canvas in real time, no encoder dependency ---- */
+const VMIME=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4',
+             'video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+const pickVMime=()=>VMIME.find(m=>{ try{ return MediaRecorder.isTypeSupported(m); }catch(e){ return false; } })||'';
+let AC=null; const audioNodes=new Map();
+
+function recordSlide(cx,si,scale,stillDur,onProg){
+  return new Promise(async resolve=>{
+    const vids=vidLayers(si);
+    const dur=slideDur(si)||stillDur;
+    for(const L of vids){
+      const r=VID.get(L.vid); if(!r) continue;
+      const [t0]=trimOf(L);
+      r.el.muted=L.muted!==false; r.el.volume=clamp(L.vol??1,0,1);
+      r.el.playbackRate=clamp(L.rate||1,.25,4);
+      await seekTo(r.el,t0);
+    }
+    for(const L of vids){ const r=VID.get(L.vid); if(r) r.el.play().catch(()=>{}); }
+    const start=performance.now();
+    const step=()=>{
+      const t=(performance.now()-start)/1000;
+      cx.setTransform(1,0,0,1,0,0);
+      drawSlide(cx,si,scale);
+      onProg?.(Math.min(1,t/dur));
+      if(t>=dur){ for(const L of vids){ const r=VID.get(L.vid); if(r) r.el.pause(); } return resolve(); }
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+async function exportVideo(){
+  const mime=pickVMime();
+  if(!mime) throw new Error('this browser cannot record video');
+  const which=$('#expWhich .on').dataset.v;
+  const scale=parseFloat($('#expVScale .on').dataset.v);
+  const stillDur=parseFloat($('#expStill').value);
+  const idx = which==='one' ? [cur] : P.slides.map((_,i)=>i);
+
+  const c=document.createElement('canvas');
+  c.width=Math.round(P.w*scale); c.height=Math.round(P.h*scale);
+  const cx=c.getContext('2d');
+  cx.imageSmoothingQuality='high';
+  const stream=c.captureStream(30);
+
+  /* mix in audio from any clip the user unmuted */
+  const unmuted=idx.flatMap(i=>vidLayers(i)).filter(L=>L.muted===false);
+  if(unmuted.length){
+    try{
+      AC ||= new (window.AudioContext||window.webkitAudioContext)();
+      if(AC.state==='suspended') await AC.resume();
+      const dest=AC.createMediaStreamDestination();
+      for(const L of unmuted){
+        const r=VID.get(L.vid); if(!r) continue;
+        let node=audioNodes.get(r.el);
+        if(!node){ node=AC.createMediaElementSource(r.el); audioNodes.set(r.el,node); node.connect(AC.destination); }
+        const gain=AC.createGain(); gain.gain.value=clamp(L.vol??1,0,1);
+        node.connect(gain); gain.connect(dest);
+      }
+      for(const t of dest.stream.getAudioTracks()) stream.addTrack(t);
+    }catch(e){ console.warn('[export] audio skipped:',e.message); }
+  }
+
+  const rec=new MediaRecorder(stream,{mimeType:mime, videoBitsPerSecond: scale>1?12e6:7e6});
+  const chunks=[];
+  rec.ondataavailable=e=>{ if(e.data?.size) chunks.push(e.data); };
+  const stopped=new Promise(r=>{ rec.onstop=()=>r(); });
+  rec.start(250);
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));  /* let capture latch on */
+
+  stopPlay();
+  const bar=$('#expProgB'), ptxt=$('#expProgT');
+  for(let n=0;n<idx.length;n++){
+    ptxt.textContent=`Recording slide ${n+1} of ${idx.length}…`;
+    await recordSlide(cx,idx[n],scale,stillDur,f=>{
+      bar.style.width=Math.round(((n+f)/idx.length)*100)+'%';
+    });
+  }
+  /* the encoder trails the last drawn frame, and the final dataavailable can
+     arrive after onstop — settle before reading the chunks */
+  await new Promise(r=>setTimeout(r,150));
+  try{ rec.requestData(); }catch(e){}
+  await new Promise(r=>setTimeout(r,60));
+  rec.stop();
+  await stopped;
+  await new Promise(r=>setTimeout(r,100));
+  syncVideos(playhead,true); redraw();
+  if(!chunks.length) throw new Error('the recorder produced no data');
+  return { blob:new Blob(chunks,{type:mime}), ext: mime.startsWith('video/mp4')?'mp4':'webm' };
+}
+
 async function doExport(){
+  if($('#expMode .on').dataset.v==='vid') return doExportVideo();
   const fmt   = $('#expFmt .on').dataset.v;
   const scale = +$('#expScale .on').dataset.v;
   const which = $('#expWhich .on').dataset.v;
@@ -2432,6 +3305,25 @@ async function doExport(){
   }
 }
 
+async function doExportVideo(){
+  const safe=(P.name||'carousel').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()||'carousel';
+  const prog=$('#expProg'), bar=$('#expProgB');
+  prog.style.display='flex'; $('#expGo').disabled=true;
+  try{
+    await document.fonts.ready;
+    const {blob,ext}=await exportVideo();
+    if(!blob.size) throw new Error('nothing was recorded');
+    $('#expProgT').textContent='Saving…';
+    await dl(blob, `${safe}.${ext}`);
+    toast(`Exported ${(blob.size/1048576).toFixed(1)} MB ${ext.toUpperCase()}`,'ok');
+    $('#expModal').classList.add('hide');
+  }catch(e){
+    console.error(e); toast('Video export failed — '+e.message,'err',4600);
+  }finally{
+    prog.style.display='none'; bar.style.width='0'; $('#expGo').disabled=false;
+  }
+}
+
 /* ============================================================
    13. SWIPE PREVIEW
    ============================================================ */
@@ -2467,7 +3359,8 @@ addEventListener('keydown',e=>{
     const L=selLayers()[0]; if(L){ const c=baseLayer({...L,id:uid(),x:L.x+24,y:L.y+24});
       slideOf(L.id).layers.push(c); sel=[c.id]; commit(); renderInspector(); } return; }
   if(mod && e.key.toLowerCase()==='a'){ e.preventDefault(); sel=P.slides[cur].layers.map(l=>l.id); drawChrome(); renderInspector(); return; }
-  if(e.key==='Escape'){ sel=[]; drawChrome(); renderInspector(); $('#preview').classList.add('hide'); return; }
+  if(e.key===' '){ e.preventDefault(); togglePlay(); return; }
+  if(e.key==='Escape'){ sel=[]; stopPlay(); drawChrome(); renderInspector(); $('#preview').classList.add('hide'); return; }
   if((e.key==='Delete'||e.key==='Backspace') && sel.length){ e.preventDefault(); removeLayers([...sel]); return; }
   if(e.key.startsWith('Arrow') && sel.length){
     e.preventDefault();
@@ -2488,6 +3381,12 @@ addEventListener('keydown',e=>{
 $('#docname').oninput=e=>{ P.name=e.target.value; saveSoon(); };
 $('#bUndo').onclick=undo; $('#bRedo').onclick=redo;
 $('#bPreview').onclick=openPreview;
+$('#tpPlay').onclick=togglePlay;
+$('#tpRange').oninput=e=>scrubTo(parseFloat(e.target.value));
+$('#tpGrab').onclick=()=>{
+  const L=selLayers().find(x=>x.type==='video') || vidLayers(cur)[0];
+  L ? grabFrame(L) : toast('No clip on this slide','err');
+};
 $('#pvClose').onclick=()=>$('#preview').classList.add('hide');
 $('#bExport').onclick=async()=>{
   $('#expModal').classList.remove('hide');
@@ -2499,7 +3398,17 @@ $('#bExport').onclick=async()=>{
 };
 $('#expGo').onclick=doExport;
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hide'));
-for(const id of ['expFmt','expScale','expWhich']){
+$('#expStill').oninput=e=>$('#expStillN').textContent=e.target.value;
+$('#expMode').addEventListener('click',e=>{
+  const btn=e.target.closest('button'); if(!btn) return;
+  $$('#expMode button').forEach(x=>x.classList.remove('on')); btn.classList.add('on');
+  const vid=btn.dataset.v==='vid';
+  $$('.expimg').forEach(x=>x.style.display=vid?'none':'');
+  $$('.expvid').forEach(x=>x.style.display=vid?'flex':'none');
+  if(!vid && $('#expFmt .on').dataset.v==='png') $('#expQGrp').style.display='none';
+  $('#expGo').textContent = vid ? 'Record' : 'Download';
+});
+for(const id of ['expFmt','expScale','expWhich','expVScale']){
   $('#'+id).addEventListener('click',e=>{
     const b=e.target.closest('button'); if(!b) return;
     $$('#'+id+' button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
@@ -2532,7 +3441,9 @@ $('#npCreate').onclick=()=>{
 
 /* drop anywhere on the stage */
 wireDrop($('#stage'), async files=>{
-  for(const f of files){ const k=await addImage(f,f.name); placePhoto(k); }
+  toast('Reading media…','load',0);
+  const added=await ingest(files); untoast();
+  for(const a of added) placeMedia(a.kind,a.key);
   renderPanel();
 });
 
@@ -2541,13 +3452,13 @@ let rT; addEventListener('resize',()=>{ clearTimeout(rT); rT=setTimeout(()=>{
   fitBoard(); redraw(); drawChrome(); renderFilm(); },120); });
 
 async function boot(){
-  await restoreImages();
+  await restoreImages(); await restoreVideos();
   let saved=null; try{ saved=await DB.get('docs','current'); }catch(e){}
   P = saved?.slides?.length ? saved : newProject('c45',3);
   if(!P.brand) P.brand={palette:['#FF5A36','#FFB03A','#0B0B0F','#FFFFFF'],font:'Inter'};
   $('#docname').value=P.name||'Untitled';
   try{ await Promise.all(FONTS.map(([f])=>document.fonts.load(`900 64px "${f}"`))); }catch(e){}
-  fitBoard(); redraw(); renderFilm(); renderPanel(); renderInspector();
+  fitBoard(); redraw(); renderFilm(); renderPanel(); renderInspector(); drawTransport();
   if(isMobile()){ $('#panel').classList.add('hide'); $('#insp').classList.add('hide'); }
   push(); updUndo();
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -2555,7 +3466,8 @@ async function boot(){
   window.__ready=true;
 }
 /* expose a little surface for automated checks */
-window.__studio={ cutoutSelected, dl, dlCap, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
+window.__studio={ drawLayer, packSlide, STYLE_PACKS, FORMAT_PACKS, exportVideo, pickVMime, recordSlide, cutoutSelected, dl, dlCap, VID, addVideo, ingest, placeMedia, grabFrame,
+  slideDur, vidLayers, trimOf, startPlay, stopPlay, scrubTo, srcOf, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
   set cur(v){cur=v}, addText, addLayer, baseLayer, sliceAcross, addImage, drawSlide,
   renderExport, applyTemplate, TEMPLATES, redraw, renderFilm, renderInspector, renderPanel, IMG,
   select:ids=>{sel=ids;drawChrome();renderInspector()} };
