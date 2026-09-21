@@ -175,6 +175,25 @@
   p{margin:0 0 18px;max-width:40ch}
   .wide{max-width:none}
   .amount{color:var(--orange);white-space:nowrap}
+  /* the brief is a tear-off ticket, not a paragraph: the approved scenario line on the cream
+     half, the planned spend as the hero number on the orange stub */
+  .subhead.brief{margin-bottom:18px;max-width:600px;font-size:1rem;line-height:1.3;color:inherit;animation:chitin .45s cubic-bezier(.2,.9,.3,1.15) both}
+  .chit{display:flex;align-items:stretch;background:#FFF8EC;border:1.5px solid var(--card-line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;font-family:Mulish,system-ui,sans-serif;text-align:left}
+  .chit-l{flex:1;min-width:0;padding:12px 16px;display:flex;flex-direction:column;justify-content:center}
+  .chit-r{flex:none;padding:10px 16px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:var(--orange);color:#fff;position:relative;text-align:center}
+  .chit-r::before{content:"";position:absolute;left:-1px;top:7px;bottom:7px;border-left:2px dashed rgba(255,255,255,.75)}
+  .chit-k{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;max-width:7.5em;color:rgba(255,255,255,.92)}
+  .chit-t{font-size:.98rem;font-weight:600;color:var(--navy);line-height:1.32}
+  .chit-n{font-size:1.75rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+  @keyframes chitin{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+  .boxtray .budget{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1;padding:5px 10px;border-radius:10px;background:var(--orange);color:#fff;letter-spacing:0;text-transform:none}
+  .boxtray .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
+  .boxtray .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
+  .cards.held .card{opacity:0;pointer-events:none}
+  .dealart.wait{animation:dealwait .35s ease both}
+  @keyframes dealwait{from{opacity:0;transform:translate(-50%,14px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+  .dealart.out{animation:dealout .6s ease both}
+  @keyframes dealout{from{opacity:1;transform:translate(-50%,0) scale(1)}to{opacity:0;transform:translate(-50%,-12px) scale(.96)}}
   .dotlist{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:10px}
   .dotlist li{display:flex;gap:12px;align-items:flex-start}
   .dotlist li::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:var(--orange);margin-top:.52em}
@@ -912,8 +931,8 @@
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-h">
   <div class="intro-note">
     <p class="intro-kicker">Interactive edition &middot; Vol. 65</p>
-    <h2 id="intro-h">This month, The&nbsp;Orange&nbsp;Book is a game.</h2>
-    <p class="intro-lede">The Sweet Pick is a short interactive edition for the festive season. Over five rounds of mithai shopping, it takes a closer look at how offers and labels shape the way we spend.</p>
+    <h2 id="intro-h">This festive season, a different kind of lesson</h2>
+    <p class="intro-lede">The festive season brings colour, celebration and plenty of choices. This month, The&nbsp;Orange&nbsp;Book takes a lighter route to explore a familiar question: what really shapes the money choices we make?</p>
     <button class="pill" id="intro-done">Continue</button>
   </div>
 </div>
@@ -1380,7 +1399,7 @@
       var res = state.results[i], on = res && res.win;
       h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetImg(ROUNDS[i].sweet) : "") + "</span>";
     }
-    el.innerHTML = h + "</span>";
+    el.innerHTML = h + '</span><span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
     el.setAttribute("aria-label", "Your box: " + filledCount() + " of " + ROUNDS.length + " filled");
   }
   /* the mithai leaves the card and lands in its cup: it pops out, holds long enough
@@ -1466,11 +1485,28 @@
   /* ---- each pick is dealt out of the cover's box: the cards fly from where
      the three question cards sit in the artwork ---- */
   var ART_CARDS = [[0.18, 0.46], [0.5, 0.26], [0.82, 0.43]];
-  function deal(cards){
+  function deal(cards, hold){
     if (reducedMotion() || !cards.length) return;
     var wrap = $("r-cards"), art = document.createElement("img");
-    art.className = "dealart"; art.src = MENU_ART; art.alt = ""; art.width = 560; art.height = 457;
+    art.className = "dealart" + (hold ? " wait" : ""); art.src = MENU_ART; art.alt = ""; art.width = 560; art.height = 457;
     wrap.appendChild(art);
+    if (hold){
+      /* the box sits waiting with the cards still inside it, so the brief above is read first */
+      wrap.classList.add("held");
+      window.setTimeout(function(){
+        if (!art.parentNode) return;   /* the page moved on during the hold */
+        wrap.classList.remove("held");
+        art.className = "dealart out";
+        flyOut(cards, art, 0);
+        window.setTimeout(function(){ if (art.parentNode) art.parentNode.removeChild(art); }, 700);
+      }, hold);
+      return;
+    }
+    flyOut(cards, art, 0.18);
+    art.addEventListener("animationend", function(){ if (art.parentNode) art.parentNode.removeChild(art); }, {once:true});
+    window.setTimeout(function(){ if (art.parentNode) art.parentNode.removeChild(art); }, 1700);
+  }
+  function flyOut(cards, art, lead){
     var a = art.getBoundingClientRect();
     var pts = cards.length === 2 ? [ART_CARDS[0], ART_CARDS[2]] : ART_CARDS;
     for (var k = 0; k < cards.length; k++){
@@ -1479,13 +1515,11 @@
         c.style.setProperty("--dx", (a.left + p[0] * a.width - (r.left + r.width / 2)) + "px");
         c.style.setProperty("--dy", (a.top + p[1] * a.height - (r.top + r.height / 2)) + "px");
         c.style.setProperty("--rot", ((k - (cards.length - 1) / 2) * 9) + "deg");
-        c.style.animationDelay = (0.18 + k * 0.13).toFixed(2) + "s";
+        c.style.animationDelay = (lead + k * 0.13).toFixed(2) + "s";
         c.classList.add("dealing");
         c.addEventListener("animationend", function(){ c.classList.remove("dealing"); c.style.animationDelay = ""; }, {once:true});
       })(cards[k], k);
     }
-    art.addEventListener("animationend", function(){ if (art.parentNode) art.parentNode.removeChild(art); }, {once:true});
-    window.setTimeout(function(){ if (art.parentNode) art.parentNode.removeChild(art); }, 1700);
   }
 
   /* ---- mithai confetti for a clean sweep ---- */
@@ -1862,8 +1896,10 @@
     /* the condensed rules sit on the first pick only; every round keeps the one-line instruction */
     $("howbox").hidden = (state.round !== 0);
     $("r-headline").innerHTML = r.headline;
-    $("r-scenario").innerHTML = "It’s festive season and you’re choosing a mithai box. You planned to spend <span class=\"amount\">" +
-      rupee(BUDGET) + "</span>. Which one would you go for?";
+    /* the approved scenario line, laid out as a ticket: the question on the cream half, the plan on the stub */
+    $("r-scenario").className = "subhead brief";
+    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-t">It’s festive season and you’re choosing a mithai box. Which one would you go for?</span></span>' +
+      '<span class="chit-r"><span class="chit-k">You planned to spend</span><span class="chit-n">' + rupee(BUDGET) + "</span></span></span>";
 
     var wrap = $("r-cards");
     wrap.className = "cards" + (r.cards.length === 2 ? " duo" : "");
@@ -1882,7 +1918,8 @@
     show("round");
     fitNames();
     startClock(r);
-    if (!replay) deal(wrap.querySelectorAll(".card"));
+    /* the brief lands first; the cards are dealt a beat later */
+    if (!replay) deal(wrap.querySelectorAll(".card"), 1200);
   }
 
   function pick(i){
