@@ -637,15 +637,22 @@ const toast = (msg,kind='',ms=2400) => {
 const untoast = () => $('#toast').className='toast';
 
 /* rounded rect path (uneven radius safe) */
+/* r is a number, or [topLeft, topRight, bottomRight, bottomLeft] — the array
+   form is what gives arches, circles and capsules. */
 function rrect(ctx,x,y,w,h,r){
-  r = Math.min(r||0, Math.abs(w)/2, Math.abs(h)/2);
+  const m=Math.min(Math.abs(w),Math.abs(h))/2;
+  let [tl,tr,br,bl] = Array.isArray(r) ? r : [r,r,r,r];
+  tl=Math.min(tl||0,m); tr=Math.min(tr||0,m); br=Math.min(br||0,m); bl=Math.min(bl||0,m);
   ctx.beginPath();
-  if(!r){ ctx.rect(x,y,w,h); return; }
-  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
-  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
-  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
+  if(!(tl||tr||br||bl)){ ctx.rect(x,y,w,h); return; }
+  ctx.moveTo(x+tl,y);
+  ctx.lineTo(x+w-tr,y); if(tr) ctx.arcTo(x+w,y,x+w,y+tr,tr);
+  ctx.lineTo(x+w,y+h-br); if(br) ctx.arcTo(x+w,y+h,x+w-br,y+h,br);
+  ctx.lineTo(x+bl,y+h);  if(bl) ctx.arcTo(x,y+h,x,y+h-bl,bl);
+  ctx.lineTo(x,y+tl);    if(tl) ctx.arcTo(x,y,x+tl,y,tl);
+  ctx.closePath();
 }
+const radMax = r => Array.isArray(r) ? Math.max(...r.map(v=>v||0)) : (r||0);
 
 /* ============================================================
    2. IMAGE STORE  — bitmaps in memory, blobs in IndexedDB
@@ -978,14 +985,34 @@ function drawGloss(ctx,L){
 function drawImg(ctx,L){
   const rec = srcOf(L);
   if(!rec){
-    const g=ctx.createLinearGradient(0,0,L.w,L.h);
-    g.addColorStop(0,L.ph?.[0]||'#C8CEDA'); g.addColorStop(1,L.ph?.[1]||'#9AA6BC');
-    ctx.fillStyle=g; rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
+    /* stand-in artwork. A blur-fill frame previews as a 16:9 photo on a blurred
+       backdrop, so the layout shows what it will actually do to a wide shot. */
+    const wide = L.padFill && L.fit==='contain';
+    const ph0=L.ph?.[0]||'#C8CEDA', ph1=L.ph?.[1]||'#9AA6BC';
+    const scene=(x,y,w,h,dim)=>{
+      ctx.save();
+      rrect(ctx,x,y,w,h,0); ctx.clip();
+      const g=ctx.createLinearGradient(x,y,x+w,y+h);
+      g.addColorStop(0,ph0); g.addColorStop(1,ph1);
+      ctx.fillStyle=g; ctx.fillRect(x,y,w,h);
+      ctx.globalAlpha=.16; ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(x+w*.72,y+h*.28,Math.min(w,h)*.22,0,7); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x,y+h); ctx.lineTo(x+w*.42,y+h*.52);
+      ctx.lineTo(x+w*.72,y+h*.78); ctx.lineTo(x+w,y+h*.46); ctx.lineTo(x+w,y+h);
+      ctx.closePath(); ctx.fill();
+      if(dim){ ctx.globalAlpha=1; ctx.fillStyle='rgba(0,0,0,.28)'; ctx.fillRect(x,y,w,h); }
+      ctx.restore();
+    };
     ctx.save(); rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.clip();
-    ctx.globalAlpha=.16; ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.arc(L.w*.72,L.h*.28,Math.min(L.w,L.h)*.22,0,7); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(0,L.h); ctx.lineTo(L.w*.42,L.h*.52);
-    ctx.lineTo(L.w*.72,L.h*.78); ctx.lineTo(L.w,L.h*.46); ctx.lineTo(L.w,L.h); ctx.closePath(); ctx.fill();
+    if(wide){
+      ctx.filter='blur('+Math.max(6,L.w*.05)+'px)';
+      scene(-L.w*.1,-L.h*.1,L.w*1.2,L.h*1.2,true);
+      ctx.filter='none';
+      const ih=L.w*9/16, iy=(L.h-ih)/2;
+      scene(0,iy,L.w,ih,false);
+    }else{
+      scene(0,0,L.w,L.h,false);
+    }
     ctx.restore();
     return;
   }
@@ -1012,6 +1039,16 @@ function drawImg(ctx,L){
   const LW=L.w, LH=L.h; if(F) L={...L, w:iw, h:ih};
   ctx.filter = filterStr(L.filter);
   const im = rec.bmp;
+  /* blurred backdrop of the same photo, so a landscape shot fills a tall frame */
+  if(L.padFill && L.fit!=='fill'){
+    const cs=Math.max(L.w/rec.w, L.h/rec.h)*1.14;
+    const bw=rec.w*cs, bh=rec.h*cs;
+    ctx.save();
+    ctx.filter=`blur(${L.padBlur??42}px) brightness(${L.padDim??82}%) saturate(118%)`;
+    try{ ctx.drawImage(im,(L.w-bw)/2,(L.h-bh)/2,bw,bh); }catch(e){}
+    ctx.restore();
+    ctx.filter=filterStr(L.filter);
+  }
   if(im instanceof HTMLVideoElement && im.readyState < 2){   /* not decodable yet */
     ctx.restore();
     ctx.fillStyle='#1A1A22'; rrect(ctx,0,0,L.w,L.h,L.radius||0); ctx.fill();
@@ -2038,6 +2075,207 @@ const FORMAT_PACKS = [
 PACKS.push(...FORMAT_PACKS);
 
 
+/* ============================================================
+   7c. PHOTO LAYOUTS — single slide, the photo is the content.
+   Text here is never prose: a date, a handle, a short caption.
+   ============================================================ */
+const PHT=[PH.cool,PH.warm,PH.sage,PH.blush,PH.sand,PH.ink];
+const ph1=(x,y,w,h,i=0,o={})=>img(x,y,w,h,Object.assign({ph:PHT[i%PHT.length],name:'Photo'},o));
+const cap=(x,y,w,t,o={})=>txt(x,y,w,t,Object.assign({fs:26,fw:600,ls:2,fc:'#9A9AA6',h:36},o));
+const cells9=Array.from({length:9},(_,i)=>[(i%3)/3,Math.floor(i/3)/3,1/3,1/3]);
+const tint=(ls,i0)=>ls.map((l,i)=>Object.assign(l,{ph:PHT[(i+i0)%PHT.length]}));
+
+const PHOTO_LAYOUTS=[
+{id:'pl-bleed', cat:'photo', name:'Full bleed', build:(W,H)=>({bg:'#000',
+  layers:[ph1(0,0,W,H,0)]})},
+
+{id:'pl-blur', cat:'photo', name:'Blur fill', build:(W,H)=>({bg:'#101014',
+  layers:[ph1(0,0,W,H,1,{fit:'contain',padFill:true,name:'Landscape photo'})]})},
+
+{id:'pl-date', cat:'photo', name:'Date stamp', build:(W,H)=>({bg:'#000',
+  layers:[ph1(0,0,W,H,2),
+    txt(W*.06,H*.89,W*.6,'09 · 21 · 26',{fs:30,fw:800,ls:4,fc:'#FFD9A0',h:42,shadow:{a:.6,b:14,y:2}})]})},
+
+{id:'pl-mat', cat:'photo', name:'Thin mat', build:(W,H)=>({bg:'#FFFFFF',
+  layers:[ph1(W*.05,H*.05,W*.9,H*.9,3)]})},
+
+{id:'pl-matdeep', cat:'photo', name:'Gallery mat', build:(W,H)=>({bg:'#F6F4EF',
+  layers:[ph1(W*.11,H*.09,W*.78,H*.66,4),
+    cap(W*.11,H*.79,W*.78,'UNTITLED — 2026',{align:'center',fc:'#A79E8E'})]})},
+
+{id:'pl-matcap', cat:'photo', name:'Mat + caption', build:(W,H)=>({bg:'#FFFFFF',
+  layers:[ph1(W*.07,H*.06,W*.86,H*.74,5),
+    txt(W*.07,H*.845,W*.86,'a line about this one',{fs:40,fw:500,ff:'Caveat',fc:'#3A3A44',h:56})]})},
+
+{id:'pl-polaroid', cat:'photo', name:'Instant', build:(W,H)=>({bg:'#E9E5DC',
+  layers:[...polaroid(W*.17,H*.1,W*.66,-2,PH.blush,'',W)]})},
+
+{id:'pl-polaroid2', cat:'photo', name:'Two instants', build:(W,H)=>({bg:'#E9E5DC',
+  layers:[...polaroid(W*.04,H*.08,W*.48,-6,PH.warm,'',W),
+          ...polaroid(W*.46,H*.36,W*.48,6,PH.sage,'',W)]})},
+
+{id:'pl-arch', cat:'photo', name:'Arch', build:(W,H)=>({bg:'#EFE7DC',
+  layers:[ph1(W*.12,H*.07,W*.76,H*.79,0,{radius:[W*.38,W*.38,0,0]}),
+    cap(W*.12,H*.9,W*.76,'@yourhandle',{align:'center',fc:'#9C8E7C'})]})},
+
+{id:'pl-circle', cat:'photo', name:'Circle', build:(W,H)=>{const d=W*.76; return {bg:'#12121A',
+  layers:[ph1((W-d)/2,(H-d)/2-H*.04,d,d,1,{radius:d/2}),
+    cap(W*.1,H*.83,W*.8,'@yourhandle',{align:'center',fc:'#7E7E90'})]};}},
+
+{id:'pl-card', cat:'photo', name:'Card on colour', build:(W,H)=>({bg:'#E4572E',
+  layers:[ph1(W*.1,H*.11,W*.8,H*.68,2,{radius:W*.06,shadow:{a:.3,b:44,y:18}}),
+    cap(W*.1,H*.86,W*.8,'@yourhandle',{align:'center',fc:'rgba(255,255,255,.85)'})]})},
+
+{id:'pl-hairline', cat:'photo', name:'Hairline frame', build:(W,H)=>({bg:'#000',
+  layers:[ph1(0,0,W,H,3),
+    box(W*.05,H*.04,W*.9,H*.92,'none',{stroke:'rgba(255,255,255,.85)',sw:2,name:'Rule'})]})},
+
+{id:'pl-2v', cat:'photo', name:'Stacked pair', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,1,.5],[0,.5,1,.5]],14,0),0)})},
+
+{id:'pl-2h', cat:'photo', name:'Side by side', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,.5,1],[.5,0,.5,1]],14,0),1)})},
+
+{id:'pl-3col', cat:'photo', name:'Triptych', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,1/3,1],[1/3,0,1/3,1],[2/3,0,1/3,1]],10,0),0)})},
+
+{id:'pl-3row', cat:'photo', name:'Three stack', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,1,1/3],[0,1/3,1,1/3],[0,2/3,1,1/3]],10,0),2)})},
+
+{id:'pl-quad', cat:'photo', name:'Quad', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,.5,.5],[.5,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5]],12,0),0)})},
+
+{id:'pl-hero2', cat:'photo', name:'Hero + two', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,1,.62],[0,.62,.5,.38],[.5,.62,.5,.38]],12,0),1)})},
+
+{id:'pl-2hero', cat:'photo', name:'Two + hero', build:(W,H)=>({bg:'#fff',
+  layers:tint(grid(W,H,[[0,0,.5,.38],[.5,0,.5,.38],[0,.38,1,.62]],12,0),3)})},
+
+{id:'pl-six', cat:'photo', name:'Six up', build:(W,H)=>({bg:'#0E0E12',
+  layers:tint(grid(W,H,[[0,0,.5,1/3],[.5,0,.5,1/3],[0,1/3,.5,1/3],[.5,1/3,.5,1/3],[0,2/3,.5,1/3],[.5,2/3,.5,1/3]],8,0),0)
+    .map(l=>Object.assign(l,{radius:6}))})},
+
+{id:'pl-nine', cat:'photo', name:'Nine up', build:(W,H)=>({bg:'#0E0E12',
+  layers:tint(grid(W,H,cells9,7,0),0).map(l=>Object.assign(l,{radius:5}))})},
+
+{id:'pl-film', cat:'photo', name:'Film strip', build:(W,H)=>({bg:'#0E0E10',
+  layers:[rail(0,H*.1,W,H*.075), rail(0,H*.815,W,H*.075),
+    ...tint(grid(W,H*.63,[[0,0,1/3,1],[1/3,0,1/3,1],[2/3,0,1/3,1]],8,0),0)
+      .map(l=>Object.assign(l,{y:l.y+H*.185,filter:{br:97,ct:110,sa:86}})),
+    grain(W,H,.5)]})},
+
+{id:'pl-overlap', cat:'photo', name:'Overlap', build:(W,H)=>({bg:'#EDE7DE',
+  layers:[ph1(W*.07,H*.13,W*.55,H*.5,2,{rot:-5,stroke:'#fff',sw:18,shadow:{a:.26,b:34,y:14}}),
+          ph1(W*.38,H*.4,W*.55,H*.5,4,{rot:5,stroke:'#fff',sw:18,shadow:{a:.26,b:34,y:14}})]})},
+
+{id:'pl-diptych', cat:'photo', name:'Diptych', build:(W,H)=>({bg:'#1C1C22',
+  layers:[ph1(W*.06,H*.15,W*.42,H*.56,1),ph1(W*.52,H*.27,W*.42,H*.56,3),
+    cap(W*.06,H*.88,W*.88,'TWO OF A KIND',{fc:'#6E6E80'})]})},
+
+{id:'pl-block', cat:'photo', name:'Photo + block', build:(W,H)=>({bg:'#FF5A36',
+  layers:[ph1(0,0,W,H*.76,0),
+    txt(W*.07,H*.81,W*.6,'@yourhandle',{fs:40,fw:800,fc:'#fff',h:56}),
+    txt(W*.07,H*.885,W*.6,'somewhere good',{fs:28,fw:600,fc:'rgba(255,255,255,.8)',h:40})]})},
+
+{id:'pl-duotone', cat:'photo', name:'Duotone wash', build:(W,H)=>({bg:'#1B0F2E',
+  layers:[ph1(0,0,W,H,5,{filter:{br:104,ct:118,sa:0},tint:'rgba(124,92,255,.42)'}),
+    grain(W,H,.4), cap(W*.07,H*.89,W*.6,'@yourhandle',{fc:'rgba(255,255,255,.8)'})]})},
+
+{id:'pl-corner', cat:'photo', name:'Corner caption', build:(W,H)=>({bg:'#000',
+  layers:[ph1(0,0,W,H,4),
+    box(0,H*.74,W,H*.26,'#000',{op:.5,name:'Scrim'}),
+    txt(W*.07,H*.83,W*.86,'a short line, not a paragraph',{fs:36,fw:600,fc:'#fff',h:50})]})},
+];
+TEMPLATES.unshift(...PHOTO_LAYOUTS);
+
+
+/* ---- photo-first packs: the photo carries the slide, text is a label ---- */
+const PHOTO_PACKS=[
+{
+  id:'dump', cat:'photo', name:'Photo dump', sub:'Mixed grids, almost no text',
+  chips:['#0E0E12','#FFFFFF','#FF5A36'],
+  build(W,H,n){
+    const out=[packSlide('#0E0E12',[ph1(0,0,W,H,0),
+      box(0,H*.78,W,H*.22,'#000',{op:.45}),
+      txt(W*.07,H*.86,W*.86,'this week',{fs:64,fw:800,fc:'#fff',h:86})])];
+    const sets=[
+      [[0,0,.5,.5],[.5,0,.5,.5],[0,.5,1,.5]],
+      [[0,0,1,.55],[0,.55,.5,.45],[.5,.55,.5,.45]],
+      [[0,0,.5,1],[.5,0,.5,.5],[.5,.5,.5,.5]],
+      [[0,0,.5,.5],[.5,0,.5,.5],[0,.5,.5,.5],[.5,.5,.5,.5]],
+    ];
+    for(let i=1;i<Math.max(2,n-1);i++)
+      out.push(packSlide('#0E0E12', tint(grid(W,H,sets[(i-1)%sets.length],10,0), i)));
+    out.push(packSlide('#0E0E12',[ph1(0,0,W,H,3),
+      box(0,0,W,H,'#000',{op:.4}),
+      txt(W*.1,H*.46,W*.8,'@yourhandle',{fs:52,fw:800,fc:'#fff',align:'center',h:72})]));
+    return out;
+  }
+},
+{
+  id:'roll', cat:'photo', name:'Film roll', sub:'Sprocket frames, grain',
+  chips:['#0E0E10','#E8B84B','#F5F5F0'],
+  build(W,H,n){
+    const out=[];
+    for(let i=0;i<Math.max(3,n);i++) out.push(packSlide('#0E0E10',[
+      rail(0,H*.09,W,H*.07), rail(0,H*.84,W,H*.07),
+      ph1(W*.04,H*.17,W*.92,H*.66,i,{filter:{br:97,ct:111,sa:85}}),
+      txt(W*.04,H*.925,W*.5,'FRAME '+String(i+1).padStart(2,'0'),{fs:22,fw:800,ls:4,fc:'#E8B84B',h:32}),
+      grain(W,H,.5),
+    ]));
+    return out;
+  }
+},
+{
+  id:'album', cat:'photo', name:'Instant album', sub:'Polaroids, handwriting',
+  chips:['#E9E5DC','#3A3A44','#D98E73'],
+  build(W,H,n){
+    const out=[];
+    for(let i=0;i<Math.max(3,n);i++) out.push(packSlide('#E9E5DC',
+      i%2 ? [...polaroid(W*.04,H*.08,W*.48,-6,PHT[i%6],'',W), ...polaroid(W*.46,H*.36,W*.48,6,PHT[(i+2)%6],'',W)]
+          : [...polaroid(W*.17,H*.1,W*.66,-2,PHT[i%6],i===0?'':'no. '+String(i+1).padStart(2,'0'),W)]
+    ));
+    return out;
+  }
+},
+{
+  id:'gallery', cat:'photo', name:'Gallery', sub:'Wide mats, tiny labels',
+  chips:['#F6F4EF','#A79E8E','#1C1C1A'],
+  build(W,H,n){
+    const out=[];
+    for(let i=0;i<Math.max(3,n);i++) out.push(packSlide('#F6F4EF',[
+      ph1(W*.11,H*.09,W*.78,H*.66,i),
+      cap(W*.11,H*.79,W*.78,'PLATE '+String(i+1).padStart(2,'0'),{align:'center',fc:'#A79E8E'}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'archset', cat:'photo', name:'Arches', sub:'Soft arch crops',
+  chips:['#EFE7DC','#9C8E7C','#C97E5A'],
+  build(W,H,n){
+    const out=[];
+    for(let i=0;i<Math.max(3,n);i++) out.push(packSlide('#EFE7DC',[
+      ph1(W*.12,H*.07,W*.76,H*.79,i,{radius:[W*.38,W*.38,0,0]}),
+      cap(W*.12,H*.9,W*.76,i===0?'@yourhandle':'0'+(i+1),{align:'center',fc:'#9C8E7C'}),
+    ]));
+    return out;
+  }
+},
+{
+  id:'blurset', cat:'photo', name:'Blur fill', sub:'Any shape photo, no crop',
+  chips:['#101014','#FFFFFF','#6E6E80'],
+  build(W,H,n){
+    const out=[];
+    for(let i=0;i<Math.max(3,n);i++) out.push(packSlide('#101014',[
+      ph1(0,0,W,H,i,{fit:'contain',padFill:true}),
+    ]));
+    return out;
+  }
+},
+];
+PACKS.unshift(...PHOTO_PACKS);
+
 function applyPack(pack){
   const specs = pack.build(P.w,P.h,Math.max(3,P.slides.length));
   /* keep any photos already placed, in order */
@@ -2131,13 +2369,13 @@ function renderPanel(){
 
 /* ---------- Layouts ---------- */
 function pTemplates(b){
-  /* whole-carousel packs first — this is the plug-and-play path */
-  for(const [catKey,catLabel,catNote] of [['style','Styles','a whole look'],['format','Formats','a whole story']]){
-  const list=PACKS.filter(k=>(k.cat||'style')===catKey);
-  const gp=el('div','grp');
-  gp.appendChild(el('div','lbl',`<span>${catLabel}</span><span style="color:var(--ink-3);font-weight:600;letter-spacing:0;text-transform:none">${catNote} · builds every slide</span>`));
-  const gpr=el('div','tgrid');
-  for(const pk of list){
+  const section=(label,note)=>{
+    const g=el('div','grp');
+    g.appendChild(el('div','lbl',
+      `<span>${label}</span><span style="color:var(--ink-3);font-weight:600;letter-spacing:0;text-transform:none">${note}</span>`));
+    return g;
+  };
+  const packCard=pk=>{
     const card=el('button','tcard');
     const c=el('canvas','pv'); card.appendChild(c);
     const nm=el('div','nm');
@@ -2147,28 +2385,55 @@ function pTemplates(b){
     card.appendChild(nm);
     packPreview(pk,c);
     card.onclick=()=>applyPack(pk);
-    gpr.appendChild(card);
-  }
-  gp.appendChild(gpr); b.appendChild(gp);
-  }
+    return card;
+  };
+  const tplCard=t=>{
+    const card=el('button','tcard');
+    const c=el('canvas','pv'); card.appendChild(c);
+    card.appendChild(el('div','nm',t.name));
+    tplPreview(t,c);
+    card.onclick=()=>applyTemplate(t);
+    return card;
+  };
 
-  const sep=el('div','lbl','Single slides');
-  sep.style.cssText='font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);padding-top:4px;border-top:1px solid var(--line-soft);margin-top:4px';
-  b.appendChild(sep);
-
-  const cats=[['carousel','Carousel'],['collage','Collage'],['story','Story'],['reels','Reels cover']];
-  for(const [key,label] of cats){
-    const list=TEMPLATES.filter(t=>t.cat===key); if(!list.length) continue;
-    const g=el('div','grp'); g.appendChild(el('div','lbl',label));
+  /* 1 — photo layouts for a single slide: the everyday unit of a photo post */
+  const photos=TEMPLATES.filter(t=>t.cat==='photo');
+  if(photos.length){
+    const g=section('Photo layouts','one slide · your photo is the post');
     const gr=el('div','tgrid');
-    for(const t of list){
-      const card=el('button','tcard');
-      const c=el('canvas','pv'); card.appendChild(c);
-      card.appendChild(el('div','nm',t.name));
-      tplPreview(t,c);
-      card.onclick=()=>applyTemplate(t);
-      gr.appendChild(card);
-    }
+    for(const t of photos) gr.appendChild(tplCard(t));
+    g.appendChild(gr); b.appendChild(g);
+  }
+
+  /* 2 — photo-first packs */
+  const pPacks=PACKS.filter(k=>k.cat==='photo');
+  if(pPacks.length){
+    const g=section('Photo packs','every slide · photos, barely any words');
+    const gr=el('div','tgrid');
+    for(const pk of pPacks) gr.appendChild(packCard(pk));
+    g.appendChild(gr); b.appendChild(g);
+  }
+
+  /* 3 — styled decks, honestly labelled */
+  for(const [key,label,note] of [
+      ['style','Styled sets','every slide · a look, with captions'],
+      ['format','Text posts','every slide · headline and body copy']]){
+    const list=PACKS.filter(k=>(k.cat||'style')===key);
+    if(!list.length) continue;
+    const g=section(label,note);
+    const gr=el('div','tgrid');
+    for(const pk of list) gr.appendChild(packCard(pk));
+    g.appendChild(gr); b.appendChild(g);
+  }
+
+  /* 4 — the remaining single-slide templates */
+  for(const [key,label] of [['carousel','Carousel slides'],['collage','Collage'],
+                            ['story','Story'],['reels','Reels cover']]){
+    const list=TEMPLATES.filter(t=>t.cat===key);
+    if(!list.length) continue;
+    const g=section(label,'one slide');
+    const gr=el('div','tgrid');
+    for(const t of list) gr.appendChild(tplCard(t));
     g.appendChild(gr); b.appendChild(g);
   }
 }
@@ -2685,12 +2950,34 @@ function inspImage(b,L){
   g.appendChild(segCtl([['cover','Cover'],['contain','Fit'],['fill','Stretch']],L.fit||'cover',v=>{L.fit=v;commit()}));
   b.appendChild(g);
 
+  if(L.fit==='contain'){
+    const gp=grp('Fill the frame');
+    const on=el('label','chk');
+    on.innerHTML=`<input type="checkbox"${L.padFill?' checked':''}> Blur the photo behind itself`;
+    on.querySelector('input').onchange=e=>{ L.padFill=e.target.checked; commit(); renderInspector(); };
+    gp.appendChild(on);
+    if(L.padFill){
+      gp.appendChild(rowRange('Backdrop blur',L.padBlur??42,0,120,v=>L.padBlur=v));
+      gp.appendChild(rowRange('Backdrop dim',L.padDim??82,30,110,v=>L.padDim=v,1,'%'));
+    }
+    b.appendChild(gp);
+  }
   if(L.fit!=='fill'){
     b.appendChild(rowRange('Zoom',(L.oz||1)*100,100,400,v=>L.oz=v/100,1,'%'));
     b.appendChild(rowRange('Pan X',(L.ox||0)*100,-60,60,v=>L.ox=v/100,.5,'%'));
     b.appendChild(rowRange('Pan Y',(L.oy||0)*100,-60,60,v=>L.oy=v/100,.5,'%'));
   }
-  b.appendChild(rowRange('Corner radius',L.radius||0,0,Math.round(Math.min(L.w,L.h)/2),v=>L.radius=v));
+  const gsh=grp('Shape');
+  gsh.appendChild(segCtl([['sq','Square'],['round','Rounded'],['arch','Arch'],['circle','Circle']],
+    Array.isArray(L.radius) ? (L.radius[2]===0?'arch':'round')
+      : (radMax(L.radius)>=Math.min(L.w,L.h)/2-1 ? 'circle' : radMax(L.radius)>0 ? 'round':'sq'),
+    v=>{ const m=Math.min(L.w,L.h);
+      L.radius = v==='sq'?0 : v==='round'?Math.round(m*.07)
+               : v==='arch'?[m/2,m/2,0,0] : m/2;
+      commit(); renderInspector(); }));
+  gsh.appendChild(rowRange('Corner radius',radMax(L.radius),0,Math.round(Math.min(L.w,L.h)/2),
+    v=>L.radius=v));
+  b.appendChild(gsh);
 
   const gf=grp('Adjust');
   L.filter ||= {br:100,ct:100,sa:100,bl:0,gr:0};
@@ -3489,7 +3776,7 @@ async function boot(){
   window.__ready=true;
 }
 /* expose a little surface for automated checks */
-window.__studio={ kindOf, drawTransport, drawLayer, packSlide, STYLE_PACKS, FORMAT_PACKS, exportVideo, pickVMime, recordSlide, cutoutSelected, dl, dlCap, VID, addVideo, ingest, placeMedia, grabFrame,
+window.__studio={ PHOTO_PACKS, PHOTO_LAYOUTS, radMax, kindOf, drawTransport, drawLayer, packSlide, STYLE_PACKS, FORMAT_PACKS, exportVideo, pickVMime, recordSlide, cutoutSelected, dl, dlCap, VID, addVideo, ingest, placeMedia, grabFrame,
   slideDur, vidLayers, trimOf, startPlay, stopPlay, scrubTo, srcOf, PRESETS, makeZip, crc32, textHeight, showSheet, PACKS, applyPack, get P(){return P}, get sel(){return sel}, get cur(){return cur},
   set cur(v){cur=v}, addText, addLayer, baseLayer, sliceAcross, addImage, drawSlide,
   renderExport, applyTemplate, TEMPLATES, redraw, renderFilm, renderInspector, renderPanel, IMG,

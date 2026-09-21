@@ -19,6 +19,20 @@ into pieces, so you can keep repositioning it after the fact; the amber dashed
 lines on the canvas mark where the slide seams fall so you can keep faces and
 words clear of them. `Bake into separate slides` flattens it when you're done.
 
+**27 photo layouts** are the front of the Layouts panel, because most posts are
+one slide and the photo is the content. Full bleed, thin and gallery mats,
+instant/polaroid mounts, arch and circle crops, hairline frames, duotone wash,
+film strip, overlap, diptych, and grids from two up to nine. Text in these is
+never prose — a date stamp, a handle, a short caption.
+
+**Blur fill** solves the commonest Instagram problem: a landscape photo in a 4:5
+frame. The photo sits uncropped over an enlarged, blurred copy of itself. It is a
+toggle on any photo set to Fit, and a layout and pack of its own.
+
+**Six photo packs** carry the same idea across a whole carousel — Photo dump,
+Film roll, Instant album, Gallery, Arches, Blur fill — all at least 45% photo area
+and at most six words a slide.
+
 **20 ready-made packs.** Each builds an entire styled deck in one tap — cover,
 content slides, and a closing call-to-action, with type and palette already set.
 Swap your photos and words and it's finished. Photos you've already placed are
@@ -28,7 +42,9 @@ carried across when you switch packs. They come in two groups:
 Editorial, Minimal Mono, Photo Story, Bold Statement, Seamless Pano.
 
 *Formats* (a whole story): Before/After, Step by step, Facts & figures, Product
-showcase, Listicle, Myth vs fact, Q&A, Testimonial, Checklist.
+showcase, Listicle, Myth vs fact, Q&A, Testimonial, Checklist. These are text
+posts — a headline and body copy per slide. They sit last in the panel, under
+that name, because they are decks rather than photo posts.
 
 The style families are built from real render primitives rather than flat images —
 polaroid mounts with a deep chin, 35mm sprocket rails, washi tape with torn
@@ -48,6 +64,9 @@ the way to run the AI cutout on a clip.
 **AI cutout.** One-tap background removal running entirely on-device via
 WebAssembly (RMBG-1.4 through transformers.js). The model downloads once
 (~40 MB) and is cached; nothing is uploaded anywhere.
+
+**Photo shaping.** Square, rounded, arch or circle on any photo, driven by
+per-corner radii rather than a single value.
 
 **Editor.** Direct manipulation with drag, resize, rotate, alignment guides and
 snapping. Text layers with eight fonts, weight, tracking, line height, highlight
