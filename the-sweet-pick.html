@@ -490,6 +490,9 @@
   }
   @keyframes hotring{0%{box-shadow:0 0 0 0 rgba(196,33,42,.6)}45%,100%{box-shadow:0 0 0 14px rgba(196,33,42,0)}}
   .card.locked .tag.hot,.card.locked .tag.hot::after{animation:none}
+  /* once the pick is made the tag tells the truth: still there, and calm about it */
+  .card.locked .tag.hot{background:var(--navy);box-shadow:0 2px 6px rgba(24,62,109,.25)}
+  .card.locked .tag.hot::after{display:none}
 
   /* the reveal: badge, verdict, one rule, the finding, then the bias itself.
      No corner motifs here -- the reference's back side carries none. */
@@ -727,25 +730,6 @@
     25%{opacity:1}
     to{transform:none;opacity:1}
   }
-  /* the FOMO round's clock */
-  #r-clock{position:sticky;top:calc(var(--head-h) + 62px);z-index:5}
-  .offerclock{
-    display:inline-flex;align-items:center;gap:9px;margin:0 0 14px;padding:8px 15px;border-radius:999px;
-    background:var(--maroon);color:#fff;
-    font-family:Mulish,system-ui,sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;
-  }
-  .offerclock::before{
-    content:"";flex:none;width:13px;height:13px;border-radius:50%;box-sizing:border-box;
-    border:2px solid #fff;background:conic-gradient(#fff 0 25%,transparent 25%);
-  }
-  .offerclock b{font-variant-numeric:tabular-nums;font-size:1.02rem;font-weight:900}
-  .offerclock.urgent{background:#C4212A;animation:urge .55s ease-in-out infinite alternate}
-  @keyframes urge{from{transform:scale(1)}to{transform:scale(1.06)}}
-  .offerclock.over,.offerclock.busted{
-    background:var(--navy);text-transform:none;letter-spacing:0;font-family:inherit;font-weight:600;font-size:1rem;animation:none;
-  }
-  .offerclock.over::before,.offerclock.busted::before{opacity:.5}
-  .vclock{margin:10px 0 0;font-style:italic;color:var(--card-head)}
   /* a streak toast, and the strip turning gold */
   .toast{
     position:fixed;left:50%;top:calc(var(--head-h) + 12px);z-index:65;pointer-events:none;
@@ -949,16 +933,15 @@
         <li>Read the brief.</li>
         <li>Size up the cards and make your Sweet&nbsp;Pick.</li>
         <li>Read the back of the cards.</li>
-        <li>Scroll down and click Next&nbsp;pick for your next scenario.</li>
+        <li>Scroll down and tap Next&nbsp;Pick for your next scenario.</li>
       </ol>
     </div>
     <h1 class="headline" id="r-headline"></h1>
     <p class="subhead" id="r-scenario"></p>
-    <div id="r-clock"></div>
     <div class="cards" id="r-cards"></div>
     <div id="r-bridge"></div>
     <div class="btnrow" id="r-actions" hidden>
-      <button class="pill" id="next-btn">Next pick</button>
+      <button class="pill" id="next-btn">Next Pick</button>
       <button class="pill plain" id="again-btn">Pick again</button>
     </div>
   </div>
@@ -1109,7 +1092,6 @@
       headline:"Better hurry &mdash; one left.",
       scene:"The evening before Diwali. The shelves are thinning and the queue behind you is growing.",
       bias:"FOMO", sweet:"peda",
-      clock:15,
       defn:"FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to.",
       bridge:"Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine.",
       places:["Flash sales","Ticket bookings","Limited-stock messages"],
@@ -1181,7 +1163,7 @@
   }
 
   var PAGES = ["cover","round","close","feedback"];
-  var state = {page:"cover", round:0, results:[], picked:false, mi:0, tries:0, clockLeft:-1};
+  var state = {page:"cover", round:0, results:[], picked:false, mi:0, tries:0};
 
   var $ = function(id){ return document.getElementById(id); };
   /* moving focus must not scroll: after a flip the reader is reading the card */
@@ -1207,7 +1189,6 @@
       if (el) el.hidden = (p !== name);
     });
     document.body.classList.toggle("cover-on", name === "cover");
-    if (name !== "round") stopClock();
     if (name !== "close"){ clearReveal(); REVEAL = null; $("p-close").classList.remove("staging"); }
     paintProgress();
     if (name === "cover") bootCover();
@@ -1327,38 +1308,6 @@
     $("mute").addEventListener("click", function(){ setMuted(!muted); if (!muted){ chime(); buzz(10); } });
   }
 
-  /* ---- the FOMO round's clock: it runs, and then it turns out not to matter ---- */
-  var clockTimer = null;
-  function pad(n){ return (n < 10 ? "0" : "") + n; }
-  function stopClock(){ if (clockTimer){ window.clearInterval(clockTimer); clockTimer = null; } }
-  function startClock(r){
-    stopClock();
-    state.clockLeft = -1;
-    var box = $("r-clock"); box.innerHTML = "";
-    if (!r.clock) return;
-    state.clockLeft = r.clock;
-    box.innerHTML = '<div class="offerclock" id="offerclock"><span>Offer ends in</span> <b id="oc-t">0:' + pad(r.clock) + "</b></div>";
-    clockTimer = window.setInterval(function(){
-      var el = $("offerclock");
-      if (!el){ stopClock(); return; }
-      state.clockLeft--;
-      if (state.clockLeft <= 0){
-        stopClock(); state.clockLeft = 0;
-        el.classList.add("over"); el.textContent = "Offer ended. The boxes are still here.";
-        return;
-      }
-      $("oc-t").textContent = "0:" + pad(state.clockLeft);
-      if (state.clockLeft <= 5) el.classList.add("urgent");
-    }, 1000);
-  }
-  function bustClock(beat){
-    var el = $("offerclock"); if (!el) return;
-    el.classList.remove("urgent"); el.classList.add("busted");
-    el.textContent = beat ? "The clock was never real." : "You waited it out. Nothing happened.";
-  }
-  function clockNote(beat){
-    return beat ? "The clock was never real. It never is." : "You waited the clock out. Nothing happened \u2014 it never does.";
-  }
 
   /* ---- the festive box: a mithai for every mindful pick ---- */
   /* the box and the sweets are rendered artwork; each sweet sits in its own paper cup,
@@ -1453,9 +1402,9 @@
     {id:"crowd", name:"Crowd-proof", hint:"Everyone else’s pick stayed everyone else’s.",
      icon:'<circle cx="24" cy="15" r="5"/><circle cx="11" cy="19" r="4"/><circle cx="37" cy="19" r="4"/><path d="M15 38c0-7 4-11 9-11s9 4 9 11M4 34c0-5 3-8 7-8M44 34c0-5-3-8-7-8"/>',
      test:function(){ var r = roundOf("Bandwagon Effect"); return !!(r && r.win); }},
-    {id:"clock", name:"Beat the clock", hint:"Some offers can wait. You let one.",
-     icon:'<circle cx="24" cy="26" r="15"/><path d="M24 17v9l6 4M19 6h10"/>',
-     test:function(){ var r = roundOf("FOMO"); return !!(r && r.waited); }},
+    {id:"calm", name:"Cool head", hint:"Only 1 left, and you let it be.",
+     icon:'<circle cx="24" cy="24" r="14"/><path d="M18 22h4M26 22h4M19 29c3 2 7 2 10 0"/>',
+     test:function(){ var r = roundOf("FOMO"); return !!(r && r.win); }},
     {id:"label", name:"Label reader", hint:"Read the small print before the big one.",
      icon:'<path d="M6 12h22l14 12-14 12H6z"/><circle cx="13" cy="24" r="2.5"/><path d="M20 20h10M20 28h8"/>',
      test:function(){ var r = roundOf("Framing Effect"); return !!(r && r.win); }},
@@ -1864,14 +1813,13 @@
   }
   /* back: badge, verdict, one rule, the finding, then the bias. The reference's
      back side carries no corner motifs, so neither does this. */
-  function back(c, r, note){
+  function back(c, r){
     return '<span class="cframe cback">' +
       verdictBadge(!!c.win) +
       '<p class="vhead">' + c.head + "</p>" +
       '<p class="vsub">' + c.sub + "</p>" +
       fleuron() +
       '<p class="vbody">' + c.body + "</p>" +
-      (note ? '<p class="vclock">' + note + "</p>" : "") +
       '<div class="vdef"><p class="q">What is ' + (r.bias === "FOMO" ? "" : "the ") + r.bias + "?</p><p>" + r.defn + "</p></div>" +
       "</span>";
   }
@@ -1919,12 +1867,11 @@
     });
     $("r-bridge").innerHTML = "";
     $("r-actions").hidden = true;
-    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next pick";
+    $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next Pick";
     saveGame();
     paintTray();
     show("round");
     fitNames();
-    startClock(r);
     /* the brief lands first; the cards are dealt a beat later */
     if (!replay) deal(wrap.querySelectorAll(".card"), 1200);
   }
@@ -1939,19 +1886,18 @@
       if (k !== i) nodes[k].classList.add("dim");
     }
     var chosen = nodes[i];
-    /* the FOMO round: whether the clock was still running when the pick came */
-    var beatClock = state.clockLeft > 0, hadClock = !!r.clock;
-    stopClock();
-    if (hadClock) bustClock(beatClock);
+    /* the scarcity tag tells the truth once the pick is made: the box is still there */
+    var hots = $("r-cards").querySelectorAll(".tag.hot");
+    for (var h = 0; h < hots.length; h++) hots[h].textContent = "Still 1 left";
     var stars = c.win ? (state.tries ? 2 : 3) : 0;   /* a miss earns nothing */
     whoosh(); buzz(12);
     chosen.classList.add("turning");
     window.setTimeout(function(){
-      chosen.innerHTML = back(c, r, hadClock ? clockNote(beatClock) : "");
+      chosen.innerHTML = back(c, r);
       chosen.classList.remove("turning");
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
-      state.results[state.round] = {bias:r.bias, win:!!c.win, stars:stars, waited:hadClock && !beatClock};
+      state.results[state.round] = {bias:r.bias, win:!!c.win, stars:stars};
       saveGame();
       paintProgress();
       if (c.win){ chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, state.round); }, 500); }
