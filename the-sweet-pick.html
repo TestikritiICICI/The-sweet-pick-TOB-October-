@@ -36,7 +36,7 @@
     --card-rule:#CE0D0D;
     --card-head:#921616;
     --card-price:#F76301;
-    --card-body:#000000;
+    --card-body:#183E6D;   /* ICICI Bank navy for the body copy on the cards */
     --good-badge:#328D3D;
     --shadow:0 3px 14px rgba(24,62,109,.12);
     /* the two sticky bands above every page: masthead + contents */
@@ -187,9 +187,6 @@
   .chit-t{font-size:.98rem;font-weight:600;color:var(--navy);line-height:1.32}
   .chit-n{font-size:1.75rem;font-weight:800;line-height:1;letter-spacing:-.02em}
   @keyframes chitin{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
-  .boxtray .budget{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1;padding:5px 10px;border-radius:10px;background:var(--orange);color:#fff;letter-spacing:0;text-transform:none}
-  .boxtray .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
-  .boxtray .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
   .cards.held .card{opacity:0;pointer-events:none}
   .dealart.wait{animation:dealwait .35s ease both}
   @keyframes dealwait{from{opacity:0;transform:translate(-50%,14px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
@@ -635,38 +632,11 @@
 
   /* ---------- game feel ---------- */
   .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  /* the stars a pick earns float off the card */
-  .starpop{
-    position:absolute;left:50%;top:16%;z-index:6;pointer-events:none;
-    font-family:Mulish,system-ui,sans-serif;font-weight:900;font-size:1.5rem;color:#FFD23F;
-    text-shadow:0 2px 0 #9A4A00,0 0 14px rgba(255,180,40,.6);
-    animation:starpop 1.25s cubic-bezier(.2,.7,.2,1) both;
-  }
-  @keyframes starpop{
-    0%{opacity:0;transform:translate(-50%,10px) scale(.6)}
-    18%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}
-    100%{opacity:0;transform:translate(-50%,-70px) scale(1)}
-  }
-  /* the festive box: five paper cups, one per pick */
-  .boxtray{
-    position:sticky;top:calc(var(--head-h) + 4px);z-index:6;
-    display:flex;align-items:center;gap:10px;margin:-8px -8px 20px;padding:6px 8px;border-radius:12px;
-    background:rgba(251,252,253,.92);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
-    font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);
-  }
-  .boxtray .slots{display:flex;gap:6px}
-  .boxtray .slot{
-    width:34px;height:34px;border-radius:50%;background:#FFF6E6;border:2px dashed #E4B27E;box-sizing:border-box;
-    display:grid;place-items:center;
-  }
-  .boxtray .slot.on{border-color:transparent;background:transparent}
-  .boxtray .slot img{width:40px;height:auto;display:block;filter:drop-shadow(0 2px 3px rgba(120,60,10,.25))}
-  .boxtray .slot.pop img{animation:slotpop .5s cubic-bezier(.2,.9,.3,1.4) both}
-  .boxtray .slot.await{border-color:var(--orange);animation:slotwait .7s ease-in-out infinite alternate}
-  @keyframes slotwait{from{transform:scale(1);box-shadow:0 0 0 0 rgba(242,103,35,.35)}to{transform:scale(1.12);box-shadow:0 0 0 6px rgba(242,103,35,0)}}
-  @keyframes slotpop{from{transform:scale(.2)}to{transform:none}}
-  .flysweet{position:fixed;z-index:66;width:64px;pointer-events:none;transform-origin:center;filter:drop-shadow(0 10px 10px rgba(90,35,0,.28))}
-  .flysweet img{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+  /* the planned spend stays pinned under the header while the cards scroll past */
+  .budgetbar{position:sticky;top:calc(var(--head-h) + 6px);z-index:6;display:flex;justify-content:flex-end;margin:-6px 0 12px;pointer-events:none}
+  .budgetbar .budget{display:flex;flex-direction:column;align-items:center;line-height:1;padding:5px 10px;border-radius:10px;background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(120,50,0,.22);font-family:Mulish,system-ui,sans-serif}
+  .budgetbar .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
+  .budgetbar .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
   .yourbox{margin:4px 0 18px}
   .yourbox .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 6px}
   .realbox{position:relative;width:min(420px,100%)}
@@ -675,8 +645,8 @@
   .realbox .sweet img{display:block;width:100%;height:auto}
   .yourbox .boxcap{margin:8px 0 0;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--orange)}
   /* the last page performs: until the reveal reaches a part, it waits unseen */
-  #p-close.staging .rtitle:not(.in),#p-close.staging .rsub:not(.in),#p-close.staging .rstars:not(.in),
-  #p-close.staging .scoreline:not(.in),#p-close.staging .boxcap:not(.in),#p-close.staging .badges:not(.in),
+  #p-close.staging .rtitle:not(.in),#p-close.staging .rsub:not(.in),
+  #p-close.staging .scoreline:not(.in),#p-close.staging .boxcap:not(.in),
   #p-close.staging .sharerow:not(.in),#p-close.staging .sharepreview:not(.in){visibility:hidden}
   #p-close.staging .tally li:not(.in){opacity:0;transform:translateX(-14px)}
   .tally li{transition:opacity .35s,transform .35s}
@@ -685,33 +655,11 @@
   #p-close.staging .realbox .sweet:not(.in){opacity:0}
   .realbox .sweet.in .sweetin{animation:dropin .5s cubic-bezier(.2,.9,.3,1.3) both}
   @keyframes dropin{from{opacity:0;transform:translateY(-34px) scale(1.5)}to{opacity:1;transform:none}}
-  .star{transform-box:fill-box;transform-origin:center}
-  .star.pop{animation:starfill .38s cubic-bezier(.2,.9,.3,1.5) both}
-  @keyframes starfill{from{transform:scale(.3)}60%{transform:scale(1.35)}to{transform:none}}
   .rtitle.in{animation:stamp .55s cubic-bezier(.2,.9,.3,1.25) both;transform-origin:20% 60%}
   @keyframes stamp{0%{opacity:0;transform:scale(2) rotate(-7deg)}55%{opacity:1;transform:scale(.94) rotate(1.5deg)}100%{opacity:1;transform:none}}
-  .rsub.in,.rstars.in,.scoreline.in,.boxcap.in,.badges.in,.sharerow.in,.sharepreview.in{animation:fadeup .45s ease both}
+  .rsub.in,.scoreline.in,.boxcap.in,.sharerow.in,.sharepreview.in{animation:fadeup .45s ease both}
   @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   #p-close.staging{cursor:pointer}
-  /* badges, kept across plays */
-  .badges{margin:0 0 26px}
-  .badges .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 10px}
-  .badges ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-  .badge{
-    display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;
-    padding:10px 12px;border-radius:14px;background:#fff;border:1.5px solid var(--card-line);box-shadow:var(--shadow);
-  }
-  .badge .medal{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#E5E7EB;position:relative}
-  .badge .medal svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-  .badge.on .medal{background:linear-gradient(180deg,#FFC94D 0%,#F0891F 55%,#D95B14 100%);box-shadow:0 3px 0 #A5400C,inset 0 1px 0 rgba(255,255,255,.55)}
-  .badge .bname{font-size:1.04rem;line-height:1.15;color:var(--navy)}
-  .badge .bhint{display:block;font-size:.82rem;line-height:1.3;opacity:.7;margin-top:2px}
-  .badge:not(.on){opacity:.66}
-  .badge.new .medal::after{
-    content:"New";position:absolute;top:-8px;right:-10px;padding:2px 6px;border-radius:999px;
-    background:var(--good);color:#fff;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
-  }
-  .badge.new .medal{animation:slotpop .55s cubic-bezier(.2,.9,.3,1.4) both}
 
   /* each pick is dealt out of the cover's box */
   .dealart{
@@ -741,23 +689,10 @@
   .toast.show{transform:translate(-50%,0);opacity:1}
   .line_bar .active_line.gold{background:#F2B300}
   .confetti{position:fixed;inset:0;z-index:64;pointer-events:none}
-  /* the result: a title, the stars, and a card to share */
+  /* the result: a title, the box, and a card to share */
   .result{margin:0 0 18px}
   .rtitle{font-size:clamp(2.2rem,7vw,3.2rem);line-height:1.05;color:var(--maroon);margin:0 0 4px}
   .rsub{color:var(--navy);margin:0 0 12px}
-  .rstars{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 12px}
-  .stars{display:inline-flex;gap:2px;vertical-align:middle}
-  .star{width:18px;height:18px;fill:rgba(24,62,109,.14)}
-  .star.on{fill:#F4B400;filter:drop-shadow(0 1px 0 rgba(120,70,0,.35))}
-  .rstars .star{width:22px;height:22px}
-  .starline{flex-basis:100%}
-  @media (max-width:420px){ .rstars .star{width:18px;height:18px} .rstars{gap:8px 10px} }
-  .starline{
-    font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.06em;
-    text-transform:uppercase;color:var(--orange);
-  }
-  .tally .stars{margin-left:auto}
-  .tally .st{margin-left:0}
   .sharerow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
   .sharepreview{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 26px}
   .sharepreview img{width:min(320px,100%);height:auto;border-radius:16px;box-shadow:var(--shadow);display:block}
@@ -926,11 +861,11 @@
 <section id="p-round" class="ruled" hidden>
   <div class="page">
     <div class="pageno" id="r-pageno"></div>
-    <div class="boxtray" id="boxtray" role="img" aria-label="Your box"></div>
+    <div class="budgetbar" id="budgetbar"></div>
     <div class="howbox" id="howbox">
       <div class="lbl">How to play</div>
       <ol>
-        <li>Read the brief.</li>
+        <li>Read the task at hand.</li>
         <li>Size up the cards and make your Sweet&nbsp;Pick.</li>
         <li>Read the back of the cards.</li>
         <li>Scroll down and tap Next&nbsp;Pick for your next scenario.</li>
@@ -956,14 +891,9 @@
       <p class="rtitle" id="rtitle"></p>
       <p class="rsub" id="rsub"></p>
       <div class="yourbox" id="yourbox"></div>
-      <div class="rstars" id="rstars"></div>
       <p class="scoreline" id="scoreline"></p>
     </div>
     <ul class="tally" id="tally"></ul>
-    <section class="badges" id="badges" aria-labelledby="badges-h">
-      <p class="eyebrow" id="badges-h">Badges</p>
-      <ul id="badgelist"></ul>
-    </section>
     <div class="sharerow">
       <button class="pill" id="share-btn" type="button">Share my result</button>
     </div>
@@ -1036,7 +966,7 @@
   var ROUNDS = [
     {
       headline:"Which box would you pick?",
-      scene:"Diwali week, and the neighbours have already sent a box over. Now it is your turn, and the shop has its sale board out.",
+      scene:"Festive week, and the neighbours have already sent a box over. Now it is your turn, and the shop has its sale board out.",
       bias:"Anchoring Bias", sweet:"laddoo",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
       bridge:"A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
@@ -1054,7 +984,7 @@
     },
     {
       headline:"Small, medium or large?",
-      scene:"The cousins are over after the puja. One box has to go around the whole room.",
+      scene:"The cousins are over for the celebrations. One box has to go around the whole room.",
       bias:"Decoy Effect", sweet:"modak",
       defn:"The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison.",
       bridge:"At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one.",
@@ -1072,7 +1002,7 @@
     },
     {
       headline:"Everyone&rsquo;s picking one of these.",
-      scene:"Your turn to bring the Diwali box for the office. Whatever you carry in will be noticed.",
+      scene:"Your turn to bring the festive box for the office. Whatever you carry in will be noticed.",
       bias:"Bandwagon Effect", sweet:"barfi",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
       bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
@@ -1090,7 +1020,7 @@
     },
     {
       headline:"Better hurry &mdash; one left.",
-      scene:"The evening before Diwali. The shelves are thinning and the queue behind you is growing.",
+      scene:"The evening before the big day. The shelves are thinning and the queue behind you is growing.",
       bias:"FOMO", sweet:"peda",
       defn:"FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to.",
       bridge:"Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine.",
@@ -1125,7 +1055,7 @@
   ];
 
   var MENU = [];
-  var SAVE_KEY = "tob-vol65-save", BEST_KEY = "tob-vol65-best-stars";
+  var SAVE_KEY = "tob-vol65-save", BEST_KEY = "tob-vol65-best-picks";
 
   /* a title screen remembers: a game in progress, and your best run */
   function savedGame(){
@@ -1200,30 +1130,12 @@
     return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }
 
-  /* ---- stars: three for a mindful pick first time, two after a Pick again, none for a miss ---- */
-  var MAX_STARS = ROUNDS.length * 3;
-  function starsOf(res){ return res ? (typeof res.stars === "number" ? res.stars : (res.win ? 3 : 0)) : 0; }
-  function totalStars(){ return state.results.reduce(function(a, r){ return a + starsOf(r); }, 0); }
+  /* ---- the measure of a game: how many of the five picks were mindful ---- */
   function mindful(){ return state.results.filter(function(x){ return x && x.win; }).length; }
-  function titleFor(total){
-    if (total >= 13) return {t:"Mithai Master", s:"Nothing got past you."};
-    if (total >= 9) return {t:"Sharp Shopper", s:"You saw most of the tricks coming."};
+  function titleFor(n){
+    if (n >= ROUNDS.length) return {t:"Mithai Master", s:"Nothing got past you."};
+    if (n >= 3) return {t:"Sharp Shopper", s:"You saw most of the tricks coming."};
     return {t:"Sweet Tooth", s:"The season got you a little. It gets everyone."};
-  }
-  function starSvg(on, defer){
-    return '<svg class="star' + (on && !defer ? " on" : "") + '"' + (on && defer ? ' data-on="1"' : "") + ' viewBox="0 0 24 24" aria-hidden="true">' +
-      '<path d="M12 2.5l2.9 6.2 6.7.8-4.9 4.6 1.3 6.7L12 17.5l-6 3.3 1.3-6.7L2.4 9.5l6.7-.8z"/></svg>';
-  }
-  function starRow(n, defer){
-    var h = "";
-    for (var i = 0; i < 3; i++) h += starSvg(i < n, defer);
-    return '<span class="stars" role="img" aria-label="' + n + ' of 3 stars">' + h + "</span>";
-  }
-  function starPop(card, n){
-    var el = document.createElement("span");
-    el.className = "starpop"; el.textContent = "+" + n + " \u2605";
-    card.appendChild(el);
-    window.setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, 1400);
   }
 
   /* ---- streaks: consecutive mindful picks ---- */
@@ -1336,6 +1248,9 @@
     return {x:c.fx, y:c.fy - 0.006, w:c.fw * COVER / m.rw, ry:m.ry, ar:m.ar};
   }
   function filledCount(){ return state.results.filter(function(x){ return x && x.win; }).length; }
+  function paintBudget(){
+    $("budgetbar").innerHTML = '<span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
+  }
   /* the box itself: lid back, tray of five cups; the same drawing on the page and on the card */
   function boxHtml(label){
     var h = '<div class="realbox" role="img" aria-label="' + label + '"><img class="boxbase" src="' + BOX_IMG + '" alt="" width="1100" height="626">';
@@ -1349,94 +1264,7 @@
     }
     return h + "</div>";
   }
-  function paintTray(){
-    var el = $("boxtray"), h = '<span class="lbl">Your box</span><span class="slots">';
-    for (var i = 0; i < ROUNDS.length; i++){
-      var res = state.results[i], on = res && res.win;
-      h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetImg(ROUNDS[i].sweet) : "") + "</span>";
-    }
-    el.innerHTML = h + '</span><span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
-    el.setAttribute("aria-label", "Your box: " + filledCount() + " of " + ROUNDS.length + " filled");
-  }
-  /* the mithai leaves the card and lands in its cup: it pops out, holds long enough
-     to be seen, then arcs up and across into the tray, which stays in view */
-  function flySweet(card, i){
-    var slot = $("boxtray").querySelectorAll(".slot")[i];
-    if (!slot) return;
-    if (reducedMotion() || !document.body.animate){ paintTray(); return; }
-    var from = card.getBoundingClientRect(), to = slot.getBoundingClientRect(), SZ = 64;
-    var tray = $("boxtray").getBoundingClientRect();
-    var fl = document.createElement("span"); fl.className = "flysweet"; fl.innerHTML = sweetImg(ROUNDS[i].sweet);
-    /* the sweet lifts out of the top edge of the card; if that edge is tucked under the tray, from just below it */
-    var x0 = from.left + from.width / 2 - SZ / 2, y0 = Math.max(from.top + 6, tray.bottom + 8);
-    slot.classList.add("await");
-    fl.style.left = x0 + "px"; fl.style.top = y0 + "px";
-    document.body.appendChild(fl);
-    var dx = to.left + to.width / 2 - SZ / 2 - x0, dy = to.top + to.height / 2 - SZ / 2 - y0;
-    var end = (to.width * 1.15) / SZ;
-    var anim = fl.animate([
-      {transform:"translate(0,0) scale(.3)", opacity:0, offset:0},
-      {transform:"translate(0,-28px) scale(1.2)", opacity:1, offset:.2},
-      {transform:"translate(0,-28px) scale(1.2)", opacity:1, offset:.45},
-      {transform:"translate(" + (dx * 0.5) + "px," + (dy - 36) + "px) scale(1.05)", opacity:1, offset:.74},
-      {transform:"translate(" + dx + "px," + dy + "px) scale(" + end + ")", opacity:1, offset:1}
-    ], {duration:2200, easing:"cubic-bezier(.4,.05,.3,1)", fill:"forwards"});
-    anim.onfinish = function(){
-      if (fl.parentNode) fl.parentNode.removeChild(fl);
-      slot.classList.remove("await");
-      paintTray(); plop();
-      var s2 = $("boxtray").querySelectorAll(".slot")[i]; if (s2) s2.classList.add("pop");
-    };
-  }
 
-  /* ---- badges, kept across plays ---- */
-  var BADGE_KEY = "tob-vol65-badges";
-  function roundOf(bias){ for (var i = 0; i < ROUNDS.length; i++) if (ROUNDS[i].bias === bias) return state.results[i]; return null; }
-  var BADGES = [
-    {id:"anchor", name:"Anchors away", hint:"Kept the crossed-out price out of your head.",
-     icon:'<path d="M24 10v26M14 24h20M16 30c2 5 5 7 8 7s6-2 8-7"/><circle cx="24" cy="7" r="3"/>',
-     test:function(){ var r = roundOf("Anchoring Bias"); return !!(r && r.win); }},
-    {id:"decoy", name:"Saw through the decoy", hint:"The middle option didn’t move you.",
-     icon:'<path d="M4 24s8-11 20-11 20 11 20 11-8 11-20 11S4 24 4 24z"/><circle cx="24" cy="24" r="5"/>',
-     test:function(){ var r = roundOf("Decoy Effect"); return !!(r && r.win); }},
-    {id:"crowd", name:"Crowd-proof", hint:"Everyone else’s pick stayed everyone else’s.",
-     icon:'<circle cx="24" cy="15" r="5"/><circle cx="11" cy="19" r="4"/><circle cx="37" cy="19" r="4"/><path d="M15 38c0-7 4-11 9-11s9 4 9 11M4 34c0-5 3-8 7-8M44 34c0-5-3-8-7-8"/>',
-     test:function(){ var r = roundOf("Bandwagon Effect"); return !!(r && r.win); }},
-    {id:"calm", name:"Cool head", hint:"Only 1 left, and you let it be.",
-     icon:'<circle cx="24" cy="24" r="14"/><path d="M18 22h4M26 22h4M19 29c3 2 7 2 10 0"/>',
-     test:function(){ var r = roundOf("FOMO"); return !!(r && r.win); }},
-    {id:"label", name:"Label reader", hint:"Read the small print before the big one.",
-     icon:'<path d="M6 12h22l14 12-14 12H6z"/><circle cx="13" cy="24" r="2.5"/><path d="M20 20h10M20 28h8"/>',
-     test:function(){ var r = roundOf("Framing Effect"); return !!(r && r.win); }},
-    {id:"sweep", name:"Clean sweep", hint:"Five picks, five mindful. Not a crumb wasted.",
-     icon:'<path d="M8 18l6 20h20l6-20z"/><path d="M8 18c4-5 12-8 16-8s12 3 16 8"/><path d="M24 22l2 5h5l-4 3 2 5-5-3-5 3 2-5-4-3h5z"/>',
-     test:function(){ return mindful() === ROUNDS.length && state.results.length === ROUNDS.length; }}
-  ];
-  function storedBadges(){
-    try { return JSON.parse(window.localStorage.getItem(BADGE_KEY) || "{}") || {}; } catch(e){ return {}; }
-  }
-  /* awards this game's badges, keeps them, and says which are new */
-  function awardBadges(){
-    var had = storedBadges(), now = {}, fresh = [];
-    BADGES.forEach(function(b){
-      var earned = false;
-      try { earned = !!b.test(); } catch(e){}
-      now[b.id] = !!had[b.id] || earned;
-      if (earned && !had[b.id]) fresh.push(b);
-    });
-    try { window.localStorage.setItem(BADGE_KEY, JSON.stringify(now)); } catch(e){}
-    return {have:now, fresh:fresh};
-  }
-  function paintBadges(have, fresh){
-    var freshIds = {}; fresh.forEach(function(b){ freshIds[b.id] = true; });
-    $("badgelist").innerHTML = BADGES.map(function(b){
-      var on = !!have[b.id];
-      return '<li class="badge' + (on ? " on" : "") + (freshIds[b.id] ? " new" : "") + '">' +
-        '<span class="medal"><svg viewBox="0 0 48 48" aria-hidden="true">' + b.icon + "</svg></span>" +
-        '<span><span class="bname">' + b.name + (on ? "" : '<span class="vh"> (locked)</span>') + "</span>" +
-        '<span class="bhint">' + b.hint + "</span></span></li>";
-    }).join("");
-  }
 
   /* ---- each pick is dealt out of the cover's box: the cards fly from where
      the three question cards sit in the artwork ---- */
@@ -1537,12 +1365,7 @@
     if (!(document.fonts && document.fonts.load)) return Promise.resolve();
     return Promise.all([document.fonts.load("120px Handlee"), document.fonts.load("900 34px Mulish"), document.fonts.load("500 30px Mulish")]).catch(function(){});
   }
-  function starPath(g, cx, cy, R){
-    var r = R * 0.46; g.beginPath();
-    for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
-    g.closePath();
-  }
-  function drawResultCard(g, total, n, title, art){
+  function drawResultCard(g, n, title, art){
     var W = 1080, H = 1080, seed = 7;
     function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
     var grad = g.createLinearGradient(0, 0, 0, H); grad.addColorStop(0, "#F6953F"); grad.addColorStop(1, "#E24F0E");
@@ -1571,27 +1394,27 @@
       }
     }
     g.fillStyle = "#fff"; g.font = "36px Handlee, cursive";
-    g.fillText(total + " of " + MAX_STARS + " stars  \u00b7  " + n + " of " + ROUNDS.length + " mindful picks", 540, 900);
+    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, 900);
     var m = document.querySelector("#p-feedback .feedgif img");
     if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
     g.textAlign = "left"; g.font = "600 26px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 92);
     g.font = "500 22px Mulish, sans-serif"; g.fillStyle = "rgba(255,255,255,.9)";
     g.fillText(shareUrl() || "The Orange Book \u00b7 Vol. 65 \u00b7 ICICI Bank", 64, H - 56);
   }
-  function prepareShare(total, n, title){
+  function prepareShare(n, title){
     SHARE.file = null; SHARE.dataUrl = "";
-    SHARE.text = "I scored " + total + " of " + MAX_STARS + " stars on The Sweet Pick, this month\u2019s interactive Orange Book from ICICI Bank. Can you spot the festive tricks?";
+    SHARE.text = "I made " + n + " of " + ROUNDS.length + " mindful picks on The Sweet Pick, this month\u2019s interactive Orange Book from ICICI Bank. Can you spot the festive tricks?";
     /* the box is drawn as an image of its own SVG, so the card shows the same box as the page */
     Promise.all([ensureFonts(), artReady()]).then(function(parts){
       var cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1080;
-      try { drawResultCard(cv.getContext("2d"), total, n, title, parts[1]); SHARE.dataUrl = cv.toDataURL("image/png"); } catch(e){ return; }
+      try { drawResultCard(cv.getContext("2d"), n, title, parts[1]); SHARE.dataUrl = cv.toDataURL("image/png"); } catch(e){ return; }
       try {
         var bin = window.atob(SHARE.dataUrl.split(",")[1]), arr = new Uint8Array(bin.length);
         for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
         SHARE.file = new File([arr], "the-sweet-pick.png", {type:"image/png"});
       } catch(e){ SHARE.file = null; }
       var pv = $("share-preview");
-      pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + total + " of " + MAX_STARS + ' stars">' +
+      pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + n + " of " + ROUNDS.length + ' mindful picks">' +
         '<a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>';
       pv.querySelector("a[download]").addEventListener("click", function(e){
         if (!DL || !SHARE.file) return;
@@ -1749,7 +1572,7 @@
   }
   function paintCoverStat(){
     var n = bestRun(), el = $("coverstat");
-    el.innerHTML = "Best run <b>" + n + "\u2605</b> \u00b7 " + titleFor(n).t;
+    el.innerHTML = "Best run <b>" + n + " of " + ROUNDS.length + "</b> \u00b7 " + titleFor(n).t;
     el.hidden = (n <= 0);
   }
   function paintMenu(){
@@ -1853,7 +1676,7 @@
     $("r-headline").innerHTML = r.headline;
     /* the brief, laid out as a ticket: this pick's scene on the cream half, the plan on the stub */
     $("r-scenario").className = "subhead brief";
-    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Your brief</span><span class="chit-t">' + r.scene + '</span></span>' +
+    $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Task at hand</span><span class="chit-t">' + r.scene + '</span></span>' +
       '<span class="chit-r"><span class="chit-k">You plan to spend around</span><span class="chit-n">' + rupee(BUDGET) + "</span></span></span>";
 
     var wrap = $("r-cards");
@@ -1869,7 +1692,7 @@
     $("r-actions").hidden = true;
     $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next Pick";
     saveGame();
-    paintTray();
+    paintBudget();
     show("round");
     fitNames();
     /* the brief lands first; the cards are dealt a beat later */
@@ -1889,7 +1712,6 @@
     /* the scarcity tag tells the truth once the pick is made: the box is still there */
     var hots = $("r-cards").querySelectorAll(".tag.hot");
     for (var h = 0; h < hots.length; h++) hots[h].textContent = "Still 1 left";
-    var stars = c.win ? (state.tries ? 2 : 3) : 0;   /* a miss earns nothing */
     whoosh(); buzz(12);
     chosen.classList.add("turning");
     window.setTimeout(function(){
@@ -1897,12 +1719,11 @@
       chosen.classList.remove("turning");
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
-      state.results[state.round] = {bias:r.bias, win:!!c.win, stars:stars};
+      state.results[state.round] = {bias:r.bias, win:!!c.win};
       saveGame();
       paintProgress();
-      if (c.win){ chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, state.round); }, 500); }
-      else { thud(); buzz(40); paintTray(); }
-      if (stars) starPop(chosen, stars);
+      if (c.win){ chime(); buzz([10,30,10]); }
+      else { thud(); buzz(40); }
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
       var src = r.source;
@@ -1936,98 +1757,75 @@
   }
 
   function renderClose(){
-    var n = mindful(), total = totalStars(), title = titleFor(total);
+    var n = mindful(), title = titleFor(n);
     clearSave();
-    recordBest(total);
+    recordBest(n);
     $("rtitle").textContent = title.t;
     $("rsub").textContent = title.s;
     var filled = filledCount();
     $("yourbox").innerHTML = '<p class="eyebrow">Your festive box</p>' +
       boxHtml("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") +
       '<p class="boxcap">' + (filled === ROUNDS.length ? "Full box!" : filled + " of " + ROUNDS.length + " filled") + "</p>";
-    var badges = awardBadges();
-    paintBadges(badges.have, badges.fresh);
-    $("rstars").innerHTML = state.results.map(function(res){ return starRow(starsOf(res), true); }).join("") +
-      '<span class="starline" id="starline">' + total + " of " + MAX_STARS + " stars</span>";
     $("scoreline").textContent = "You made " + n + " mindful " + (n === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + ".";
     var t = $("tally");
     t.innerHTML = "";
     state.results.forEach(function(res){
       var li = document.createElement("li");
-      li.innerHTML = '<span class="nm">' + res.bias + "</span>" + starRow(starsOf(res), true) +
+      li.innerHTML = '<span class="nm">' + res.bias + "</span>" +
         '<span class="st ' + (res.win ? "ok" : "") + '">' + (res.win ? "Avoided" : "Fell for it") + "</span>";
       t.appendChild(li);
     });
     $("share-preview").hidden = true;
     show("close");
-    prepareShare(total, n, title);
-    startReveal(n, total, badges);
+    prepareShare(n, title);
+    startReveal(n);
   }
 
-  /* ---- the last page performs: cups fill, stars tick in, the title stamps ---- */
+  /* ---- the last page performs: rows land, cups fill, the title stamps ---- */
   var revealTimers = [], REVEAL = null;
   function later(fn, ms){ revealTimers.push(window.setTimeout(fn, ms)); }
   function clearReveal(){ for (var i = 0; i < revealTimers.length; i++) window.clearTimeout(revealTimers[i]); revealTimers = []; }
-  function lightStar(box, j){
-    if (!box) return;
-    var st = box.querySelectorAll(".star")[j];
-    if (st && st.hasAttribute("data-on")){ st.classList.add("on"); st.classList.add("pop"); }
-  }
   function addIn(el){ if (el) el.classList.add("in"); }
   /* everything lit and in place, whether the performance ran or was skipped */
   function finishReveal(){
     clearReveal();
     var pg = $("p-close"), k;
-    var stars = pg.querySelectorAll(".star[data-on]"); for (k = 0; k < stars.length; k++) stars[k].classList.add("on");
     var sweets = pg.querySelectorAll(".realbox .sweet"); for (k = 0; k < sweets.length; k++) sweets[k].classList.add("in");
     var rows = pg.querySelectorAll(".tally li, .tally .st"); for (k = 0; k < rows.length; k++) rows[k].classList.add("in");
-    ["rtitle", "rsub", "rstars", "scoreline", "badges"].forEach(function(id){ addIn($(id)); });
+    ["rtitle", "rsub", "scoreline"].forEach(function(id){ addIn($(id)); });
     addIn(pg.querySelector(".boxcap")); addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview"));
-    if (REVEAL) $("starline").textContent = REVEAL.total + " of " + MAX_STARS + " stars";
     pg.classList.remove("staging");
   }
   function afterReveal(){
     if (!REVEAL) return;
-    var sweep = REVEAL.n === ROUNDS.length, fresh = REVEAL.badges.fresh;
-    if (sweep) later(confetti, 150);
-    if (fresh.length) later(function(){ toast(fresh.length === 1 ? "New badge: " + fresh[0].name : fresh.length + " new badges!"); }, sweep ? 1800 : 500);
+    if (REVEAL.n === ROUNDS.length) later(confetti, 150);
     REVEAL = null;
   }
   function skipReveal(){
     if (!$("p-close").classList.contains("staging")) return;
     finishReveal(); afterReveal();
   }
-  function startReveal(n, total, badges){
+  function startReveal(n){
     clearReveal();
-    REVEAL = {n:n, total:total, badges:badges};
+    REVEAL = {n:n};
     var pg = $("p-close");
     if (reducedMotion()){ finishReveal(); afterReveal(); return; }
     pg.classList.add("staging");
-    $("starline").textContent = "0 of " + MAX_STARS + " stars";
-    var rows = $("tally").querySelectorAll("li"), groups = $("rstars").querySelectorAll(".stars");
-    var t = 380, lit = 0;
+    var rows = $("tally").querySelectorAll("li");
+    var t = 380;
     for (var i = 0; i < ROUNDS.length; i++){
-      var earned = starsOf(state.results[i]);
-      (function(i, earned){
+      (function(i){
         var res = state.results[i];
         later(function(){ addIn(rows[i]); }, t);
         if (res && res.win) later(function(){ addIn(pg.querySelector('.realbox .sweet[data-i="' + i + '"]')); plop(); }, t + 90);
-        for (var j = 0; j < earned; j++){
-          (function(j){
-            later(function(){
-              lightStar(rows[i], j); lightStar(groups[i], j); tick();
-              lit++; $("starline").textContent = lit + " of " + MAX_STARS + " stars";
-            }, t + 240 + j * 140);
-          })(j);
-        }
-        later(function(){ addIn(rows[i] && rows[i].querySelector(".st")); }, t + 260 + earned * 140);
-      })(i, earned);
-      t += 520 + earned * 140;
+        later(function(){ addIn(rows[i] && rows[i].querySelector(".st")); if (res && res.win) tick(); }, t + 260);
+      })(i);
+      t += 520;
     }
-    later(function(){ addIn($("rstars")); addIn($("scoreline")); }, t);
+    later(function(){ addIn($("scoreline")); }, t);
     later(function(){ addIn($("rtitle")); addIn($("rsub")); thud(); buzz([20, 40, 20]); }, t + 260);
     later(function(){ addIn(pg.querySelector(".boxcap")); }, t + 420);
-    later(function(){ addIn($("badges")); addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview")); }, t + 820);
+    later(function(){ addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview")); }, t + 820);
     later(function(){ pg.classList.remove("staging"); afterReveal(); }, t + 1100);
   }
   function tick(){
