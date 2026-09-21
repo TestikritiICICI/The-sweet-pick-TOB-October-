@@ -633,11 +633,29 @@
 
   /* ---------- game feel ---------- */
   .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  /* the planned spend stays pinned under the header while the cards scroll past */
-  .budgetbar{position:sticky;top:calc(var(--head-h) + 6px);z-index:6;display:flex;justify-content:flex-end;margin:-6px 0 12px;pointer-events:none}
-  .budgetbar .budget{display:flex;flex-direction:column;align-items:center;line-height:1;padding:5px 10px;border-radius:10px;background:var(--orange);color:#fff;box-shadow:0 2px 8px rgba(120,50,0,.22);font-family:Mulish,system-ui,sans-serif}
-  .budgetbar .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
-  .budgetbar .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
+  /* the festive box: five paper cups, one per pick */
+  .boxtray{
+    position:sticky;top:calc(var(--head-h) + 4px);z-index:6;
+    display:flex;align-items:center;gap:10px;margin:-8px -8px 20px;padding:6px 8px;border-radius:12px;
+    background:rgba(251,252,253,.92);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
+    font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);
+  }
+  .boxtray .slots{display:flex;gap:6px}
+  .boxtray .slot{
+    width:34px;height:34px;border-radius:50%;background:#FFF6E6;border:2px dashed #E4B27E;box-sizing:border-box;
+    display:grid;place-items:center;
+  }
+  .boxtray .slot.on{border-color:transparent;background:transparent}
+  .boxtray .slot img{width:40px;height:auto;display:block;filter:drop-shadow(0 2px 3px rgba(120,60,10,.25))}
+  .boxtray .slot.pop img{animation:slotpop .5s cubic-bezier(.2,.9,.3,1.4) both}
+  .boxtray .slot.await{border-color:var(--orange);animation:slotwait .7s ease-in-out infinite alternate}
+  @keyframes slotwait{from{transform:scale(1);box-shadow:0 0 0 0 rgba(242,103,35,.35)}to{transform:scale(1.12);box-shadow:0 0 0 6px rgba(242,103,35,0)}}
+  @keyframes slotpop{from{transform:scale(.2)}to{transform:none}}
+  .flysweet{position:fixed;z-index:66;width:64px;pointer-events:none;transform-origin:center;filter:drop-shadow(0 10px 10px rgba(90,35,0,.28))}
+  .flysweet img{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+  .boxtray .budget{margin-left:auto;flex:none;display:flex;flex-direction:column;align-items:center;line-height:1;padding:5px 10px;border-radius:10px;background:var(--orange);color:#fff;letter-spacing:0;text-transform:none}
+  .boxtray .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
+  .boxtray .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
   .yourbox{margin:4px 0 18px}
   .yourbox .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 6px}
   .realbox{position:relative;width:min(420px,100%)}
@@ -862,7 +880,7 @@
 <section id="p-round" class="ruled" hidden>
   <div class="page">
     <div class="pageno" id="r-pageno"></div>
-    <div class="budgetbar" id="budgetbar"></div>
+    <div class="boxtray" id="boxtray" role="img" aria-label="Your box"></div>
     <div class="howbox" id="howbox">
       <div class="lbl">How to play</div>
       <ol>
@@ -1251,8 +1269,44 @@
     return {x:c.fx, y:c.fy - 0.006, w:c.fw * COVER / m.rw, ry:m.ry, ar:m.ar};
   }
   function filledCount(){ return state.results.filter(function(x){ return x && x.win; }).length; }
-  function paintBudget(){
-    $("budgetbar").innerHTML = '<span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
+  function paintTray(){
+    var el = $("boxtray"), h = '<span class="lbl">Your box</span><span class="slots">';
+    for (var i = 0; i < ROUNDS.length; i++){
+      var res = state.results[i], on = res && res.win;
+      h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetImg(ROUNDS[i].sweet) : "") + "</span>";
+    }
+    el.innerHTML = h + '</span><span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
+    el.setAttribute("aria-label", "Your box: " + filledCount() + " of " + ROUNDS.length + " filled");
+  }
+  /* the mithai leaves the card and lands in its cup: it pops out, holds long enough
+     to be seen, then arcs up and across into the tray, which stays in view */
+  function flySweet(card, i){
+    var slot = $("boxtray").querySelectorAll(".slot")[i];
+    if (!slot) return;
+    if (reducedMotion() || !document.body.animate){ paintTray(); return; }
+    var from = card.getBoundingClientRect(), to = slot.getBoundingClientRect(), SZ = 64;
+    var tray = $("boxtray").getBoundingClientRect();
+    var fl = document.createElement("span"); fl.className = "flysweet"; fl.innerHTML = sweetImg(ROUNDS[i].sweet);
+    /* the sweet lifts out of the top edge of the card; if that edge is tucked under the tray, from just below it */
+    var x0 = from.left + from.width / 2 - SZ / 2, y0 = Math.max(from.top + 6, tray.bottom + 8);
+    slot.classList.add("await");
+    fl.style.left = x0 + "px"; fl.style.top = y0 + "px";
+    document.body.appendChild(fl);
+    var dx = to.left + to.width / 2 - SZ / 2 - x0, dy = to.top + to.height / 2 - SZ / 2 - y0;
+    var end = (to.width * 1.15) / SZ;
+    var anim = fl.animate([
+      {transform:"translate(0,0) scale(.3)", opacity:0, offset:0},
+      {transform:"translate(0,-28px) scale(1.2)", opacity:1, offset:.2},
+      {transform:"translate(0,-28px) scale(1.2)", opacity:1, offset:.45},
+      {transform:"translate(" + (dx * 0.5) + "px," + (dy - 36) + "px) scale(1.05)", opacity:1, offset:.74},
+      {transform:"translate(" + dx + "px," + dy + "px) scale(" + end + ")", opacity:1, offset:1}
+    ], {duration:2200, easing:"cubic-bezier(.4,.05,.3,1)", fill:"forwards"});
+    anim.onfinish = function(){
+      if (fl.parentNode) fl.parentNode.removeChild(fl);
+      slot.classList.remove("await");
+      paintTray(); plop();
+      var s2 = $("boxtray").querySelectorAll(".slot")[i]; if (s2) s2.classList.add("pop");
+    };
   }
   /* the box itself: lid back, tray of five cups; the same drawing on the page and on the card */
   function boxHtml(label){
@@ -1695,7 +1749,7 @@
     $("r-actions").hidden = true;
     $("next-btn").textContent = (state.round === ROUNDS.length - 1) ? "See how you did" : "Next Pick";
     saveGame();
-    paintBudget();
+    paintTray();
     show("round");
     fitNames();
     /* the brief lands first; the cards are dealt a beat later */
@@ -1725,8 +1779,8 @@
       state.results[state.round] = {bias:r.bias, win:!!c.win};
       saveGame();
       paintProgress();
-      if (c.win){ chime(); buzz([10,30,10]); }
-      else { thud(); buzz(40); }
+      if (c.win){ chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, state.round); }, 500); }
+      else { thud(); buzz(40); paintTray(); }
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
       var src = r.source;
