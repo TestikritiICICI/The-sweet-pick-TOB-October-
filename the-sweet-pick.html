@@ -1270,7 +1270,7 @@
   }
   function filledCount(){ return state.results.filter(function(x){ return x && x.win; }).length; }
   function paintTray(){
-    var el = $("boxtray"), h = '<span class="lbl">Your box</span><span class="slots">';
+    var el = $("boxtray"), h = '<span class="slots">';
     for (var i = 0; i < ROUNDS.length; i++){
       var res = state.results[i], on = res && res.win;
       h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetImg(ROUNDS[i].sweet) : "") + "</span>";
