@@ -207,7 +207,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Under the seal | the tag's line |
 | Under the box | {N} of 5 mindful picks |
 | Footer, line 1 | Can you spot the festive tricks? |
-| Footer, line 2 | The public link when the edition has one; otherwise: The Orange Book · Vol. 65 · ICICI Bank |
+| Footer, line 2 | The Orange Book · Vol. 65 · ICICI Bank |
 
 ### Share messages
 
