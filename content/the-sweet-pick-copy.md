@@ -68,7 +68,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Which box would you pick? |
-| Task at hand | You’re hosting a Diwali get-together at home and are picking up mithai for your guests. |
+| Task at hand | You’re hosting a festive get-together at home and are picking up mithai for your guests. |
 | Mithai earned | Laddoo |
 | Definition (card back) | Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it. |
 | The same trick, elsewhere | A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000. |
@@ -110,7 +110,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Traditional, fusion or dry fruit? |
-| Task at hand | Your team is celebrating Diwali at work and you’ve been asked to bring mithai for everyone. |
+| Task at hand | Your team is celebrating at work this festive season and you’ve been asked to bring mithai for everyone. |
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
 | The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming. |
@@ -152,7 +152,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Two boxes, two labels. |
-| Task at hand | You’re heading to a Diwali celebration and stop by a mithai shop before you go. |
+| Task at hand | You’re heading to a celebration this festive season and stop by a mithai shop before you go. |
 | Mithai earned | Jalebi |
 | Definition (card back) | The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels. |
 | The same trick, elsewhere | One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much. |
