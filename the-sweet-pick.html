@@ -1503,8 +1503,8 @@
     g.lineWidth = 2.2 * k; g.lineCap = "round"; g.setLineDash([1.6 * k, 5.4 * k]); g.beginPath(); g.arc(cx, cy, 98 * k, 0, 6.29); g.stroke(); g.setLineDash([]);
     g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "alphabetic";
     g.font = "800 " + (15 * k).toFixed(1) + "px Mulish, sans-serif";
-    arcText(g, "THE SWEET PICK", cx, cy, 118 * k, false, 3 * k);
-    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 118 * k, true, 3 * k);
+    arcText(g, "THE SWEET PICK", cx, cy, 110 * k, false, 3 * k);
+    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 120 * k, true, 3 * k);
     g.beginPath(); g.arc(cx - 114 * k, cy, 3.8 * k, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 114 * k, cy, 3.8 * k, 0, 6.29); g.fill();
     pipPath(g, cx, cy - 64 * k, 11 * k); g.fill(); pipPath(g, cx, cy + 76 * k, 11 * k); g.fill();
     var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
@@ -1953,7 +1953,7 @@
       '<svg viewBox="0 0 300 300" aria-hidden="true">' +
       '<defs><radialGradient id="st-paper" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFFCF4"/><stop offset=".75" stop-color="#FFF6E6"/><stop offset="1" stop-color="#F4E3C6"/></radialGradient>' +
       '<radialGradient id="st-paper-gold" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFF9E6"/><stop offset=".75" stop-color="#FFF1D2"/><stop offset="1" stop-color="#EFD9A7"/></radialGradient>' +
-      '<path id="st-top" d="M32 150A118 118 0 0 1 268 150"/><path id="st-bot" d="M32 150A118 118 0 0 0 268 150"/></defs>' +
+      '<path id="st-top" d="M40 150A110 110 0 0 1 260 150"/><path id="st-bot" d="M30 150A120 120 0 0 0 270 150"/></defs>' +
       '<circle class="paper" cx="150" cy="150" r="147"/>' +
       '<circle class="ink thick" cx="150" cy="150" r="140"/><circle class="ink fine" cx="150" cy="150" r="132"/><circle class="ink dotted" cx="150" cy="150" r="98"/>' +
       '<text class="ringtext"><textPath href="#st-top" startOffset="50%" text-anchor="middle">THE SWEET PICK</textPath></text>' +
