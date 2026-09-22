@@ -668,36 +668,33 @@
   .boxtray .budget .bk{font-size:.5rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.92}
   .boxtray .budget .bn{font-size:.98rem;font-weight:800;letter-spacing:-.01em;margin-top:3px}
   .yourbox{margin:4px 0 18px}
-  /* the box with the seal stamped onto its lid: the stage leaves room above the box for the seal's upper half */
-  .boxstage{position:relative;width:min(420px,100%);padding-top:33%}
-  .boxstage .realbox{width:100%}
   .realbox.nudge{animation:nudge .32s ease both}
   @keyframes nudge{30%{transform:translateY(2px) rotate(.5deg)}70%{transform:translateY(-1px) rotate(-.2deg)}100%{transform:none}}
-  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-8deg);transform-origin:50% 50%}
-  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 16px rgba(120,40,0,.3))}
-  .stamp .paper{fill:rgba(255,249,238,.96)}
+  /* the seal: a rectangular rubber stamp set above the box, with its line right under it */
+  .sealwrap{padding:10px 0 6px;margin:0 0 4px}
+  .stamp{position:relative;width:min(100%,380px);opacity:0;transform:rotate(-3deg);transform-origin:50% 50%}
+  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 8px 16px rgba(120,40,0,.26))}
+  .stamp .paper{fill:rgba(255,249,238,.97)}
   .stamp .ink{fill:none;stroke:var(--maroon)}
   .stamp .thick{stroke-width:7}
   .stamp .thin{stroke-width:2.5}
-  .stamp .dot{fill:var(--maroon)}
-  .stamp .pip{fill:var(--maroon);stroke:none}
-  .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:3px}
-  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:56px;text-anchor:middle}
-  .stamp .tagname.one{font-size:62px}
+  .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:3px;text-anchor:middle}
+  .stamp .ringtext.small{font-size:15px}
+  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:58px;text-anchor:middle}
   .stamp.gold .paper{fill:#FFF4D8}
   .stamp.gold .ink{stroke:#B0700E}
-  .stamp.gold .dot,.stamp.gold .pip,.stamp.gold .ringtext,.stamp.gold .tagname{fill:#B0700E}
+  .stamp.gold .ringtext,.stamp.gold .tagname{fill:#B0700E}
   /* the seal slams down, rings with the impact, then catches the light */
   .stamp.in{animation:slam .62s cubic-bezier(.2,.9,.3,1.2) both}
   @keyframes slam{
-    0%{opacity:0;transform:translateX(-50%) scale(2.4) rotate(-32deg)}
-    60%{opacity:1;transform:translateX(-50%) scale(.94) rotate(-5deg)}
-    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-8deg)}
+    0%{opacity:0;transform:scale(2.2) rotate(-24deg)}
+    60%{opacity:1;transform:scale(.96) rotate(-1deg)}
+    100%{opacity:1;transform:scale(1) rotate(-3deg)}
   }
-  .stamp.in::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid rgba(162,29,40,.5);pointer-events:none;animation:impact .75s ease-out .36s both}
-  @keyframes impact{from{opacity:.9;transform:scale(.92)}to{opacity:0;transform:scale(1.4)}}
+  .stamp.in::after{content:"";position:absolute;inset:4%;border-radius:18px;border:3px solid rgba(162,29,40,.5);pointer-events:none;animation:impact .75s ease-out .36s both}
+  @keyframes impact{from{opacity:.9;transform:scale(.94)}to{opacity:0;transform:scale(1.25)}}
   .stamp.in::before{
-    content:"";position:absolute;inset:3%;border-radius:50%;pointer-events:none;z-index:1;
+    content:"";position:absolute;inset:3%;border-radius:16px;pointer-events:none;z-index:1;
     background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.7) 50%,transparent 58%);background-size:260% 100%;
     animation:shine 1.1s ease-out 1s both;
   }
@@ -755,9 +752,12 @@
   .confetti{position:fixed;inset:0;z-index:64;pointer-events:none}
   /* the result: a title, the box, and a card to share */
   .result{margin:0 0 18px}
-  .rsub{color:var(--navy);font-size:1.25rem;margin:0 0 10px}
+  .rsub{color:var(--navy);font-size:1.25rem;margin:0 0 18px}
   .sharerow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
   .sharepreview{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 26px}
+  .sharelinks{display:flex;gap:10px;flex-wrap:wrap}
+  .sharepreview.flash{animation:flashpanel .9s ease}
+  @keyframes flashpanel{30%{box-shadow:0 0 0 6px rgba(240,100,35,.35)}100%{box-shadow:none}}
   .sharepreview img{width:min(320px,100%);height:auto;border-radius:16px;box-shadow:var(--shadow);display:block}
   /* the band's right side, as Vol. 64 carries it: Share, WhatsApp, and here the sound toggle */
   .rightfloat{display:flex;align-items:center;gap:10px;margin-left:auto;align-self:stretch;padding-right:30px}
@@ -952,8 +952,9 @@
     <div class="pageno">The Sweet Pick &middot; Last page</div>
     <h1 class="headline">A sweeter way to choose</h1>
     <div class="result" id="result">
-      <div class="yourbox" id="yourbox"></div>
+      <div class="sealwrap" id="sealwrap"></div>
       <p class="rsub" id="rsub"></p>
+      <div class="yourbox" id="yourbox"></div>
       <p class="scoreline" id="scoreline"></p>
     </div>
     <ul class="tally" id="tally"></ul>
@@ -1464,7 +1465,29 @@
   function shareUrl(){ var h = window.location.href; return /^https?:/.test(h) ? h.split("#")[0] : ""; }
   function ensureFonts(){
     if (!(document.fonts && document.fonts.load)) return Promise.resolve();
-    return Promise.all([document.fonts.load("120px Handlee"), document.fonts.load("900 34px Mulish"), document.fonts.load("500 30px Mulish")]).catch(function(){});
+    return Promise.all([document.fonts.load("120px Handlee"), document.fonts.load("900 34px Mulish"), document.fonts.load("800 24px Mulish"), document.fonts.load("500 30px Mulish")]).catch(function(){});
+  }
+  function roundRect(g, x, y, w, h, r){
+    g.beginPath(); g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r);
+    g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h);
+    g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath();
+  }
+  /* the same seal as the page, drawn on the card */
+  function drawStamp(g, cx, cy, w, h, title, gold){
+    var ink = gold ? "#B0700E" : "#A21D28", paper = gold ? "#FFF4D8" : "#FFF9EE";
+    g.save(); g.translate(cx, cy); g.rotate(-3 * Math.PI / 180);
+    g.shadowColor = "rgba(90,30,0,.28)"; g.shadowBlur = 24; g.shadowOffsetY = 10;
+    roundRect(g, -w / 2, -h / 2, w, h, 26); g.fillStyle = paper; g.fill();
+    g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
+    g.strokeStyle = ink; g.lineWidth = 10; roundRect(g, -w / 2 + 10, -h / 2 + 10, w - 20, h - 20, 20); g.stroke();
+    g.lineWidth = 3.5; roundRect(g, -w / 2 + 34, -h / 2 + 34, w - 68, h - 68, 11); g.stroke();
+    g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "alphabetic";
+    g.font = "800 24px Mulish, sans-serif"; try { g.letterSpacing = "5px"; } catch(e){}
+    g.fillText("THE SWEET PICK", 0, -h / 2 + 78);
+    g.font = "800 21px Mulish, sans-serif"; g.fillText("THE ORANGE BOOK \u00b7 VOL. 65", 0, h / 2 - 50);
+    try { g.letterSpacing = "0px"; } catch(e){}
+    g.font = "82px Handlee, cursive"; g.fillText(title.t, 0, 30);
+    g.restore();
   }
   function drawResultCard(g, n, title, art){
     var W = 1080, H = 1080, seed = 7;
@@ -1479,13 +1502,10 @@
     if (logo && logo.complete && logo.naturalWidth) g.drawImage(logo, 64, 60, 330, 330 * logo.naturalHeight / logo.naturalWidth);
     g.fillStyle = "#fff"; g.textBaseline = "alphabetic";
     g.textAlign = "right"; g.font = "500 30px Mulish, sans-serif"; g.fillText($("issue").textContent, W - 64, 104);
-    g.textAlign = "center"; g.font = "900 34px Mulish, sans-serif";
-    try { g.letterSpacing = "6px"; } catch(e){}
-    g.fillText("THE SWEET PICK", 540, 318);
-    try { g.letterSpacing = "0px"; } catch(e){}
-    g.font = "116px Handlee, cursive"; g.fillText(title.t, 540, 440);
+    drawStamp(g, 540, 318, 620, 228, title, n === ROUNDS.length);
+    g.fillStyle = "#fff"; g.textAlign = "center"; g.font = "36px Handlee, cursive"; g.fillText(title.s, 540, 478);
     if (art && art.box){
-      var bw = 640, bh = bw * BOX_AR, bx0 = 540 - bw / 2, by0 = 470;
+      var bw = 640, bh = bw * BOX_AR, bx0 = 540 - bw / 2, by0 = 500;
       g.drawImage(art.box, bx0, by0, bw, bh);
       for (var i = 0; i < ROUNDS.length; i++){
         var rs = state.results[i], im = art.sweets[ROUNDS[i].sweet];
@@ -1495,7 +1515,7 @@
       }
     }
     g.fillStyle = "#fff"; g.font = "36px Handlee, cursive";
-    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, 900);
+    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, 918);
     var m = document.querySelector("#p-feedback .feedgif img");
     if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
     g.textAlign = "left"; g.font = "600 26px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 92);
@@ -1515,8 +1535,12 @@
         SHARE.file = new File([arr], "the-sweet-pick.png", {type:"image/png"});
       } catch(e){ SHARE.file = null; }
       var pv = $("share-preview");
+      var url = shareUrl(), msg = SHARE.text + (url ? " " + url : "");
       pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + n + " of " + ROUNDS.length + ' mindful picks">' +
-        '<a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>';
+        '<div class="sharelinks"><a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>' +
+        '<a class="pill plain" id="share-wa" href="https://wa.me/?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">WhatsApp</a>' +
+        '<button class="pill plain" id="share-copy" type="button">Copy message</button></div>';
+      pv.querySelector("#share-copy").addEventListener("click", function(){ copyText(msg); });
       pv.querySelector("a[download]").addEventListener("click", function(e){
         if (!DL || !SHARE.file) return;
         e.preventDefault();
@@ -1525,16 +1549,37 @@
       pv.hidden = false;
     });
   }
+  function copyText(text){
+    var done = function(){ toast("Message copied"); };
+    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, function(){ legacyCopy(text) && done(); }); return; }
+    if (legacyCopy(text)) done();
+  }
+  function legacyCopy(text){
+    var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select(); var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e){}
+    document.body.removeChild(ta); return ok;
+  }
+  /* when the share sheet or a new tab is not allowed (a preview frame, a strict browser), the card and its links are the way through */
+  function showShareOptions(){
+    var pv = $("share-preview"); pv.hidden = false;
+    pv.classList.remove("flash"); void pv.offsetWidth; pv.classList.add("flash");
+    try { pv.scrollIntoView({behavior:"smooth", block:"center"}); } catch(e){ pv.scrollIntoView(); }
+  }
   function shareResult(){
     var url = shareUrl(), text = SHARE.text + (url ? " " + url : "");
-    if (SHARE.file && navigator.share && navigator.canShare && navigator.canShare({files:[SHARE.file]})){
-      navigator.share({files:[SHARE.file], title:"The Sweet Pick", text:text}).catch(function(){});
-    } else if (navigator.share){
+    if (navigator.share){
       var d = {title:"The Sweet Pick", text:SHARE.text}; if (url) d.url = url;
-      navigator.share(d).catch(function(){});
-    } else {
-      window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
+      if (SHARE.file && navigator.canShare && navigator.canShare({files:[SHARE.file]})) d = {files:[SHARE.file], title:"The Sweet Pick", text:text};
+      var p = null;
+      try { p = navigator.share(d); } catch(e){ showShareOptions(); return; }
+      if (p && p.catch) p.catch(function(err){ if (!err || err.name !== "AbortError") showShareOptions(); });
+      return;
     }
+    /* no share sheet: WhatsApp in a new tab, and the options in view in case the tab was refused */
+    var a = document.createElement("a"); a.href = "https://wa.me/?text=" + encodeURIComponent(text); a.target = "_blank"; a.rel = "noopener";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showShareOptions();
   }
   /* the band's WhatsApp button shares the edition itself, as Vol. 64's does */
   function initShareBand(){
@@ -1877,23 +1922,15 @@
     else { renderClose(); }
   }
 
-  /* the tag as a rubber-stamp seal: a cream disc, two rings of ink, the edition around the rim, the tag across the middle */
+  /* the tag as a rubber-stamp seal: a cream plate, two rules of ink, the edition top and bottom, the tag across the middle */
   function stampHtml(title, gold){
-    var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
-    var star = function(cy){ return '<path class="pip" d="M150 ' + (cy - 12) + 'l3.4 8.6 8.6 3.4-8.6 3.4-3.4 8.6-3.4-8.6-8.6-3.4 8.6-3.4z"/>'; };
     return '<div class="stamp' + (gold ? " gold" : "") + '" id="rtitle" role="heading" aria-level="2" aria-label="' + title.t + '">' +
-      '<svg viewBox="0 0 300 300" aria-hidden="true">' +
-      '<defs><path id="st-top" d="M28 150A122 122 0 0 1 272 150"/><path id="st-bot" d="M28 150A122 122 0 0 0 272 150"/></defs>' +
-      '<circle class="paper" cx="150" cy="150" r="147"/>' +
-      '<circle class="ink thick" cx="150" cy="150" r="141"/><circle class="ink thin" cx="150" cy="150" r="104"/>' +
-      '<text class="ringtext"><textPath href="#st-top" startOffset="50%" text-anchor="middle">THE SWEET PICK</textPath></text>' +
-      '<text class="ringtext"><textPath href="#st-bot" startOffset="50%" text-anchor="middle">THE ORANGE BOOK \u00b7 VOL. 65</textPath></text>' +
-      '<circle class="dot" cx="30" cy="150" r="4.5"/><circle class="dot" cx="270" cy="150" r="4.5"/>' +
-      star(84) +
-      (lines.length > 1
-        ? '<text class="tagname" x="150" y="146">' + lines[0] + '</text><text class="tagname" x="150" y="200">' + lines[1] + "</text>"
-        : '<text class="tagname one" x="150" y="172">' + lines[0] + "</text>") +
-      star(228) +
+      '<svg viewBox="0 0 440 210" aria-hidden="true">' +
+      '<rect class="paper" x="6" y="6" width="428" height="198" rx="18"/>' +
+      '<rect class="ink thick" x="13" y="13" width="414" height="184" rx="14"/><rect class="ink thin" x="30" y="30" width="380" height="150" rx="8"/>' +
+      '<text class="ringtext" x="220" y="66">THE SWEET PICK</text>' +
+      '<text class="tagname" x="220" y="132">' + title.t + "</text>" +
+      '<text class="ringtext small" x="220" y="165">THE ORANGE BOOK \u00b7 VOL. 65</text>' +
       "</svg></div>";
   }
   function scoreText(k){ return "You made " + k + " mindful " + (k === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + "."; }
@@ -1901,11 +1938,11 @@
     var n = mindful(), title = titleFor(n);
     clearSave();
     recordBest(n);
+    $("sealwrap").innerHTML = stampHtml(title, n === ROUNDS.length);
     $("rsub").textContent = title.s;
     var filled = filledCount();
     $("yourbox").innerHTML = '<p class="eyebrow">Your festive box</p>' +
-      '<div class="boxstage">' + stampHtml(title, n === ROUNDS.length) +
-      boxHtml("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") + "</div>" +
+      boxHtml("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") +
       '<p class="boxcap">' + (filled === ROUNDS.length ? "Full box!" : filled + " of " + ROUNDS.length + " filled") + "</p>";
     $("scoreline").textContent = scoreText(n);
     var t = $("tally");

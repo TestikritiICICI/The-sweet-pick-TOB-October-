@@ -177,11 +177,13 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Seal, top arc | THE SWEET PICK |
 | Seal, bottom arc | THE ORANGE BOOK · VOL. 65 |
 | Seal, centre | {Tag} (gold ink for 5 of 5) |
+| Line under the seal | the tag's line, see Result tags |
 | Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
 | Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
 | Share button | Share my result |
-| Save link (under the card) | Save image |
+| Links under the card | Save image · WhatsApp · Copy message |
+| Toast after Copy message | Message copied |
 | Result card (alt text) | Your result card: {Tag}, {N} of 5 mindful picks |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
@@ -202,8 +204,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Element | Copy |
 |---|---|
 | Top right | OCTOBER 2026 \| VOL. 65 |
-| Kicker | THE SWEET PICK |
-| Title | {Tag} |
+| Seal | THE SWEET PICK · {Tag} · THE ORANGE BOOK · VOL. 65 |
+| Under the seal | the tag's line |
 | Under the box | {N} of 5 mindful picks |
 | Footer, line 1 | Can you spot the festive tricks? |
 | Footer, line 2 | The public link when the edition has one; otherwise: The Orange Book · Vol. 65 · ICICI Bank |
