@@ -682,9 +682,9 @@
   .stamp .fine{stroke-width:1.4}
   .stamp .dotted{stroke-width:2.2;stroke-dasharray:1.6 5.4;stroke-linecap:round;opacity:.9}
   .stamp .dot,.stamp .pip{fill:var(--maroon)}
-  .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:3.4px}
-  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:56px;text-anchor:middle}
-  .stamp .tagname.one{font-size:62px}
+  .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:15px;letter-spacing:3px}
+  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:46px;text-anchor:middle}
+  .stamp .tagname.one{font-size:52px}
   .stamp.gold .paper{fill:url(#st-paper-gold)}
   .stamp.gold .ink{stroke:#B0700E}
   .stamp.gold .dot,.stamp.gold .pip,.stamp.gold .ringtext,.stamp.gold .tagname{fill:#B0700E}
@@ -1500,16 +1500,17 @@
     g.strokeStyle = "rgba(146,22,22,.22)"; g.lineWidth = .8 * k; g.stroke();
     g.strokeStyle = ink; g.lineWidth = 7.5 * k; g.beginPath(); g.arc(cx, cy, 140 * k, 0, 6.29); g.stroke();
     g.lineWidth = 1.4 * k; g.beginPath(); g.arc(cx, cy, 132 * k, 0, 6.29); g.stroke();
-    g.lineWidth = 2.2 * k; g.lineCap = "round"; g.setLineDash([1.6 * k, 5.4 * k]); g.beginPath(); g.arc(cx, cy, 104 * k, 0, 6.29); g.stroke(); g.setLineDash([]);
+    g.lineWidth = 2.2 * k; g.lineCap = "round"; g.setLineDash([1.6 * k, 5.4 * k]); g.beginPath(); g.arc(cx, cy, 98 * k, 0, 6.29); g.stroke(); g.setLineDash([]);
     g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "alphabetic";
-    g.font = "800 " + (17 * k).toFixed(1) + "px Mulish, sans-serif";
-    arcText(g, "THE SWEET PICK", cx, cy, 122 * k, false, 3.4 * k);
-    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 122 * k, true, 3.4 * k);
-    g.beginPath(); g.arc(cx - 118 * k, cy, 4.2 * k, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 118 * k, cy, 4.2 * k, 0, 6.29); g.fill();
-    pipPath(g, cx, cy - 66 * k, 12 * k); g.fill(); pipPath(g, cx, cy + 80 * k, 12 * k); g.fill();
+    g.font = "800 " + (15 * k).toFixed(1) + "px Mulish, sans-serif";
+    arcText(g, "THE SWEET PICK", cx, cy, 118 * k, false, 3 * k);
+    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 118 * k, true, 3 * k);
+    g.beginPath(); g.arc(cx - 114 * k, cy, 3.8 * k, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 114 * k, cy, 3.8 * k, 0, 6.29); g.fill();
+    pipPath(g, cx, cy - 64 * k, 11 * k); g.fill(); pipPath(g, cx, cy + 76 * k, 11 * k); g.fill();
     var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
-    if (lines.length > 1){ g.font = (56 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy - 4 * k); g.fillText(lines[1], cx, cy + 50 * k); }
-    else { g.font = (62 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy + 22 * k); }
+    var fit = function(txt, size){ g.font = (size * k).toFixed(1) + "px Handlee, cursive"; var w = g.measureText(txt).width; if (w > 172 * k) g.font = (size * k * 172 * k / w).toFixed(1) + "px Handlee, cursive"; };
+    if (lines.length > 1){ fit(lines[0], 46); g.fillText(lines[0], cx, cy - 7 * k); fit(lines[1], 46); g.fillText(lines[1], cx, cy + 42 * k); }
+    else { fit(lines[0], 52); g.fillText(lines[0], cx, cy + 18 * k); }
     g.restore();
   }
   /* words folded into at most two lines that fit the width */
@@ -1952,18 +1953,27 @@
       '<svg viewBox="0 0 300 300" aria-hidden="true">' +
       '<defs><radialGradient id="st-paper" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFFCF4"/><stop offset=".75" stop-color="#FFF6E6"/><stop offset="1" stop-color="#F4E3C6"/></radialGradient>' +
       '<radialGradient id="st-paper-gold" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFF9E6"/><stop offset=".75" stop-color="#FFF1D2"/><stop offset="1" stop-color="#EFD9A7"/></radialGradient>' +
-      '<path id="st-top" d="M28 150A122 122 0 0 1 272 150"/><path id="st-bot" d="M28 150A122 122 0 0 0 272 150"/></defs>' +
+      '<path id="st-top" d="M32 150A118 118 0 0 1 268 150"/><path id="st-bot" d="M32 150A118 118 0 0 0 268 150"/></defs>' +
       '<circle class="paper" cx="150" cy="150" r="147"/>' +
-      '<circle class="ink thick" cx="150" cy="150" r="140"/><circle class="ink fine" cx="150" cy="150" r="132"/><circle class="ink dotted" cx="150" cy="150" r="104"/>' +
+      '<circle class="ink thick" cx="150" cy="150" r="140"/><circle class="ink fine" cx="150" cy="150" r="132"/><circle class="ink dotted" cx="150" cy="150" r="98"/>' +
       '<text class="ringtext"><textPath href="#st-top" startOffset="50%" text-anchor="middle">THE SWEET PICK</textPath></text>' +
       '<text class="ringtext"><textPath href="#st-bot" startOffset="50%" text-anchor="middle">THE ORANGE BOOK \u00b7 VOL. 65</textPath></text>' +
-      '<circle class="dot" cx="32" cy="150" r="4.2"/><circle class="dot" cx="268" cy="150" r="4.2"/>' +
-      pip(84) +
+      '<circle class="dot" cx="36" cy="150" r="3.8"/><circle class="dot" cx="264" cy="150" r="3.8"/>' +
+      pip(86) +
       (lines.length > 1
-        ? '<text class="tagname" x="150" y="146">' + lines[0] + '</text><text class="tagname" x="150" y="200">' + lines[1] + "</text>"
-        : '<text class="tagname one" x="150" y="172">' + lines[0] + "</text>") +
-      pip(230) +
+        ? '<text class="tagname" x="150" y="143">' + lines[0] + '</text><text class="tagname" x="150" y="192">' + lines[1] + "</text>"
+        : '<text class="tagname one" x="150" y="168">' + lines[0] + "</text>") +
+      pip(226) +
       "</svg></div>";
+  }
+  /* the tag must sit inside the dotted ring: 172 of the seal's 300 units */
+  function fitStamp(){
+    var texts = document.querySelectorAll("#rtitle .tagname");
+    for (var i = 0; i < texts.length; i++){
+      var t = texts[i], w = 0;
+      try { w = t.getComputedTextLength(); } catch(e){}
+      if (w > 172){ var size = parseFloat(window.getComputedStyle(t).fontSize) * 172 / w; t.style.fontSize = size.toFixed(1) + "px"; }
+    }
   }
   function scoreText(k){ return "You made " + k + " mindful " + (k === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + "."; }
   function renderClose(){
@@ -1987,6 +1997,7 @@
     });
     $("share-preview").hidden = true;
     show("close");
+    fitStamp();
     prepareShare(n, title);
     startReveal(n);
   }
