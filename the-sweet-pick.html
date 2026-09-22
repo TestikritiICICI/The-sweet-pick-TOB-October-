@@ -670,28 +670,32 @@
   .yourbox{margin:4px 0 0}
   .realbox.nudge{animation:nudge .32s ease both}
   @keyframes nudge{30%{transform:translateY(2px) rotate(.5deg)}70%{transform:translateY(-1px) rotate(-.2deg)}100%{transform:none}}
-  /* the seal on the lid: a plain cream disc, one gold rule and a hairline, small tracked caps, the tag set clean in the middle */
+  /* the seal on the lid: a rubber stamp in maroon ink on cream paper. A double rule at the rim, a fine perforated
+     ring inside, the edition round the rim, the tag across the middle */
   .boxstage{position:relative;width:min(420px,100%);padding-top:33%}
   .boxstage .realbox{width:100%}
-  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-6deg);transform-origin:50% 50%}
-  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 22px rgba(120,40,0,.22))}
-  .stamp .paper{fill:#FFFDF8;stroke:#C9A24B;stroke-width:3}
-  .stamp .hair{fill:none;stroke:#C9A24B;stroke-width:.9;opacity:.85}
-  .stamp .rule{stroke:#C9A24B;stroke-width:1.2}
-  .stamp .caps{fill:#B8923F;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:12.5px;letter-spacing:3.6px;text-anchor:middle}
-  .stamp .caps.small{font-size:10.5px;letter-spacing:2.6px}
-  .stamp .tagname{fill:var(--navy);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:33px;letter-spacing:2px;text-anchor:middle;text-transform:uppercase}
-  .stamp .tagname.one{font-size:38px}
-  .stamp.gold .tagname{fill:#B8923F}
-  .stamp.gold .paper{fill:#FFF9EA}
+  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-8deg);transform-origin:50% 50%}
+  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 20px rgba(120,40,0,.3))}
+  .stamp .paper{fill:url(#st-paper);stroke:rgba(146,22,22,.22);stroke-width:.8}
+  .stamp .ink{fill:none;stroke:var(--maroon)}
+  .stamp .thick{stroke-width:7.5}
+  .stamp .fine{stroke-width:1.4}
+  .stamp .dotted{stroke-width:2.2;stroke-dasharray:1.6 5.4;stroke-linecap:round;opacity:.9}
+  .stamp .dot,.stamp .pip{fill:var(--maroon)}
+  .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:3.4px}
+  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:56px;text-anchor:middle}
+  .stamp .tagname.one{font-size:62px}
+  .stamp.gold .paper{fill:url(#st-paper-gold)}
+  .stamp.gold .ink{stroke:#B0700E}
+  .stamp.gold .dot,.stamp.gold .pip,.stamp.gold .ringtext,.stamp.gold .tagname{fill:#B0700E}
   /* the seal slams down, rings with the impact, then catches the light */
   .stamp.in{animation:slam .62s cubic-bezier(.2,.9,.3,1.2) both}
   @keyframes slam{
-    0%{opacity:0;transform:translateX(-50%) scale(1.9) rotate(-22deg)}
-    60%{opacity:1;transform:translateX(-50%) scale(.96) rotate(-4deg)}
-    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-6deg)}
+    0%{opacity:0;transform:translateX(-50%) scale(2.4) rotate(-32deg)}
+    60%{opacity:1;transform:translateX(-50%) scale(.94) rotate(-5deg)}
+    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-8deg)}
   }
-  .stamp.in::after{content:"";position:absolute;inset:4%;border-radius:50%;border:2px solid rgba(201,162,75,.6);pointer-events:none;animation:impact .75s ease-out .36s both}
+  .stamp.in::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid rgba(162,29,40,.5);pointer-events:none;animation:impact .75s ease-out .36s both}
   @keyframes impact{from{opacity:.9;transform:scale(.92)}to{opacity:0;transform:scale(1.4)}}
   .stamp.in::before{
     content:"";position:absolute;inset:3%;border-radius:50%;pointer-events:none;z-index:1;
@@ -1471,26 +1475,41 @@
     g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h);
     g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath();
   }
-  /* the same medallion as the page, drawn on the card */
+  /* text set along an arc: upright over the top, or upright along the bottom when flipped */
+  function arcText(g, text, cx, cy, r, flip, spacing){
+    var chars = text.split(""), widths = chars.map(function(c){ return g.measureText(c).width; });
+    var total = widths.reduce(function(a, b){ return a + b; }, 0) + (chars.length - 1) * spacing, arc = total / r;
+    var ang = flip ? Math.PI / 2 + arc / 2 : -Math.PI / 2 - arc / 2, dir = flip ? -1 : 1;
+    for (var i = 0; i < chars.length; i++){
+      var half = widths[i] / 2 / r, mid = ang + dir * half;
+      g.save(); g.translate(cx + Math.cos(mid) * r, cy + Math.sin(mid) * r); g.rotate(mid + (flip ? -Math.PI / 2 : Math.PI / 2));
+      g.fillText(chars[i], 0, 0); g.restore();
+      ang += dir * (widths[i] + spacing) / r;
+    }
+  }
+  function pipPath(g, cx, cy, r){ g.beginPath(); for (var i = 0; i < 8; i++){ var a = -Math.PI / 2 + i * Math.PI / 4, rr = i % 2 ? r * .36 : r; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } g.closePath(); }
+  /* the same seal as the page, drawn on the card */
   function drawStamp(g, cx, cy, R, title, gold){
-    var k = R / 150, gold1 = "#C9A24B", caps = "#B8923F", tagInk = gold ? "#B8923F" : "#183E6D";
-    g.save(); g.translate(cx, cy); g.rotate(-6 * Math.PI / 180); g.translate(-cx, -cy);
-    g.shadowColor = "rgba(90,30,0,.26)"; g.shadowBlur = 30 * k; g.shadowOffsetY = 12 * k;
-    g.fillStyle = gold ? "#FFF9EA" : "#FFFDF8"; g.beginPath(); g.arc(cx, cy, 146 * k, 0, 6.29); g.fill();
+    var k = R / 150, ink = gold ? "#B0700E" : "#A21D28";
+    g.save(); g.translate(cx, cy); g.rotate(-8 * Math.PI / 180); g.translate(-cx, -cy);
+    var paper = g.createRadialGradient(cx, cy - 15 * k, 8 * k, cx, cy, 147 * k);
+    paper.addColorStop(0, gold ? "#FFF9E6" : "#FFFCF4"); paper.addColorStop(.75, gold ? "#FFF1D2" : "#FFF6E6"); paper.addColorStop(1, gold ? "#EFD9A7" : "#F4E3C6");
+    g.shadowColor = "rgba(90,30,0,.3)"; g.shadowBlur = 28 * k; g.shadowOffsetY = 12 * k;
+    g.fillStyle = paper; g.beginPath(); g.arc(cx, cy, 147 * k, 0, 6.29); g.fill();
     g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
-    g.strokeStyle = gold1; g.lineWidth = 3 * k; g.stroke();
-    g.lineWidth = .9 * k; g.beginPath(); g.arc(cx, cy, 134 * k, 0, 6.29); g.stroke();
-    g.lineWidth = 1.2 * k; g.beginPath(); g.moveTo(cx - 18 * k, cy - 38 * k); g.lineTo(cx + 18 * k, cy - 38 * k); g.moveTo(cx - 18 * k, cy + 68 * k); g.lineTo(cx + 18 * k, cy + 68 * k); g.stroke();
-    g.fillStyle = caps; g.textAlign = "center"; g.textBaseline = "alphabetic";
-    g.font = "800 " + (12.5 * k).toFixed(1) + "px Mulish, sans-serif"; try { g.letterSpacing = (3.6 * k).toFixed(1) + "px"; } catch(e){}
-    g.fillText("THE SWEET PICK", cx, cy - 54 * k);
-    g.font = "800 " + (10.5 * k).toFixed(1) + "px Mulish, sans-serif"; try { g.letterSpacing = (2.6 * k).toFixed(1) + "px"; } catch(e){}
-    g.fillText("THE ORANGE BOOK \u00b7 VOL. 65", cx, cy + 93 * k);
-    var words = title.t.toUpperCase().split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t.toUpperCase()];
-    g.fillStyle = tagInk; try { g.letterSpacing = (2 * k).toFixed(1) + "px"; } catch(e){}
-    if (lines.length > 1){ g.font = "800 " + (33 * k).toFixed(1) + "px Mulish, sans-serif"; g.fillText(lines[0], cx, cy + 10 * k); g.fillText(lines[1], cx, cy + 48 * k); }
-    else { g.font = "800 " + (38 * k).toFixed(1) + "px Mulish, sans-serif"; g.fillText(lines[0], cx, cy + 22 * k); }
-    try { g.letterSpacing = "0px"; } catch(e){}
+    g.strokeStyle = "rgba(146,22,22,.22)"; g.lineWidth = .8 * k; g.stroke();
+    g.strokeStyle = ink; g.lineWidth = 7.5 * k; g.beginPath(); g.arc(cx, cy, 140 * k, 0, 6.29); g.stroke();
+    g.lineWidth = 1.4 * k; g.beginPath(); g.arc(cx, cy, 132 * k, 0, 6.29); g.stroke();
+    g.lineWidth = 2.2 * k; g.lineCap = "round"; g.setLineDash([1.6 * k, 5.4 * k]); g.beginPath(); g.arc(cx, cy, 104 * k, 0, 6.29); g.stroke(); g.setLineDash([]);
+    g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "alphabetic";
+    g.font = "800 " + (17 * k).toFixed(1) + "px Mulish, sans-serif";
+    arcText(g, "THE SWEET PICK", cx, cy, 122 * k, false, 3.4 * k);
+    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 122 * k, true, 3.4 * k);
+    g.beginPath(); g.arc(cx - 118 * k, cy, 4.2 * k, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 118 * k, cy, 4.2 * k, 0, 6.29); g.fill();
+    pipPath(g, cx, cy - 66 * k, 12 * k); g.fill(); pipPath(g, cx, cy + 80 * k, 12 * k); g.fill();
+    var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
+    if (lines.length > 1){ g.font = (56 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy - 4 * k); g.fillText(lines[1], cx, cy + 50 * k); }
+    else { g.font = (62 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy + 22 * k); }
     g.restore();
   }
   function drawResultCard(g, n, title, art){
@@ -1911,19 +1930,26 @@
     else { renderClose(); }
   }
 
-  /* the tag as a seal: a cream disc with one gold rule and a hairline, small tracked caps, the tag clean in the middle */
+  /* the tag as a rubber-stamp seal: cream paper, maroon ink; a double rule at the rim, a perforated ring inside,
+     the edition round the rim, the tag across the middle */
   function stampHtml(title, gold){
     var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
+    var pip = function(cy){ return '<path class="pip" d="M150 ' + (cy - 12) + 'l3.4 8.6 8.6 3.4-8.6 3.4-3.4 8.6-3.4-8.6-8.6-3.4 8.6-3.4z"/>'; };
     return '<div class="stamp' + (gold ? " gold" : "") + '" id="rtitle" role="heading" aria-level="2" aria-label="' + title.t + '">' +
       '<svg viewBox="0 0 300 300" aria-hidden="true">' +
-      '<circle class="paper" cx="150" cy="150" r="146"/><circle class="hair" cx="150" cy="150" r="134"/>' +
-      '<text class="caps" x="150" y="96">THE SWEET PICK</text>' +
-      '<line class="rule" x1="132" y1="112" x2="168" y2="112"/>' +
+      '<defs><radialGradient id="st-paper" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFFCF4"/><stop offset=".75" stop-color="#FFF6E6"/><stop offset="1" stop-color="#F4E3C6"/></radialGradient>' +
+      '<radialGradient id="st-paper-gold" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFF9E6"/><stop offset=".75" stop-color="#FFF1D2"/><stop offset="1" stop-color="#EFD9A7"/></radialGradient>' +
+      '<path id="st-top" d="M28 150A122 122 0 0 1 272 150"/><path id="st-bot" d="M28 150A122 122 0 0 0 272 150"/></defs>' +
+      '<circle class="paper" cx="150" cy="150" r="147"/>' +
+      '<circle class="ink thick" cx="150" cy="150" r="140"/><circle class="ink fine" cx="150" cy="150" r="132"/><circle class="ink dotted" cx="150" cy="150" r="104"/>' +
+      '<text class="ringtext"><textPath href="#st-top" startOffset="50%" text-anchor="middle">THE SWEET PICK</textPath></text>' +
+      '<text class="ringtext"><textPath href="#st-bot" startOffset="50%" text-anchor="middle">THE ORANGE BOOK \u00b7 VOL. 65</textPath></text>' +
+      '<circle class="dot" cx="32" cy="150" r="4.2"/><circle class="dot" cx="268" cy="150" r="4.2"/>' +
+      pip(84) +
       (lines.length > 1
-        ? '<text class="tagname" x="150" y="160">' + lines[0] + '</text><text class="tagname" x="150" y="198">' + lines[1] + "</text>"
+        ? '<text class="tagname" x="150" y="146">' + lines[0] + '</text><text class="tagname" x="150" y="200">' + lines[1] + "</text>"
         : '<text class="tagname one" x="150" y="172">' + lines[0] + "</text>") +
-      '<line class="rule" x1="132" y1="218" x2="168" y2="218"/>' +
-      '<text class="caps small" x="150" y="243">THE ORANGE BOOK \u00b7 VOL. 65</text>' +
+      pip(230) +
       "</svg></div>";
   }
   function scoreText(k){ return "You made " + k + " mindful " + (k === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + "."; }
