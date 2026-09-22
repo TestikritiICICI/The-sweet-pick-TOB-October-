@@ -68,7 +68,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Which box would you pick? |
-| Task at hand | Festive week, and the neighbours have already sent a box over. Now it is your turn, and the shop has its sale board out. |
+| Task at hand | You’re hosting a Diwali get-together at home and are picking up mithai for your guests. |
 | Mithai earned | Laddoo |
 | Definition (card back) | Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it. |
 | The same trick, elsewhere | A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000. |
@@ -89,7 +89,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Small, medium or large? |
-| Task at hand | The cousins are over for the celebrations. One box has to go around the whole room. |
+| Task at hand | You’re visiting family during the festive season and decide to take some mithai along. |
 | Mithai earned | Modak |
 | Definition (card back) | The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison. |
 | The same trick, elsewhere | At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one. |
@@ -110,7 +110,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Everyone’s picking one of these. |
-| Task at hand | Your turn to bring the festive box for the office. Whatever you carry in will be noticed. |
+| Task at hand | Your team is celebrating Diwali at work and you’ve been asked to bring mithai for everyone. |
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
 | The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming. |
@@ -131,7 +131,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Better hurry — one left. |
-| Task at hand | The evening before the big day. The shelves are thinning and the queue behind you is growing. |
+| Task at hand | You’re meeting a few friends for a festive evening and want to pick up some mithai on the way. |
 | Mithai earned | Peda |
 | Definition (card back) | FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
 | The same trick, elsewhere | Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine. |
@@ -152,7 +152,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Part | Copy |
 |---|---|
 | Headline | Read the label again. |
-| Task at hand | A box for your parents. Your father has been told to watch his sugar, so this year you are reading labels. |
+| Task at hand | You’re heading to a Diwali celebration and stop by a mithai shop before you go. |
 | Mithai earned | Jalebi |
 | Definition (card back) | The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels. |
 | The same trick, elsewhere | One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much. |
