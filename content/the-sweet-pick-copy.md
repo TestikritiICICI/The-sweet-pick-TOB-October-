@@ -206,8 +206,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Seal | THE SWEET PICK · {Tag} · THE ORANGE BOOK · VOL. 65 |
 | Under the seal | the tag's line |
 | Under the box | {N} of 5 mindful picks |
-| Footer, line 1 | Can you spot the festive tricks? |
-| Footer, line 2 | The Orange Book · Vol. 65 · ICICI Bank |
+| Footer, wordmark | THE / ORANGE BOOK (set as on the cover) |
+| Footer, line under it | Vol. 65 · ICICI Bank |
 
 ### Share messages
 

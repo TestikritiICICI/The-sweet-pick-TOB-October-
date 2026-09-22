@@ -1530,8 +1530,9 @@
     if (logo && logo.complete && logo.naturalWidth) g.drawImage(logo, 64, 60, 330, 330 * logo.naturalHeight / logo.naturalWidth);
     g.fillStyle = "#fff"; g.textBaseline = "alphabetic";
     g.textAlign = "right"; g.font = "500 30px Mulish, sans-serif"; g.fillText($("issue").textContent, W - 64, 104);
+    /* the box, then the seal on its lid; the whole group sits a little higher to leave the footer its room */
     if (art && art.box){
-      var bw = 640, bh = bw * BOX_AR, bx0 = 540 - bw / 2, by0 = 470;
+      var bw = 640, bh = bw * BOX_AR, bx0 = 540 - bw / 2, by0 = 430;
       g.shadowColor = "rgba(90,30,0,.38)"; g.shadowBlur = 36; g.shadowOffsetY = 18;
       g.drawImage(art.box, bx0, by0, bw, bh);
       g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
@@ -1542,18 +1543,24 @@
         g.drawImage(im, bx0 + p.x * bw - sw / 2, by0 + p.y * bh - p.ry * sh, sw, sh);
       }
     }
-    drawStamp(g, 540, 395, 185, title, n === ROUNDS.length);
+    drawStamp(g, 540, 355, 185, title, n === ROUNDS.length);
     g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.font = "34px Handlee, cursive";
     var sub = wrapText(g, title.s, 880);
-    if (sub.length === 1){ g.fillText(sub[0], 540, 880); }
-    else { g.font = "31px Handlee, cursive"; g.fillText(sub[0], 540, 866); g.fillText(sub[1], 540, 904); }
+    if (sub.length === 1){ g.fillText(sub[0], 540, 838); }
+    else { g.font = "31px Handlee, cursive"; g.fillText(sub[0], 540, 826); g.fillText(sub[1], 540, 862); }
     g.font = "36px Handlee, cursive";
-    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, sub.length === 1 ? 930 : 950);
+    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, sub.length === 1 ? 886 : 906);
     var m = document.querySelector("#p-feedback .feedgif img");
     if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
-    g.textAlign = "left"; g.font = "600 26px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 92);
+    /* the publication's mark, set as the cover sets it: THE over ORANGE BOOK, then the volume and the bank */
+    g.textAlign = "left"; g.fillStyle = "#fff";
+    g.font = "800 22px Mulish, sans-serif"; try { g.letterSpacing = "5px"; } catch(e){}
+    g.fillText("THE", 64, H - 126);
+    g.font = "800 46px Mulish, sans-serif"; try { g.letterSpacing = "2px"; } catch(e){}
+    g.fillText("ORANGE BOOK", 64, H - 82);
+    try { g.letterSpacing = "0px"; } catch(e){}
     g.font = "500 22px Mulish, sans-serif"; g.fillStyle = "rgba(255,255,255,.9)";
-    g.fillText("The Orange Book \u00b7 Vol. 65 \u00b7 ICICI Bank", 64, H - 56);
+    g.fillText("Vol. 65 \u00b7 ICICI Bank", 64, H - 46);
   }
   function prepareShare(n, title){
     SHARE.file = null; SHARE.dataUrl = "";
