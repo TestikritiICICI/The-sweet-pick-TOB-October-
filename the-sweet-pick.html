@@ -474,6 +474,9 @@
   .cfront .cslot.name-at{top:37%}
   .cfront .cslot.rule-at{top:49.6%}
   .cfront .cslot.price-at{top:64.4%}
+  /* the shelf price is two lines, and its small MRP type has less air than a big numeral,
+     so it sits lower and a shade smaller to clear the rule above */
+  .cfront .cslot.price-at.anchored{top:67.5%}
   .cfront .cslot.claim-at{top:78.8%}
   .cfront .cslot.lowrule-at{top:88.3%}
   .cfront .frule{margin:0 auto}
@@ -483,9 +486,22 @@
     font-family:Mulish,system-ui,sans-serif;font-weight:800;
     line-height:1;letter-spacing:-.03em;color:var(--card-price);
   }
+  /* a shelf price the way a shop prints it: a small MRP line struck through in red,
+     the offer price below it in sale red, and a discount flash up in the tag band */
   .cwas{
     display:block;font-family:Mulish,system-ui,sans-serif;font-weight:700;
-    line-height:1;color:var(--card-head);opacity:.55;text-decoration:line-through;
+    line-height:1;color:#7C838C;margin-bottom:.5em;
+  }
+  .cwas .mrp{font-weight:800;letter-spacing:.1em;font-size:.68em;margin-right:.4em;vertical-align:.1em;opacity:.85}
+  .cwas .amt{position:relative;white-space:nowrap}
+  .cwas .amt::after{
+    content:"";position:absolute;left:-4%;right:-4%;top:50%;height:.085em;min-height:2px;border-radius:2px;
+    background:#C4212A;transform:translateY(-50%) rotate(-5deg);
+  }
+  .anchored .cprice{color:#C4212A}
+  .tag.off{
+    background:linear-gradient(#E0242F,#A21D28);box-shadow:0 3px 8px rgba(146,22,22,.34);
+    letter-spacing:.12em;transform:rotate(-3deg);
   }
   .cclaim{margin:0;line-height:1.24;color:var(--card-body)}
   .tag{
@@ -539,7 +555,7 @@
      at any card width; the clamps are the fallback where cqw is unsupported */
   .cname{font-size:clamp(.9rem,5.9vw,1.66rem)}
   .cprice{font-size:clamp(2rem,13.4vw,3.8rem)}
-  .anchored .cprice{font-size:clamp(1.55rem,10.4vw,2.95rem)}
+  .anchored .cprice{font-size:clamp(1.4rem,9.4vw,2.66rem)}
   .cwas{font-size:clamp(.85rem,4vw,1.15rem)}
   .cclaim{font-size:clamp(.98rem,4.6vw,1.28rem)}
   .tag{font-size:clamp(.52rem,2.4vw,.62rem)}
@@ -553,7 +569,7 @@
     .cname{font-size:13cqw}
     .cprice{font-size:29.7cqw}
     /* an anchor price above it needs the pair to stay clear of the rule */
-    .anchored .cprice{font-size:23cqw}
+    .anchored .cprice{font-size:20.8cqw}
     .cwas{font-size:8.6cqw}
     .cclaim{font-size:8.6cqw}
     .tag{font-size:4.2cqw}
@@ -1847,10 +1863,11 @@
   function face(c){
     var h = orn("tl","tl") + orn("tr","tr") + orn("bl","bl") + orn("br","br");
     if (c.tag) h += slot("tag-at", '<span class="tag' + (c.hot ? " hot" : "") + '">' + c.tag + "</span>");
+    else if (c.was) h += slot("tag-at", '<span class="tag off">' + Math.round((1 - c.price / c.was) * 100) + "% OFF</span>");
     h += slot("name-at", '<p class="cname">' + c.name + "</p>");
     h += slot("rule-at", fleuron());
     h += slot("price-at" + (c.was ? " anchored" : ""),
-      (c.was ? '<span class="cwas">' + rupee(c.was) + "</span>" : "") +
+      (c.was ? '<span class="cwas"><span class="mrp">MRP</span><span class="amt">' + rupee(c.was) + "</span></span>" : "") +
       '<span class="cprice">' + rupee(c.price) + "</span>");
     if (c.claim) h += slot("claim-at", '<p class="cclaim">' + c.claim + "</p>");
     h += slot("lowrule-at", fleuron());

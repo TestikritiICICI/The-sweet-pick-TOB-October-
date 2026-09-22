@@ -82,7 +82,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 |---|---|---|---|
 | Classic Box | ₹400 | Great! You avoided the Anchoring Bias. | The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box. |
 | Celebration Box | ₹475 | Great! You avoided the Anchoring Bias. | The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box. |
-| Premium Box | ₹1,000 struck through, ₹750 | Oops! You fell for the Anchoring Bias. | The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget. |
+| Premium Box | MRP ₹1,000 struck through, ₹750, with a 25% OFF flash | Oops! You fell for the Anchoring Bias. | The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget. |
 
 ## 6. Pick 2 · Decoy Effect
 
