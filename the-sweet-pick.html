@@ -1578,25 +1578,40 @@
       pv.hidden = false;
     });
   }
-  /* when the share sheet or a new tab is not allowed (a preview frame, a strict browser), the card and Save image are the way through */
+  /* when the share sheet is refused, the card and Save image are brought into view */
   function showShareOptions(){
     var pv = $("share-preview"); pv.hidden = false;
     pv.classList.remove("flash"); void pv.offsetWidth; pv.classList.add("flash");
     try { pv.scrollIntoView({behavior:"smooth", block:"center"}); } catch(e){ pv.scrollIntoView(); }
   }
+  /* the share sheet is for pages allowed to use it: a page of its own, or a frame granted web-share.
+     Where the browser can tell us it is not allowed, we do not ask and get refused */
+  function shareAllowed(){
+    if (!navigator.share) return false;
+    try {
+      var fp = document.featurePolicy || document.permissionsPolicy;
+      if (fp && typeof fp.allowsFeature === "function" && !fp.allowsFeature("web-share")) return false;
+    } catch(e){}
+    return true;
+  }
+  /* WhatsApp with the message, the way the band's button does it */
+  function openWhatsApp(text){
+    var a = document.createElement("a"); a.href = "https://wa.me/?text=" + encodeURIComponent(text); a.target = "_blank"; a.rel = "noopener";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
   function shareResult(){
     var url = shareUrl(), text = SHARE.text + (url ? " " + url : "");
-    if (navigator.share){
+    if (shareAllowed()){
+      /* the card with the message and the link; where files cannot be shared, the message and the link */
       var d = {title:"The Sweet Pick", text:SHARE.text}; if (url) d.url = url;
       if (SHARE.file && navigator.canShare && navigator.canShare({files:[SHARE.file]})) d = {files:[SHARE.file], title:"The Sweet Pick", text:text};
       var p = null;
-      try { p = navigator.share(d); } catch(e){ showShareOptions(); return; }
-      if (p && p.catch) p.catch(function(err){ if (!err || err.name !== "AbortError") showShareOptions(); });
+      try { p = navigator.share(d); } catch(e){ openWhatsApp(text); showShareOptions(); return; }
+      if (p && p.catch) p.catch(function(err){ if (!err || err.name !== "AbortError"){ openWhatsApp(text); showShareOptions(); } });
       return;
     }
-    /* no share sheet: WhatsApp in a new tab, and the options in view in case the tab was refused */
-    var a = document.createElement("a"); a.href = "https://wa.me/?text=" + encodeURIComponent(text); a.target = "_blank"; a.rel = "noopener";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    /* no share sheet here: WhatsApp with the message, and the card in view to save and attach */
+    openWhatsApp(text);
     showShareOptions();
   }
   /* the band's WhatsApp button shares the edition itself, as Vol. 64's does */
@@ -1998,10 +2013,16 @@
     startReveal(n);
   }
 
-  /* ---- the last page performs: rows land, cups fill, the title stamps ---- */
-  var revealTimers = [], REVEAL = null;
+  /* ---- the last page performs section by section, each as it comes into view: the box (the mithai drop in,
+     the count climbs, the seal comes down), the tally (the rows land), then the share row. A tap skips to the
+     finished page; a scroll never does ---- */
+  var revealTimers = [], REVEAL = null, revealWatch = null;
   function later(fn, ms){ revealTimers.push(window.setTimeout(fn, ms)); }
-  function clearReveal(){ for (var i = 0; i < revealTimers.length; i++) window.clearTimeout(revealTimers[i]); revealTimers = []; }
+  function clearReveal(){
+    for (var i = 0; i < revealTimers.length; i++) window.clearTimeout(revealTimers[i]);
+    revealTimers = [];
+    if (revealWatch){ revealWatch.disconnect(); revealWatch = null; }
+  }
   function addIn(el){ if (el) el.classList.add("in"); }
   /* everything lit and in place, whether the performance ran or was skipped */
   function finishReveal(){
@@ -2014,48 +2035,99 @@
     addIn(pg.querySelector(".boxcap")); addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview"));
     pg.classList.remove("staging");
   }
-  function afterReveal(){
-    if (!REVEAL) return;
-    if (REVEAL.n === ROUNDS.length) later(confetti, 150);
-    REVEAL = null;
+  /* the celebration, once: after the seal comes down, or on a skip */
+  function celebrate(){
+    if (!REVEAL || REVEAL.celebrated) return;
+    REVEAL.celebrated = true;
+    if (REVEAL.n === ROUNDS.length) window.setTimeout(confetti, 150);
   }
   function skipReveal(){
     if (!$("p-close").classList.contains("staging")) return;
-    finishReveal(); afterReveal();
+    finishReveal(); celebrate(); REVEAL = null;
   }
-  function startReveal(n){
-    clearReveal();
-    REVEAL = {n:n};
-    var pg = $("p-close");
-    if (reducedMotion()){ finishReveal(); afterReveal(); return; }
-    pg.classList.add("staging");
-    var rows = $("tally").querySelectorAll("li"), box = pg.querySelector(".realbox");
-    var t = 380;
-    /* the rows land one by one; each mindful pick drops its mithai into the box, and the box takes the weight */
+  var PARTS = {box:playBox, tally:playTally, share:playShare};
+  /* a section starts once, when it is in view; the share row waits for the seal if the box is mid-performance */
+  function beginPart(name){
+    if (!REVEAL || REVEAL.started[name]) return;
+    if (name === "share" && REVEAL.started.box && !REVEAL.done.box){ REVEAL.shareWaits = true; return; }
+    REVEAL.started[name] = true;
+    PARTS[name]();
+  }
+  /* a section is done: when all three are, the page is no longer staging */
+  function partDone(name){
+    if (!REVEAL) return;
+    REVEAL.done[name] = true;
+    if (name === "box" && REVEAL.shareWaits){ REVEAL.shareWaits = false; beginPart("share"); }
+    if (REVEAL.done.box && REVEAL.done.tally && REVEAL.done.share){
+      $("p-close").classList.remove("staging");
+      if (revealWatch){ revealWatch.disconnect(); revealWatch = null; }
+      REVEAL = null;
+    }
+  }
+  /* the box: each mindful pick drops its mithai in and the box takes the weight; the count climbs; the seal comes down */
+  function playBox(){
+    var pg = $("p-close"), box = pg.querySelector(".realbox"), n = REVEAL.n, t = 380;
     for (var i = 0; i < ROUNDS.length; i++){
       (function(i){
         var res = state.results[i];
-        later(function(){ addIn(rows[i]); }, t);
         if (res && res.win) later(function(){
           addIn(pg.querySelector('.realbox .sweet[data-i="' + i + '"]')); plop();
           if (box){ box.classList.remove("nudge"); void box.offsetWidth; box.classList.add("nudge"); }
         }, t + 90);
-        later(function(){ addIn(rows[i] && rows[i].querySelector(".st")); if (res && res.win) tick(); }, t + 260);
       })(i);
       t += 520;
     }
-    /* the count climbs to the total */
     later(function(){ $("scoreline").textContent = scoreText(0); addIn($("scoreline")); }, t);
     for (var k = 1; k <= n; k++){
       (function(k){ later(function(){ $("scoreline").textContent = scoreText(k); tick(); }, t + 140 + (k - 1) * 170); })(k);
     }
     var tc = t + 140 + Math.max(n - 1, 0) * 170 + 320;
-    /* then the seal comes down on the lid */
     later(function(){ addIn($("rtitle")); thud(); buzz([20, 40, 20]); }, tc);
     later(function(){ addIn($("rsub")); }, tc + 480);
     later(function(){ addIn(pg.querySelector(".boxcap")); }, tc + 620);
-    later(function(){ addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview")); }, tc + 900);
-    later(function(){ pg.classList.remove("staging"); afterReveal(); }, tc + 1300);
+    later(function(){ celebrate(); partDone("box"); }, tc + 1000);
+  }
+  /* the tally: the rows land one by one, each verdict a beat after its row */
+  function playTally(){
+    var rows = $("tally").querySelectorAll("li"), t = 380;
+    for (var i = 0; i < ROUNDS.length; i++){
+      (function(i){
+        var res = state.results[i];
+        later(function(){ addIn(rows[i]); }, t);
+        later(function(){ addIn(rows[i] && rows[i].querySelector(".st")); if (res && res.win) tick(); }, t + 260);
+      })(i);
+      t += 520;
+    }
+    later(function(){ partDone("tally"); }, t);
+  }
+  function playShare(){
+    var pg = $("p-close");
+    later(function(){ addIn(pg.querySelector(".sharerow")); addIn(pg.querySelector(".sharepreview")); }, 200);
+    later(function(){ partDone("share"); }, 700);
+  }
+  function startReveal(n){
+    clearReveal();
+    REVEAL = {n:n, done:{box:false, tally:false, share:false}, started:{}, celebrated:false, shareWaits:false};
+    var pg = $("p-close");
+    if (reducedMotion()){ finishReveal(); celebrate(); REVEAL = null; return; }
+    pg.classList.add("staging");
+    var parts = {box:$("result"), tally:$("tally"), share:pg.querySelector(".sharerow")};
+    if (!("IntersectionObserver" in window)){ beginPart("box"); beginPart("tally"); beginPart("share"); return; }
+    revealWatch = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        /* enough of the section in view to be watched: a third of it, or a good slice of a tall one */
+        if (e.intersectionRatio >= 0.3 || e.intersectionRect.height >= 180){
+          var name = e.target.getAttribute("data-part");
+          if (revealWatch) revealWatch.unobserve(e.target);
+          beginPart(name);
+        }
+      });
+    }, {threshold:[0, 0.3, 0.6, 1]});
+    Object.keys(parts).forEach(function(name){
+      var el = parts[name];
+      if (el){ el.setAttribute("data-part", name); revealWatch.observe(el); } else beginPart(name);
+    });
   }
   function tick(){
     var ac = audio(); if (!ac) return;
@@ -2180,7 +2252,7 @@
     initShareBand();
     initDownloads();
     $("share-btn").addEventListener("click", shareResult);
-    $("p-close").addEventListener("pointerdown", skipReveal);
+    $("p-close").addEventListener("click", skipReveal);
     $("p-close").addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") skipReveal(); });
     paintHero();
     buildNav();
