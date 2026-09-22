@@ -186,20 +186,22 @@
   .chit-l .chit-k{color:var(--orange);max-width:none;margin-bottom:5px}
   .chit-t{font-size:.98rem;font-weight:600;color:var(--navy);line-height:1.32}
   .chit-n{font-size:1.75rem;font-weight:800;line-height:1;letter-spacing:-.02em}
-  /* the planned spend is the one number that matters, so it announces itself: the amount pops in,
-     a sheen crosses the stub, then it beats twice and rests */
-  .chit-n{animation:stubnum .62s cubic-bezier(.2,.9,.3,1.55) .42s both}
-  @keyframes stubnum{0%{opacity:0;transform:scale(.45)}62%{opacity:1;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
-  .chit-r{animation:stubbeat 3s ease-in-out 1.4s infinite both;transition:filter .3s ease}
-  @keyframes stubbeat{0%,40%,100%{filter:brightness(1)}8%{filter:brightness(1.22)}18%{filter:brightness(1)}26%{filter:brightness(1.14)}}
-  /* the budget has done its job once a box is chosen */
-  .brief.done .chit-r{animation:none}
+  /* the planned spend is the one number that matters, so the whole stub performs on a loop: the amount
+     springs in, then every six seconds a sheen crosses it and it beats twice while the figure bounces.
+     All three share one clock so they read as a single movement, and all three stop on the pick. */
+  .chit-n{animation:stubin .62s cubic-bezier(.2,.9,.3,1.55) .42s both, stubpulse 6s ease-in-out 1.4s infinite}
+  @keyframes stubin{0%{opacity:0;transform:scale(.45)}62%{opacity:1;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+  @keyframes stubpulse{0%,20%,100%{transform:scale(1)}24%{transform:scale(1.16)}32%{transform:scale(1)}}
+  .chit-r{animation:stubbeat 6s ease-in-out 1.4s infinite both;transition:filter .3s ease}
+  @keyframes stubbeat{0%,20%,40%,100%{filter:brightness(1)}24%{filter:brightness(1.22)}28%{filter:brightness(1)}32%{filter:brightness(1.14)}}
   .chit-r::after{
     content:"";position:absolute;inset:0;pointer-events:none;
     background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.6) 50%,transparent 62%);background-size:280% 100%;
-    animation:stubshine 1.2s ease-out .65s both;
+    animation:stubshine 6s ease-out 1.4s infinite both;
   }
-  @keyframes stubshine{from{background-position:160% 0}to{background-position:-60% 0}}
+  @keyframes stubshine{0%{background-position:160% 0}18%,100%{background-position:-60% 0}}
+  /* the budget has done its job once a box is chosen */
+  .brief.done .chit-r,.brief.done .chit-r::after,.brief.done .chit-n{animation:none}
   @keyframes chitin{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
   .cards.held .card{opacity:0;pointer-events:none}
   .dealart.wait{animation:dealwait .35s ease both}
