@@ -14,7 +14,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Sound toggle (accessible name) | Sound on / Sound off |
 | Hamburger button (accessible name) | Contents |
 | Contents panel heading | Content |
-| Contents panel items | Home · Which box would you pick? · Small, medium or large? · Everyone’s picking one of these. · Better hurry — one left. · Read the label again. · Feedback · Read all editions |
+| Contents panel items | Home · Which box would you pick? · Small, medium or large? · Traditional, fusion or dry fruit? · Three boxes, one to buy. · Two boxes, two labels. · Feedback · Read all editions |
 | Close button (accessible name) | Close contents |
 
 ## 2. First-visit note (shown once, over the title screen)
@@ -109,7 +109,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Part | Copy |
 |---|---|
-| Headline | Everyone’s picking one of these. |
+| Headline | Traditional, fusion or dry fruit? |
 | Task at hand | Your team is celebrating Diwali at work and you’ve been asked to bring mithai for everyone. |
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
@@ -130,7 +130,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Part | Copy |
 |---|---|
-| Headline | Better hurry — one left. |
+| Headline | Three boxes, one to buy. |
 | Task at hand | You’re meeting a few friends for a festive evening and want to pick up some mithai on the way. |
 | Mithai earned | Peda |
 | Definition (card back) | FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
@@ -151,7 +151,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Part | Copy |
 |---|---|
-| Headline | Read the label again. |
+| Headline | Two boxes, two labels. |
 | Task at hand | You’re heading to a Diwali celebration and stop by a mithai shop before you go. |
 | Mithai earned | Jalebi |
 | Definition (card back) | The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels. |
