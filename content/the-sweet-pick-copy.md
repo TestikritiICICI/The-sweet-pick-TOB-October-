@@ -196,7 +196,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 |---|---|---|
 | 5 of 5 | Mithai Master | Nothing got past you. |
 | 3 or 4 of 5 | Sweet Spotter | You saw most of the tricks coming. |
-| 0, 1 or 2 of 5 | Sweet Tooth | The festive offers got the better of you this time. They get most of us. |
+| 0, 1 or 2 of 5 | Sweet Tooth | The festive offers got the better of you this time. |
 
 ### Shareable result card (1080 × 1080)
 

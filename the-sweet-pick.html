@@ -674,7 +674,7 @@
      ring inside, the edition round the rim, the tag across the middle */
   .boxstage{position:relative;width:min(420px,100%);padding-top:33%}
   .boxstage .realbox{width:100%}
-  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-8deg);transform-origin:50% 50%}
+  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-3deg);transform-origin:50% 50%}
   .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 20px rgba(120,40,0,.3))}
   .stamp .paper{fill:url(#st-paper);stroke:rgba(146,22,22,.22);stroke-width:.8}
   .stamp .ink{fill:none;stroke:var(--maroon)}
@@ -691,9 +691,9 @@
   /* the seal slams down, rings with the impact, then catches the light */
   .stamp.in{animation:slam .62s cubic-bezier(.2,.9,.3,1.2) both}
   @keyframes slam{
-    0%{opacity:0;transform:translateX(-50%) scale(2.4) rotate(-32deg)}
-    60%{opacity:1;transform:translateX(-50%) scale(.94) rotate(-5deg)}
-    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-8deg)}
+    0%{opacity:0;transform:translateX(-50%) scale(2.4) rotate(-30deg)}
+    60%{opacity:1;transform:translateX(-50%) scale(.94) rotate(1deg)}
+    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-3deg)}
   }
   .stamp.in::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid rgba(162,29,40,.5);pointer-events:none;animation:impact .75s ease-out .36s both}
   @keyframes impact{from{opacity:.9;transform:scale(.92)}to{opacity:0;transform:scale(1.4)}}
@@ -1204,7 +1204,7 @@
   function titleFor(n){
     if (n >= ROUNDS.length) return {t:"Mithai Master", s:"Nothing got past you."};
     if (n >= 3) return {t:"Sweet Spotter", s:"You saw most of the tricks coming."};
-    return {t:"Sweet Tooth", s:"The festive offers got the better of you this time. They get most of us."};
+    return {t:"Sweet Tooth", s:"The festive offers got the better of you this time."};
   }
 
   /* ---- streaks: consecutive mindful picks ---- */
@@ -1491,7 +1491,7 @@
   /* the same seal as the page, drawn on the card */
   function drawStamp(g, cx, cy, R, title, gold){
     var k = R / 150, ink = gold ? "#B0700E" : "#A21D28";
-    g.save(); g.translate(cx, cy); g.rotate(-8 * Math.PI / 180); g.translate(-cx, -cy);
+    g.save(); g.translate(cx, cy); g.rotate(-3 * Math.PI / 180); g.translate(-cx, -cy);
     var paper = g.createRadialGradient(cx, cy - 15 * k, 8 * k, cx, cy, 147 * k);
     paper.addColorStop(0, gold ? "#FFF9E6" : "#FFFCF4"); paper.addColorStop(.75, gold ? "#FFF1D2" : "#FFF6E6"); paper.addColorStop(1, gold ? "#EFD9A7" : "#F4E3C6");
     g.shadowColor = "rgba(90,30,0,.3)"; g.shadowBlur = 28 * k; g.shadowOffsetY = 12 * k;
