@@ -1203,8 +1203,8 @@
   function mindful(){ return state.results.filter(function(x){ return x && x.win; }).length; }
   function titleFor(n){
     if (n >= ROUNDS.length) return {t:"Mithai Master", s:"Nothing got past you."};
-    if (n >= 3) return {t:"Sharp Shopper", s:"You saw most of the tricks coming."};
-    return {t:"Sweet Tooth", s:"The season got you a little. It gets everyone."};
+    if (n >= 3) return {t:"Sweet Spotter", s:"You saw most of the tricks coming."};
+    return {t:"Sweet Tooth", s:"The festive offers got the better of you this time. They get most of us."};
   }
 
   /* ---- streaks: consecutive mindful picks ---- */
@@ -1512,6 +1512,16 @@
     else { g.font = (62 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy + 22 * k); }
     g.restore();
   }
+  /* words folded into at most two lines that fit the width */
+  function wrapText(g, text, maxWidth){
+    if (g.measureText(text).width <= maxWidth) return [text];
+    var words = text.split(" "), best = 1, diff = Infinity;
+    for (var i = 1; i < words.length; i++){
+      var d = Math.abs(g.measureText(words.slice(0, i).join(" ")).width - g.measureText(words.slice(i).join(" ")).width);
+      if (d < diff){ diff = d; best = i; }
+    }
+    return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
+  }
   function drawResultCard(g, n, title, art){
     var W = 1080, H = 1080, seed = 7;
     function rnd(){ seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
@@ -1536,9 +1546,12 @@
       }
     }
     drawStamp(g, 540, 395, 185, title, n === ROUNDS.length);
-    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.font = "34px Handlee, cursive"; g.fillText(title.s, 540, 880);
+    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.font = "34px Handlee, cursive";
+    var sub = wrapText(g, title.s, 880);
+    if (sub.length === 1){ g.fillText(sub[0], 540, 880); }
+    else { g.font = "31px Handlee, cursive"; g.fillText(sub[0], 540, 866); g.fillText(sub[1], 540, 904); }
     g.font = "36px Handlee, cursive";
-    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, 930);
+    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, sub.length === 1 ? 930 : 950);
     var m = document.querySelector("#p-feedback .feedgif img");
     if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
     g.textAlign = "left"; g.font = "600 26px Mulish, sans-serif"; g.fillText("Can you spot the festive tricks?", 64, H - 92);

@@ -195,8 +195,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mindful picks | Tag | Line under the seal |
 |---|---|---|
 | 5 of 5 | Mithai Master | Nothing got past you. |
-| 3 or 4 of 5 | Sharp Shopper | You saw most of the tricks coming. |
-| 0, 1 or 2 of 5 | Sweet Tooth | The season got you a little. It gets everyone. |
+| 3 or 4 of 5 | Sweet Spotter | You saw most of the tricks coming. |
+| 0, 1 or 2 of 5 | Sweet Tooth | The festive offers got the better of you this time. They get most of us. |
 
 ### Shareable result card (1080 × 1080)
 
