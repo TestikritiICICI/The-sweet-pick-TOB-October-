@@ -670,32 +670,28 @@
   .yourbox{margin:4px 0 0}
   .realbox.nudge{animation:nudge .32s ease both}
   @keyframes nudge{30%{transform:translateY(2px) rotate(.5deg)}70%{transform:translateY(-1px) rotate(-.2deg)}100%{transform:none}}
-  /* the seal on the lid: a gold-foil medallion with a scalloped edge, embossed rules and a sheen on cream paper */
+  /* the seal on the lid: a plain cream disc, one gold rule and a hairline, small tracked caps, the tag set clean in the middle */
   .boxstage{position:relative;width:min(420px,100%);padding-top:33%}
   .boxstage .realbox{width:100%}
-  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-8deg);transform-origin:50% 50%}
-  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 18px rgba(120,40,0,.34))}
-  .stamp .ring,.stamp .bump{fill:url(#st-gold)}
-  .stamp .bump{stroke:rgba(120,75,0,.22);stroke-width:.6}
-  .stamp .paper{fill:url(#st-paper);stroke:rgba(120,75,0,.22);stroke-width:1}
-  .stamp .gold{fill:none;stroke:url(#st-gold)}
-  .stamp .thick{stroke-width:5}
-  .stamp .thin{stroke-width:1.6;opacity:.9}
-  .stamp .dot,.stamp .pip{fill:#B7850D}
-  .stamp .ringtext{fill:#8E5A0C;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:15.5px;letter-spacing:3px}
-  .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:56px;text-anchor:middle}
-  .stamp .tagname.one{font-size:62px}
-  .stamp .sheen{fill:#fff;opacity:.3}
-  .stamp.gold .paper{fill:url(#st-paper-gold)}
-  .stamp.gold .tagname{fill:#8E5A0C}
+  .stamp{position:absolute;left:50%;top:0;width:50%;z-index:3;opacity:0;transform:translateX(-50%) rotate(-6deg);transform-origin:50% 50%}
+  .stamp svg{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 22px rgba(120,40,0,.22))}
+  .stamp .paper{fill:#FFFDF8;stroke:#C9A24B;stroke-width:3}
+  .stamp .hair{fill:none;stroke:#C9A24B;stroke-width:.9;opacity:.85}
+  .stamp .rule{stroke:#C9A24B;stroke-width:1.2}
+  .stamp .caps{fill:#B8923F;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:12.5px;letter-spacing:3.6px;text-anchor:middle}
+  .stamp .caps.small{font-size:10.5px;letter-spacing:2.6px}
+  .stamp .tagname{fill:var(--navy);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:33px;letter-spacing:2px;text-anchor:middle;text-transform:uppercase}
+  .stamp .tagname.one{font-size:38px}
+  .stamp.gold .tagname{fill:#B8923F}
+  .stamp.gold .paper{fill:#FFF9EA}
   /* the seal slams down, rings with the impact, then catches the light */
   .stamp.in{animation:slam .62s cubic-bezier(.2,.9,.3,1.2) both}
   @keyframes slam{
-    0%{opacity:0;transform:translateX(-50%) scale(2.4) rotate(-32deg)}
-    60%{opacity:1;transform:translateX(-50%) scale(.94) rotate(-5deg)}
-    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-8deg)}
+    0%{opacity:0;transform:translateX(-50%) scale(1.9) rotate(-22deg)}
+    60%{opacity:1;transform:translateX(-50%) scale(.96) rotate(-4deg)}
+    100%{opacity:1;transform:translateX(-50%) scale(1) rotate(-6deg)}
   }
-  .stamp.in::after{content:"";position:absolute;inset:6%;border-radius:50%;border:3px solid rgba(183,133,13,.55);pointer-events:none;animation:impact .75s ease-out .36s both}
+  .stamp.in::after{content:"";position:absolute;inset:4%;border-radius:50%;border:2px solid rgba(201,162,75,.6);pointer-events:none;animation:impact .75s ease-out .36s both}
   @keyframes impact{from{opacity:.9;transform:scale(.92)}to{opacity:0;transform:scale(1.4)}}
   .stamp.in::before{
     content:"";position:absolute;inset:3%;border-radius:50%;pointer-events:none;z-index:1;
@@ -759,7 +755,6 @@
   .rsub{color:var(--navy);font-size:1.25rem;margin:10px 0 6px}
   .sharerow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
   .sharepreview{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 26px}
-  .sharelinks{display:flex;gap:10px;flex-wrap:wrap}
   .sharepreview.flash{animation:flashpanel .9s ease}
   @keyframes flashpanel{30%{box-shadow:0 0 0 6px rgba(240,100,35,.35)}100%{box-shadow:none}}
   .sharepreview img{width:min(320px,100%);height:auto;border-radius:16px;box-shadow:var(--shadow);display:block}
@@ -1476,47 +1471,26 @@
     g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h); g.lineTo(x + r, y + h);
     g.quadraticCurveTo(x, y + h, x, y + h - r); g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath();
   }
-  /* text set along an arc: upright over the top, or upright along the bottom when flipped */
-  function arcText(g, text, cx, cy, r, flip, spacing){
-    var chars = text.split(""), widths = chars.map(function(c){ return g.measureText(c).width; });
-    var total = widths.reduce(function(a, b){ return a + b; }, 0) + (chars.length - 1) * spacing, arc = total / r;
-    var ang = flip ? Math.PI / 2 + arc / 2 : -Math.PI / 2 - arc / 2, dir = flip ? -1 : 1;
-    for (var i = 0; i < chars.length; i++){
-      var half = widths[i] / 2 / r, mid = ang + dir * half;
-      g.save(); g.translate(cx + Math.cos(mid) * r, cy + Math.sin(mid) * r); g.rotate(mid + (flip ? -Math.PI / 2 : Math.PI / 2));
-      g.fillText(chars[i], 0, 0); g.restore();
-      ang += dir * (widths[i] + spacing) / r;
-    }
-  }
-  function pipPath(g, cx, cy, r){ g.beginPath(); for (var i = 0; i < 8; i++){ var a = -Math.PI / 2 + i * Math.PI / 4, rr = i % 2 ? r * .36 : r; g.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } g.closePath(); }
   /* the same medallion as the page, drawn on the card */
   function drawStamp(g, cx, cy, R, title, gold){
-    var k = R / 150, ink = "#A21D28", tagInk = gold ? "#8E5A0C" : ink, ringInk = "#8E5A0C";
-    var foil = g.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
-    foil.addColorStop(0, "#FFE9A8"); foil.addColorStop(.28, "#E9BB4E"); foil.addColorStop(.55, "#B7850D"); foil.addColorStop(.8, "#F3D47C"); foil.addColorStop(1, "#A6700A");
-    g.save(); g.translate(cx, cy); g.rotate(-8 * Math.PI / 180); g.translate(-cx, -cy);
-    g.shadowColor = "rgba(90,30,0,.34)"; g.shadowBlur = 26 * k; g.shadowOffsetY = 12 * k;
-    g.fillStyle = foil; g.beginPath(); g.arc(cx, cy, 141 * k, 0, 6.29); g.fill();
+    var k = R / 150, gold1 = "#C9A24B", caps = "#B8923F", tagInk = gold ? "#B8923F" : "#183E6D";
+    g.save(); g.translate(cx, cy); g.rotate(-6 * Math.PI / 180); g.translate(-cx, -cy);
+    g.shadowColor = "rgba(90,30,0,.26)"; g.shadowBlur = 30 * k; g.shadowOffsetY = 12 * k;
+    g.fillStyle = gold ? "#FFF9EA" : "#FFFDF8"; g.beginPath(); g.arc(cx, cy, 146 * k, 0, 6.29); g.fill();
     g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
-    for (var i = 0; i < 28; i++){ var a = i * Math.PI * 2 / 28; g.beginPath(); g.arc(cx + Math.cos(a) * 141 * k, cy + Math.sin(a) * 141 * k, 8.5 * k, 0, 6.29); g.fill(); }
-    var paper = g.createRadialGradient(cx, cy - 12 * k, 10 * k, cx, cy, 133 * k);
-    paper.addColorStop(0, gold ? "#FFF8E2" : "#FFFCF3"); paper.addColorStop(.7, gold ? "#FFEFC6" : "#FFF4DF"); paper.addColorStop(1, gold ? "#EBD095" : "#F1DCB4");
-    g.fillStyle = paper; g.beginPath(); g.arc(cx, cy, 133 * k, 0, 6.29); g.fill();
-    g.strokeStyle = "rgba(120,75,0,.22)"; g.lineWidth = 1 * k; g.stroke();
-    g.strokeStyle = foil; g.lineWidth = 5 * k; g.beginPath(); g.arc(cx, cy, 125 * k, 0, 6.29); g.stroke();
-    g.lineWidth = 1.6 * k; g.beginPath(); g.arc(cx, cy, 93 * k, 0, 6.29); g.stroke();
-    g.fillStyle = ringInk; g.textAlign = "center"; g.textBaseline = "middle";
-    g.font = "800 " + (15.5 * k).toFixed(1) + "px Mulish, sans-serif";
-    arcText(g, "THE SWEET PICK", cx, cy, 108 * k, false, 3 * k);
-    arcText(g, "THE ORANGE BOOK \u00b7 VOL. 65", cx, cy, 108 * k, true, 3 * k);
-    g.fillStyle = "#B7850D"; g.beginPath(); g.arc(cx - 108 * k, cy, 3.5 * k, 0, 6.29); g.fill(); g.beginPath(); g.arc(cx + 108 * k, cy, 3.5 * k, 0, 6.29); g.fill();
-    pipPath(g, cx, cy - 62 * k, 11 * k); g.fill(); pipPath(g, cx, cy + 74 * k, 11 * k); g.fill();
-    var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
-    g.fillStyle = tagInk; g.textBaseline = "alphabetic";
-    if (lines.length > 1){ g.font = (56 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy - 2 * k); g.fillText(lines[1], cx, cy + 49 * k); }
-    else { g.font = (62 * k).toFixed(1) + "px Handlee, cursive"; g.fillText(lines[0], cx, cy + 24 * k); }
-    g.save(); g.translate(cx - 42 * k, cy - 58 * k); g.rotate(-34 * Math.PI / 180); g.scale(64 * k, 26 * k); g.beginPath(); g.arc(0, 0, 1, 0, 6.29); g.restore();
-    g.fillStyle = "rgba(255,255,255,.3)"; g.fill();
+    g.strokeStyle = gold1; g.lineWidth = 3 * k; g.stroke();
+    g.lineWidth = .9 * k; g.beginPath(); g.arc(cx, cy, 134 * k, 0, 6.29); g.stroke();
+    g.lineWidth = 1.2 * k; g.beginPath(); g.moveTo(cx - 18 * k, cy - 38 * k); g.lineTo(cx + 18 * k, cy - 38 * k); g.moveTo(cx - 18 * k, cy + 68 * k); g.lineTo(cx + 18 * k, cy + 68 * k); g.stroke();
+    g.fillStyle = caps; g.textAlign = "center"; g.textBaseline = "alphabetic";
+    g.font = "800 " + (12.5 * k).toFixed(1) + "px Mulish, sans-serif"; try { g.letterSpacing = (3.6 * k).toFixed(1) + "px"; } catch(e){}
+    g.fillText("THE SWEET PICK", cx, cy - 54 * k);
+    g.font = "800 " + (10.5 * k).toFixed(1) + "px Mulish, sans-serif"; try { g.letterSpacing = (2.6 * k).toFixed(1) + "px"; } catch(e){}
+    g.fillText("THE ORANGE BOOK \u00b7 VOL. 65", cx, cy + 93 * k);
+    var words = title.t.toUpperCase().split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t.toUpperCase()];
+    g.fillStyle = tagInk; try { g.letterSpacing = (2 * k).toFixed(1) + "px"; } catch(e){}
+    if (lines.length > 1){ g.font = "800 " + (33 * k).toFixed(1) + "px Mulish, sans-serif"; g.fillText(lines[0], cx, cy + 10 * k); g.fillText(lines[1], cx, cy + 48 * k); }
+    else { g.font = "800 " + (38 * k).toFixed(1) + "px Mulish, sans-serif"; g.fillText(lines[0], cx, cy + 22 * k); }
+    try { g.letterSpacing = "0px"; } catch(e){}
     g.restore();
   }
   function drawResultCard(g, n, title, art){
@@ -1565,12 +1539,8 @@
         SHARE.file = new File([arr], "the-sweet-pick.png", {type:"image/png"});
       } catch(e){ SHARE.file = null; }
       var pv = $("share-preview");
-      var url = shareUrl(), msg = SHARE.text + (url ? " " + url : "");
       pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + n + " of " + ROUNDS.length + ' mindful picks">' +
-        '<div class="sharelinks"><a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>' +
-        '<a class="pill plain" id="share-wa" href="https://wa.me/?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">WhatsApp</a>' +
-        '<button class="pill plain" id="share-copy" type="button">Copy message</button></div>';
-      pv.querySelector("#share-copy").addEventListener("click", function(){ copyText(msg); });
+        '<a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>';
       pv.querySelector("a[download]").addEventListener("click", function(e){
         if (!DL || !SHARE.file) return;
         e.preventDefault();
@@ -1579,18 +1549,7 @@
       pv.hidden = false;
     });
   }
-  function copyText(text){
-    var done = function(){ toast("Message copied"); };
-    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, function(){ legacyCopy(text) && done(); }); return; }
-    if (legacyCopy(text)) done();
-  }
-  function legacyCopy(text){
-    var ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
-    document.body.appendChild(ta); ta.select(); var ok = false;
-    try { ok = document.execCommand("copy"); } catch(e){}
-    document.body.removeChild(ta); return ok;
-  }
-  /* when the share sheet or a new tab is not allowed (a preview frame, a strict browser), the card and its links are the way through */
+  /* when the share sheet or a new tab is not allowed (a preview frame, a strict browser), the card and Save image are the way through */
   function showShareOptions(){
     var pv = $("share-preview"); pv.hidden = false;
     pv.classList.remove("flash"); void pv.offsetWidth; pv.classList.add("flash");
@@ -1952,30 +1911,19 @@
     else { renderClose(); }
   }
 
-  /* the tag as a seal: a gold-foil medallion with a scalloped edge, the edition round the rim, the tag across the middle */
+  /* the tag as a seal: a cream disc with one gold rule and a hairline, small tracked caps, the tag clean in the middle */
   function stampHtml(title, gold){
     var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
-    var pip = function(cy){ return '<path class="pip" d="M150 ' + (cy - 11) + 'l3.2 7.8 7.8 3.2-7.8 3.2-3.2 7.8-3.2-7.8-7.8-3.2 7.8-3.2z"/>'; };
-    var bumps = "";
-    for (var i = 0; i < 28; i++){ var a = i * Math.PI * 2 / 28; bumps += '<circle class="bump" cx="' + (150 + Math.cos(a) * 141).toFixed(1) + '" cy="' + (150 + Math.sin(a) * 141).toFixed(1) + '" r="8.5"/>'; }
     return '<div class="stamp' + (gold ? " gold" : "") + '" id="rtitle" role="heading" aria-level="2" aria-label="' + title.t + '">' +
       '<svg viewBox="0 0 300 300" aria-hidden="true">' +
-      '<defs><linearGradient id="st-gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE9A8"/><stop offset=".28" stop-color="#E9BB4E"/><stop offset=".55" stop-color="#B7850D"/><stop offset=".8" stop-color="#F3D47C"/><stop offset="1" stop-color="#A6700A"/></linearGradient>' +
-      '<radialGradient id="st-paper" cx=".5" cy=".42" r=".66"><stop offset="0" stop-color="#FFFCF3"/><stop offset=".7" stop-color="#FFF4DF"/><stop offset="1" stop-color="#F1DCB4"/></radialGradient>' +
-      '<radialGradient id="st-paper-gold" cx=".5" cy=".42" r=".66"><stop offset="0" stop-color="#FFF8E2"/><stop offset=".7" stop-color="#FFEFC6"/><stop offset="1" stop-color="#EBD095"/></radialGradient>' +
-      '<path id="st-top" d="M42 150A108 108 0 0 1 258 150"/><path id="st-bot" d="M42 150A108 108 0 0 0 258 150"/></defs>' +
-      '<circle class="ring" cx="150" cy="150" r="141"/>' + bumps +
-      '<circle class="paper" cx="150" cy="150" r="133"/>' +
-      '<circle class="gold thick" cx="150" cy="150" r="125"/><circle class="gold thin" cx="150" cy="150" r="93"/>' +
-      '<text class="ringtext"><textPath href="#st-top" startOffset="50%" text-anchor="middle">THE SWEET PICK</textPath></text>' +
-      '<text class="ringtext"><textPath href="#st-bot" startOffset="50%" text-anchor="middle">THE ORANGE BOOK \u00b7 VOL. 65</textPath></text>' +
-      '<circle class="dot" cx="42" cy="150" r="3.5"/><circle class="dot" cx="258" cy="150" r="3.5"/>' +
-      pip(88) +
+      '<circle class="paper" cx="150" cy="150" r="146"/><circle class="hair" cx="150" cy="150" r="134"/>' +
+      '<text class="caps" x="150" y="96">THE SWEET PICK</text>' +
+      '<line class="rule" x1="132" y1="112" x2="168" y2="112"/>' +
       (lines.length > 1
-        ? '<text class="tagname" x="150" y="148">' + lines[0] + '</text><text class="tagname" x="150" y="199">' + lines[1] + "</text>"
-        : '<text class="tagname one" x="150" y="174">' + lines[0] + "</text>") +
-      pip(224) +
-      '<ellipse class="sheen" cx="108" cy="92" rx="64" ry="26" transform="rotate(-34 108 92)"/>' +
+        ? '<text class="tagname" x="150" y="160">' + lines[0] + '</text><text class="tagname" x="150" y="198">' + lines[1] + "</text>"
+        : '<text class="tagname one" x="150" y="172">' + lines[0] + "</text>") +
+      '<line class="rule" x1="132" y1="218" x2="168" y2="218"/>' +
+      '<text class="caps small" x="150" y="243">THE ORANGE BOOK \u00b7 VOL. 65</text>' +
       "</svg></div>";
   }
   function scoreText(k){ return "You made " + k + " mindful " + (k === 1 ? "pick" : "picks") + " out of " + ROUNDS.length + "."; }

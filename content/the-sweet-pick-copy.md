@@ -182,8 +182,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
 | Share button | Share my result |
-| Links under the card | Save image · WhatsApp · Copy message |
-| Toast after Copy message | Message copied |
+| Save link (under the card) | Save image |
 | Result card (alt text) | Your result card: {Tag}, {N} of 5 mindful picks |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
