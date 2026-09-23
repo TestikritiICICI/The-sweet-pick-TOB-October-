@@ -331,16 +331,16 @@
      settles beside it. It hangs off .boot so coming back to the title screen opens it
      again, and the resting state is the open box — reduced motion, which stops every
      animation, then simply shows the box already open. */
-  .cover.boot .lidlayer{animation:lidopen 2.1s cubic-bezier(.26,.72,.3,1) .5s both}
-  /* the lid never travels past its resting place. The tray was cut along the lid's own
-     bottom edge, so the two meet exactly at rest — any overshoot up and left opens a gap
-     and shows that cut as a diagonal slice across the box. The settle is a deceleration,
-     and the tilt is gone well before the lid closes on its mark. */
+  .cover.boot .lidlayer{animation:lidopen 2.2s cubic-bezier(.42,.03,.24,1) .5s both}
+  /* Two keyframes, deliberately. A timing function is applied to every leg of a keyframe
+     set, not across the whole run, so intermediate stops made the lid decelerate into the
+     middle of its own travel and hang there. One leg, one curve, one motion.
+     It also cannot overshoot: the tray was cut along the lid's own bottom edge, so the two
+     meet exactly at rest, and travelling past that point opens a gap that shows the cut as
+     a diagonal slice across the box. */
   @keyframes lidopen{
-    0%{transform:translate(27.04%,28.87%) rotate(0deg)}
-    18%{transform:translate(26.6%,23.4%) rotate(-1.3deg)}
-    64%{transform:translate(7.4%,8.2%) rotate(-.5deg)}
-    100%{transform:translate(0,0) rotate(0deg)}
+    from{transform:translate(27.04%,28.87%)}
+    to{transform:translate(0,0)}
   }
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
 
@@ -1242,11 +1242,14 @@
 
   /* replays the title screen: the boot animations hang off .boot, so dropping
      and re-adding the class starts them from the top */
+  var lidTimer = 0;
   function bootCover(){
     var c = $("p-cover");
     c.classList.remove("boot");
     void c.offsetWidth;
     c.classList.add("boot");
+    window.clearTimeout(lidTimer);
+    if (!reducedMotion()) lidTimer = window.setTimeout(lidSound, 520);
   }
 
   function show(name){
@@ -1340,6 +1343,30 @@
     var t = ac.currentTime, o = ac.createOscillator(); o.type = "sine";
     o.frequency.setValueAtTime(170, t); o.frequency.exponentialRampToValueAtTime(60, t + 0.22);
     env(ac, o, t, 0.32, 0.26); o.start(t); o.stop(t + 0.3);
+  }
+  /* the lid coming off: card sliding on card, a soft rasp that swells with the motion and
+     thins as it settles, then the quiet knock of the lid being set down beside the box.
+     This one is not triggered by a tap, so it plays only once the context is actually
+     running — otherwise a suspended context would queue it and fire it late. */
+  function lidSound(){
+    var ac = audio(); if (!ac || ac.state !== "running") return;
+    var t = ac.currentTime + 0.02, dur = 1.75;
+    var len = Math.floor(ac.sampleRate * dur), buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++){
+      var p = i / len;
+      d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * Math.pow(p, 0.7));
+    }
+    var src = ac.createBufferSource(); src.buffer = buf;
+    var f = ac.createBiquadFilter(); f.type = "bandpass"; f.Q.value = 0.65;
+    f.frequency.setValueAtTime(620, t);
+    f.frequency.linearRampToValueAtTime(1750, t + dur * 0.45);
+    f.frequency.linearRampToValueAtTime(820, t + dur);
+    var g = ac.createGain(); g.gain.setValueAtTime(0.05, t);
+    src.connect(f); f.connect(g); g.connect(ac.destination);
+    src.start(t); src.stop(t + dur);
+    var o = ac.createOscillator(); o.type = "sine";
+    o.frequency.setValueAtTime(138, t + dur); o.frequency.exponentialRampToValueAtTime(62, t + dur + 0.17);
+    env(ac, o, t + dur, 0.06, 0.22); o.start(t + dur); o.stop(t + dur + 0.26);
   }
   function buzz(p){ if (muted || !navigator.vibrate) return; try { navigator.vibrate(p); } catch(e){} }
   function setMuted(m){
