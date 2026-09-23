@@ -177,15 +177,24 @@
   .amount{color:var(--orange);white-space:nowrap}
   /* the brief is a tear-off ticket, not a paragraph: the approved scenario line on the cream
      half, the planned spend as the hero number on the orange stub */
-  .subhead.brief{margin-bottom:18px;max-width:600px;font-size:1rem;line-height:1.3;color:inherit;animation:chitin .45s cubic-bezier(.2,.9,.3,1.15) both}
-  .chit{display:flex;align-items:stretch;background:#FFF8EC;border:1.5px solid var(--card-line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;font-family:Mulish,system-ui,sans-serif;text-align:left}
-  .chit-l{flex:1;min-width:0;padding:12px 16px;display:flex;flex-direction:column;justify-content:center}
-  .chit-r{flex:none;padding:10px 16px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;background:var(--orange);color:#fff;position:relative;text-align:center}
+  .subhead.brief{margin-bottom:22px;max-width:640px;font-size:1rem;line-height:1.3;color:inherit;animation:chitin .45s cubic-bezier(.2,.9,.3,1.15) both}
+  .chit{display:flex;align-items:stretch;background:#FFF8EC;border:2px solid var(--card-line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;font-family:Mulish,system-ui,sans-serif;text-align:left}
+  .chit-l{flex:1;min-width:0;padding:16px 18px;display:flex;flex-direction:column;justify-content:center}
+  .chit-r{flex:none;padding:12px 18px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;background:var(--orange);color:#fff;position:relative;text-align:center}
   .chit-r::before{content:"";position:absolute;left:-1px;top:7px;bottom:7px;border-left:2px dashed rgba(255,255,255,.75)}
-  .chit-k{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;max-width:7.5em;color:rgba(255,255,255,.92)}
-  .chit-l .chit-k{color:var(--orange);max-width:none;margin-bottom:5px}
-  .chit-t{font-size:.98rem;font-weight:600;color:var(--navy);line-height:1.32}
-  .chit-n{font-size:1.75rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+  .chit-k{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;max-width:7.5em;color:rgba(255,255,255,.92)}
+  .chit-l .chit-k{color:var(--orange);max-width:none;margin-bottom:7px}
+  .chit-t{font-size:1.18rem;font-weight:600;color:var(--navy);line-height:1.34}
+  .chit-n{font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.02em}
+  /* on the narrowest phones the stub gives the brief back some width, so the task still
+     reads in a handful of lines rather than a column of two words */
+  @media (max-width:380px){
+    .chit-l{padding:14px 13px}
+    .chit-r{padding:12px 12px}
+    .chit-k{font-size:.62rem;max-width:6.8em}
+    .chit-t{font-size:1.1rem}
+    .chit-n{font-size:1.85rem}
+  }
   /* the planned spend is the one number that matters, so the whole stub performs on a loop: the amount
      springs in, then every four seconds a sheen crosses it and it beats twice while the figure bounces.
      All three share one clock so they read as a single movement, and all three stop on the pick. */
@@ -971,7 +980,9 @@
         <li>Scroll down and tap Next&nbsp;Pick for your next scenario.</li>
       </ol>
     </div>
-    <h1 class="headline" id="r-headline"></h1>
+    <!-- the round's headline is kept for the document outline and the contents menu, but the page
+         itself leads with the task at hand -->
+    <h1 class="headline vh" id="r-headline"></h1>
     <p class="subhead" id="r-scenario"></p>
     <div class="cards" id="r-cards"></div>
     <div id="r-bridge"></div>
@@ -1067,7 +1078,7 @@
   var ROUNDS = [
     {
       headline:"Which box would you pick?",
-      scene:"You’re hosting a festive get-together at home and are picking up mithai for your guests.",
+      scene:"You’re hosting a Diwali get-together at home and are picking up mithai for your guests.",
       bias:"Anchoring Bias", sweet:"laddoo",
       defn:"Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it.",
       bridge:"A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000.",
@@ -1103,7 +1114,7 @@
     },
     {
       headline:"Traditional, fusion or dry fruit?",
-      scene:"Your team is celebrating at work this festive season and you’ve been asked to bring mithai for everyone.",
+      scene:"Your team is celebrating Diwali at work and you’ve been asked to bring mithai for everyone.",
       bias:"Bandwagon Effect", sweet:"barfi",
       defn:"The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it.",
       bridge:"A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming.",
@@ -1139,7 +1150,7 @@
     },
     {
       headline:"Two boxes, two labels.",
-      scene:"You’re heading to a celebration this festive season and stop by a mithai shop before you go.",
+      scene:"You’re heading to a Diwali celebration and stop by a mithai shop before you go.",
       bias:"Framing Effect", sweet:"jalebi",
       defn:"The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels.",
       bridge:"One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much.",
