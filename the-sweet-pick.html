@@ -1037,7 +1037,6 @@
 <!-- ================= ROUNDS ================= -->
 <section id="p-round" class="ruled" hidden>
   <div class="page">
-    <div class="pageno" id="r-pageno"></div>
     <div class="boxtray" id="boxtray" role="img" aria-label="Your box"></div>
     <div class="howbox" id="howbox">
       <div class="lbl">How to play</div>
@@ -2019,8 +2018,10 @@
   function renderRound(replay){
     var r = ROUNDS[state.round];
     state.picked = false;
+    /* which pick this is, for anything outside the page that needs to know; the reader is
+       told by the row of cups above, not by a counter */
+    $("p-round").setAttribute("data-pick", state.round + 1);
     if (!replay) state.tries = 0;
-    $("r-pageno").textContent = "The Sweet Pick · Pick " + (state.round + 1) + " of " + ROUNDS.length;
     /* the condensed rules sit on the first pick only; every round keeps the one-line instruction */
     $("howbox").hidden = (state.round !== 0);
     $("r-headline").innerHTML = r.headline;
