@@ -9,7 +9,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Element | Copy |
 |---|---|
 | Browser tab title | The Sweet Pick |
-| Masthead (header, every page) | OCTOBER 2026 \| VOL. 65 |
 | Band, right side | Share |
 | Sound toggle (accessible name) | Sound on / Sound off |
 | Hamburger button (accessible name) | Contents |
@@ -17,21 +16,13 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Contents panel items | Home · Which box would you pick? · Small, medium or large? · Traditional, fusion or dry fruit? · Three boxes, one to buy. · Two boxes, two labels. · Feedback · Read all editions |
 | Close button (accessible name) | Close contents |
 
-## 2. First-visit note (shown once, over the title screen)
-
-| Part | Copy |
-|---|---|
-| Kicker | Interactive edition · Vol. 65 |
-| Heading | This festive season, a different kind of lesson |
-| Body | Some money lessons are better when experienced. This festive season, The Orange Book takes an interactive approach to explore the choices we make with our money. |
-| Button | Continue |
-
-## 3. Title screen (main menu)
+## 2. Title screen (main menu)
 
 | Element | Copy |
 |---|---|
 | Lockup | The / Orange / Book |
 | Title | The Sweet Pick |
+| Tagline (under the box, above the button) | This festive season, a different kind of lesson |
 | Menu, first visit | Play |
 | Menu, game in progress | Continue — Pick {N} of 5 · New game |
 | Plate after a finished game | Best run {N} of 5 · {Tag} |
@@ -39,11 +30,10 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Tap hint (phone) | Tap a line to choose |
 | Hero illustration (alt text) | An open box of twelve festive mithai, its lid set beside it |
 
-## 4. Pick pages · shared elements
+## 3. Pick pages · shared elements
 
 | Element | Copy |
 |---|---|
-| Page number | The Sweet Pick · Pick {N} of 5 |
 | Budget chip (pinned strip) | Budget ₹500 |
 | Tray (accessible name) | Your box: {N} of 5 filled |
 | Ticket label | Task at hand |
@@ -63,7 +53,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 3. Read the back of the cards.
 4. Scroll down and tap Next Pick for your next scenario.
 
-## 5. Pick 1 · Anchoring Bias
+## 4. Pick 1 · Anchoring Bias
 
 | Part | Copy |
 |---|---|
@@ -84,7 +74,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Celebration Box | ₹475 | Great! You avoided the Anchoring Bias. | The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box. |
 | Premium Box | MRP ₹1,000 struck through, ₹750, with a 25% OFF flash | Oops! You fell for the Anchoring Bias. | The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget. |
 
-## 6. Pick 2 · Decoy Effect
+## 5. Pick 2 · Decoy Effect
 
 | Part | Copy |
 |---|---|
@@ -105,7 +95,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Medium Box | ₹500 | Great! You avoided the Decoy Effect. | The ₹575 Large Box is only ₹75 more. You still chose the ₹500 Medium Box instead of automatically upgrading. |
 | Large Box | ₹575 | Oops! You fell for the Decoy Effect. | The ₹500 Medium Box may have made the ₹575 Large Box feel like the obvious upgrade for just ₹75 more. |
 
-## 7. Pick 3 · Bandwagon Effect
+## 6. Pick 3 · Bandwagon Effect
 
 | Part | Copy |
 |---|---|
@@ -126,7 +116,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Signature Fusion Mithai Box | ₹600 · tag “Office Favourite Today” | Oops! You fell for the Bandwagon Effect. | “Office Favourite Today” may have pulled you towards the ₹600 box, even though ₹425 and ₹475 options were available within budget. |
 | Dry Fruit Mithai Box | ₹475 | Great! You avoided the Bandwagon Effect. | You chose the ₹475 Dry Fruit Box instead of automatically following the ₹600 “Office Favourite”. |
 
-## 8. Pick 4 · FOMO
+## 7. Pick 4 · FOMO
 
 | Part | Copy |
 |---|---|
@@ -147,7 +137,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Celebration Box | ₹400 | Great! You avoided FOMO. | You chose the ₹400 Celebration Box instead of being rushed by the “Only 1 left” ₹550 Premium Box. |
 | Premium Box | ₹550 · tag “Only 1 left” (pulses; hot) | Oops! You fell for FOMO. | “Only 1 left” may have made the ₹550 Premium Box feel urgent, despite ₹300 and ₹400 options being available. |
 
-## 9. Pick 5 · Framing Effect
+## 8. Pick 5 · Framing Effect
 
 | Part | Copy |
 |---|---|
@@ -167,7 +157,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Box A | ₹600 · claim “70% sugar-free” | Oops! You may have fallen for the Framing Effect. | “70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar. |
 | Box B | ₹450 · claim “Contains 25% sugar” | Great! You looked beyond the positive frame. | You chose the ₹450 box with 25% sugar instead of being drawn towards the ₹600 box described as “70% sugar-free.” |
 
-## 10. Last page
+## 9. Last page
 
 | Element | Copy |
 |---|---|
@@ -175,7 +165,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Headline | A sweeter way to choose |
 | Eyebrow | Your festive box |
 | Seal, top arc | THE SWEET PICK |
-| Seal, bottom arc | THE ORANGE BOOK · VOL. 65 |
+| Seal, bottom arc | THE ORANGE BOOK |
 | Seal, centre | {Tag} (gold ink for 5 of 5) |
 | Line under the seal | the tag's line, see Result tags |
 | Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
@@ -202,8 +192,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Element | Copy |
 |---|---|
-| Top right | OCTOBER 2026 \| VOL. 65 |
-| Seal | THE SWEET PICK · {Tag} · THE ORANGE BOOK · VOL. 65 |
+| Seal | THE SWEET PICK · {Tag} · THE ORANGE BOOK |
 | Under the seal | the tag's line |
 | Under the box | {N} of 5 mindful picks |
 | Footer, wordmark | THE / ORANGE BOOK (set as on the cover) |
@@ -216,7 +205,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Share my result (native share or WhatsApp) | I made {N} of 5 mindful picks on The Sweet Pick, this month’s interactive Orange Book from ICICI Bank. Can you spot the festive tricks? {link} |
 | WhatsApp button in the band | Hey, check out The Sweet Pick, this month’s interactive edition of The Orange Book from ICICI Bank. {link} |
 
-## 11. Feedback page (carried over from previous editions)
+## 10. Feedback page (carried over from previous editions)
 
 | Element | Copy |
 |---|---|
@@ -227,9 +216,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | WhatsApp | WhatsApp ‘Start’ to 86400 86400. |
 | Disclaimer | The information provided by ICICI Bank is for general informational purposes only and does not constitute financial, investment, legal, or tax advice. It does not take into account your individual objectives or financial situation. We strongly recommend you seek independent professional advice before making any investment decisions. |
 | Disclaimer link | Click here to view the disclaimer. → https://www.icicibank.com/disclaimer/disclaimer-tob?utm_source=TOBOctober2026&utm_medium=TOBOctober26_HTML_Disclaimer&utm_campaign=TOBOctober26_ClickDisclaimer |
-| Footer | OCTOBER 2026 \| VOL. 65 |
 
-## 12. Screen-reader-only labels
+## 11. Screen-reader-only labels
 
 - Main menu (the title-screen list)
 - Contents / Close contents (the hamburger and its close button)

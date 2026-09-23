@@ -256,7 +256,7 @@
     display:flex;flex-direction:column;gap:12px;
   }
   @keyframes boot{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-  .cover.boot .lockup,.cover.boot .stagearea,.cover.boot .cover-title,.cover.boot .coverstat{
+  .cover.boot .lockup,.cover.boot .stagearea,.cover.boot .cover-title,.cover.boot .covertag,.cover.boot .coverstat{
     animation:boot .55s cubic-bezier(.2,.85,.3,1) both;
   }
   .cover.boot .mitem{animation:boot .5s cubic-bezier(.2,.85,.3,1) both}
@@ -266,6 +266,7 @@
   .lockup{animation-delay:.04s}
   .cover-title{animation-delay:.12s}
   .stagearea{animation-delay:.22s}
+  .covertag{animation-delay:.30s}
   .coverstat{animation-delay:.5s}
   .keyhint,.taphint{animation-delay:.56s}
 
@@ -478,11 +479,12 @@
   }
   /* a short screen still has to hold the whole title screen without scrolling */
   @media (max-height:700px), (min-width:651px) and (max-height:900px){
-    .cover-inner{padding:16px 22px 18px;gap:9px}
+    .cover-inner{padding:12px 22px 12px;gap:8px}
     .lockup .the{font-size:clamp(1.05rem,3.4vw,1.35rem)}
     .lockup .big{font-size:clamp(1.85rem,6vw,2.5rem)}
     .stagearea{min-height:92px}
-    .cover-title{margin-top:28px;margin-bottom:0}
+    .cover-title{margin-top:16px;margin-bottom:0}
+    .covertag{font-size:.9rem;line-height:1.26}
     .cover-title .t{font-size:clamp(1.75rem,5.6vw,2.25rem)}
     .mitem{padding:10px 14px}
     .menu{gap:5px}
@@ -910,46 +912,13 @@
     display:grid;place-items:center;margin-top:.26em;
   }
 
-  /* ---------- first-run edition note (one view, one tap) ---------- */
-  .intro{
-    position:fixed;inset:0;z-index:60;
-    /* the cover softens rather than dissolves: the title, the box and the menu
-       stay recognisable behind the note, and the darkness pooling behind the
-       type keeps it crisp without a card under it */
-    -webkit-backdrop-filter:blur(3px);
-    backdrop-filter:blur(3px);
-    background:
-      radial-gradient(ellipse 360px 320px at 50% 47%, rgba(22,6,0,.58), rgba(22,6,0,0) 72%),
-      rgba(38,11,2,.74);
-    display:grid;place-items:center;padding:30px 24px;
-    animation:fade .24s ease both;
-  }
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  /* no card and no panel: the note is set straight onto the dimmed cover */
-  .intro-note{
-    max-width:min(30ch,100%);text-align:center;color:#fff;
-    text-shadow:0 2px 20px rgba(24,7,0,.66);
-    animation:noteIn .42s cubic-bezier(.2,.9,.3,1.1) both;
-  }
-  @keyframes noteIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  .intro-note p{max-width:none;margin:0}
-  .intro-kicker{
-    font-family:Mulish,system-ui,sans-serif;font-weight:700;
-    font-size:.66rem;letter-spacing:.19em;text-transform:uppercase;
-    color:#FFD98A;margin-bottom:16px!important;
-  }
-  /* balance keeps the display lines even instead of dropping a one-word orphan */
-  .intro-note h2{
-    font-size:clamp(2.15rem,7.8vw,3.05rem);line-height:1.04;margin-bottom:14px;
-    text-wrap:balance;
-  }
-  .intro-lede{font-size:clamp(1.04rem,3.4vw,1.26rem);line-height:1.34;text-wrap:balance}
-  .intro-note .pill{margin-top:28px}
-  .intro-note .pill:focus-visible{outline:3px solid #FFE9C4;outline-offset:3px}
-  /* a wider bed on a desktop, with the running text held to a readable measure */
-  @media (min-width:700px){
-    .intro-note{max-width:430px}
-    .intro-note .intro-lede{max-width:35ch;margin:0 auto}
+  /* the edition's line, where the note used to carry it: under the box, over the button,
+     set in the running face so it reads as a sentence against the script title above */
+  .covertag{
+    margin:0 auto;max-width:26ch;text-align:center;
+    font-family:Mulish,system-ui,sans-serif;font-weight:600;
+    font-size:clamp(.95rem,3.4vw,1.1rem);line-height:1.34;text-wrap:balance;
+    color:rgba(255,255,255,.95);text-shadow:0 1px 1px rgba(112,32,0,.5),0 3px 12px rgba(92,24,0,.4);
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -1014,6 +983,8 @@
 
     </div>
 
+    <p class="covertag">This festive season, a different kind of lesson</p>
+
     <ul class="menu" id="menu" role="listbox" aria-label="Main menu"></ul>
     <div class="coverstat" id="coverstat" hidden></div>
     <div class="coverslack" aria-hidden="true"></div>
@@ -1023,16 +994,6 @@
     <div class="taphint" aria-hidden="true">Tap a line to choose</div>
   </div>
 </section>
-
-<!-- ================= FIRST-RUN EDITION NOTE (single view) ================= -->
-<div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-labelledby="intro-h">
-  <div class="intro-note">
-    <p class="intro-kicker">Interactive edition</p>
-    <h2 id="intro-h">This festive season, a different kind of lesson</h2>
-    <p class="intro-lede">Some money lessons are better when experienced. This festive season, The&nbsp;Orange&nbsp;Book takes an interactive approach to explore the choices we make with our money.</p>
-    <button class="pill" id="intro-done">Continue</button>
-  </div>
-</div>
 
 <!-- ================= ROUNDS ================= -->
 <section id="p-round" class="ruled" hidden>
@@ -2295,30 +2256,6 @@
     env(ac, o, t, 0.16, 0.14); o.start(t); o.stop(t + 0.16);
   }
 
-  /* ---------- first-run edition note (one view, one tap) ---------- */
-  var SEEN_KEY = "tob-vol65-note-seen";
-  function introOpen(){ return !$("intro").hidden; }
-  function openIntro(){
-    $("intro").hidden = false;
-    focusQuiet($("intro-done"));
-  }
-  /* the note always hands back to the title screen, never straight into a
-     round: choosing where to start is the menu's job */
-  function closeIntro(){
-    $("intro").hidden = true;
-    try { window.localStorage.setItem(SEEN_KEY, "1"); } catch(e){}
-    bootCover();
-    var menu = $("menu");
-    focusQuiet(menu.querySelector('.mitem[aria-selected="true"]') || menu.querySelector(".mitem"));
-  }
-
-  $("intro-done").addEventListener("click", function(e){
-    e.stopPropagation();
-    closeIntro();
-  });
-  /* a tap anywhere also dismisses, so the note never needs hunting down */
-  $("intro").addEventListener("click", function(){ closeIntro(); });
-
   /* ---------- contents ---------- */
   var ALL_EDITIONS = "https://www.icici.bank.in/campaigns/TOBalleditions/index";
 
@@ -2382,10 +2319,6 @@
       if (e.key === "Escape"){ e.preventDefault(); closeNav(); }
       return;
     }
-    if (introOpen()){
-      if (e.key === "Escape"){ e.preventDefault(); closeIntro(); }
-      return;
-    }
     if (state.page === "cover"){
       if (e.key === "ArrowDown"){ e.preventDefault(); state.mi = (state.mi + 1) % MENU.length; paintMenu(); }
       else if (e.key === "ArrowUp"){ e.preventDefault(); state.mi = (state.mi - 1 + MENU.length) % MENU.length; paintMenu(); }
@@ -2419,9 +2352,6 @@
       state.tries = saved.tries || 0;
     } else {
       show("cover");
-      var seen = false;
-      try { seen = window.localStorage.getItem(SEEN_KEY) === "1"; } catch(e){ seen = false; }
-      if (!seen) openIntro();
     }
   }
 
