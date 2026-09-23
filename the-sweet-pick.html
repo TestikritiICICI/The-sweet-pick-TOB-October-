@@ -301,7 +301,7 @@
   @keyframes sway{from{transform:translateX(-13px)}to{transform:translateX(13px)}}
 
   .stagearea{
-    flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:18px;
+    flex:.7 1 auto;display:flex;align-items:center;justify-content:center;gap:18px;
     padding:4px 0 2px;min-height:clamp(118px,20vh,170px);
     /* parallax rides on translate so it never fights the boot transform */
     translate:var(--px,0) var(--py,0);
@@ -326,14 +326,19 @@
   .boxwrap img{position:relative;width:100%;height:auto;display:block;filter:drop-shadow(0 14px 26px rgba(120,35,0,.34))}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
 
-  .cover-title{color:#fff;text-align:center;margin-top:38px;margin-bottom:8px}
+  /* the title sits away from the masthead but close to the box it names */
+  .cover-title{color:#fff;text-align:center;margin-top:54px;margin-bottom:0}
   .cover-title .t{
     display:block;font-size:clamp(2.1rem,7.6vw,3rem);line-height:1.05;
+    /* white script on an orange ground needs its own shadow to read. It lives here and not
+       only in the keyframes, or reduced motion — which stops every animation — would take
+       the legibility with it. The glow then breathes on top. */
+    text-shadow:0 1px 1px rgba(112,32,0,.6),0 4px 14px rgba(92,24,0,.48),0 0 24px rgba(255,196,116,.4);
     animation:titleGlow 4.4s ease-in-out infinite;
   }
   @keyframes titleGlow{
-    0%,100%{text-shadow:0 2px 0 rgba(140,44,4,.42),0 0 24px rgba(255,196,116,.4)}
-    50%{text-shadow:0 2px 0 rgba(140,44,4,.42),0 0 42px rgba(255,216,152,.75)}
+    0%,100%{text-shadow:0 1px 1px rgba(112,32,0,.6),0 4px 14px rgba(92,24,0,.48),0 0 24px rgba(255,196,116,.4)}
+    50%{text-shadow:0 1px 1px rgba(112,32,0,.6),0 4px 14px rgba(92,24,0,.48),0 0 42px rgba(255,216,152,.75)}
   }
 
   .coverslack{flex:1.3 1 auto;min-height:0}
@@ -411,7 +416,7 @@
     .lockup .the{font-size:clamp(1.05rem,3.4vw,1.35rem)}
     .lockup .big{font-size:clamp(1.85rem,6vw,2.5rem)}
     .stagearea{min-height:92px}
-    .cover-title{margin-top:20px;margin-bottom:4px}
+    .cover-title{margin-top:28px;margin-bottom:0}
     .cover-title .t{font-size:clamp(1.75rem,5.6vw,2.25rem)}
     .mitem{padding:10px 14px}
     .menu{gap:5px}
