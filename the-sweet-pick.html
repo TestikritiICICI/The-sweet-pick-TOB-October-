@@ -331,11 +331,15 @@
      settles beside it. It hangs off .boot so coming back to the title screen opens it
      again, and the resting state is the open box — reduced motion, which stops every
      animation, then simply shows the box already open. */
-  .cover.boot .lidlayer{animation:lidopen 1.4s cubic-bezier(.34,.86,.36,1) .5s both}
+  .cover.boot .lidlayer{animation:lidopen 2.1s cubic-bezier(.26,.72,.3,1) .5s both}
+  /* the lid never travels past its resting place. The tray was cut along the lid's own
+     bottom edge, so the two meet exactly at rest — any overshoot up and left opens a gap
+     and shows that cut as a diagonal slice across the box. The settle is a deceleration,
+     and the tilt is gone well before the lid closes on its mark. */
   @keyframes lidopen{
     0%{transform:translate(27.04%,28.87%) rotate(0deg)}
-    26%{transform:translate(26.2%,21.4%) rotate(-1.4deg)}
-    72%{transform:translate(-1.8%,-2.4%) rotate(1.1deg)}
+    18%{transform:translate(26.6%,23.4%) rotate(-1.3deg)}
+    64%{transform:translate(7.4%,8.2%) rotate(-.5deg)}
     100%{transform:translate(0,0) rotate(0deg)}
   }
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
