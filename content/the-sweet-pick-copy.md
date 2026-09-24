@@ -175,7 +175,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Save link (under the card) | Save image |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
 | Read-more button | Read all editions → https://www.icici.bank.in/campaigns/TOBalleditions/index |
-| Replay row | Play again · Turn the page |
+| Replay row | Play again · Feedback |
 
 ### Result tags
 
