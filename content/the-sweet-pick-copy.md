@@ -11,10 +11,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Browser tab title | The Sweet Pick |
 | Band, right side | Share |
 | Sound toggle (accessible name) | Sound on / Sound off |
-| Hamburger button (accessible name) | Contents |
-| Contents panel heading | Content |
-| Contents panel items | Home · Which box would you pick? · Small, medium or large? · Traditional, fusion or dry fruit? · Three boxes, one to buy. · Two boxes, two labels. · Feedback · Read all editions |
-| Close button (accessible name) | Close contents |
 
 ## 2. Title screen (main menu)
 
@@ -219,7 +215,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 ## 11. Screen-reader-only labels
 
 - Main menu (the title-screen list)
-- Contents / Close contents (the hamburger and its close button)
 - Sound on / Sound off (the sound toggle)
 - Share on WhatsApp (the band's WhatsApp disc)
 - Your box: {N} of 5 filled (the tray)
