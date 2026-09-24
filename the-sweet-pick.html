@@ -1531,13 +1531,6 @@
       hero:hero.naturalWidth ? hero : null, lid:lid.naturalWidth ? lid : null}; });
     return ART;
   }
-  /* inside the claude.ai viewer a save goes through its downloads capability, which
-     arrives later or not at all; anywhere else the link is an ordinary download */
-  var DL = null;
-  function initDownloads(){
-    if (!(window.claude && typeof window.claude.use === "function")) return;
-    try { window.claude.use("downloads").then(function(ns){ DL = ns || null; }).catch(function(){}); } catch(e){}
-  }
   function shareUrl(){ var h = window.location.href; return /^https?:/.test(h) ? h.split("#")[0] : ""; }
   function ensureFonts(){
     if (!(document.fonts && document.fonts.load)) return Promise.resolve();
@@ -1717,17 +1710,11 @@
         SHARE.file = new File([arr], "the-sweet-pick.png", {type:"image/png"});
       } catch(e){ SHARE.file = null; }
       var pv = $("share-preview");
-      pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + n + " of " + ROUNDS.length + ' mindful picks">' +
-        '<a class="pill plain" download="the-sweet-pick.png" href="' + SHARE.dataUrl + '">Save image</a>';
-      pv.querySelector("a[download]").addEventListener("click", function(e){
-        if (!DL || !SHARE.file) return;
-        e.preventDefault();
-        DL.save({filename:"the-sweet-pick.png", data:SHARE.file}).catch(function(){});
-      });
+      pv.innerHTML = '<img src="' + SHARE.dataUrl + '" alt="Your result card: ' + title.t + ", " + n + " of " + ROUNDS.length + ' mindful picks">';
       pv.hidden = false;
     });
   }
-  /* when the share sheet is refused, the card and Save image are brought into view */
+  /* when the share sheet is refused, the card is brought into view to be held and saved */
   function showShareOptions(){
     var pv = $("share-preview"); pv.hidden = false;
     pv.classList.remove("flash"); void pv.offsetWidth; pv.classList.add("flash");
@@ -1759,7 +1746,7 @@
       if (p && p.catch) p.catch(function(err){ if (!err || err.name !== "AbortError"){ openWhatsApp(text); showShareOptions(); } });
       return;
     }
-    /* no share sheet here: WhatsApp with the message, and the card in view to save and attach */
+    /* no share sheet here: WhatsApp with the message, and the card in view to be held, saved and attached */
     openWhatsApp(text);
     showShareOptions();
   }
@@ -2340,7 +2327,6 @@
     fitHeader();
     initSound();
     initShareBand();
-    initDownloads();
     $("share-btn").addEventListener("click", shareResult);
     $("p-close").addEventListener("click", skipReveal);
     $("p-close").addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") skipReveal(); });

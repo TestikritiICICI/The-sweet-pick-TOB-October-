@@ -172,7 +172,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Line above the share button | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
 | Share button | Send festive wishes |
 | Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
-| Save link (under the card) | Save image |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
 | Read-more button | Read all editions → https://www.icici.bank.in/campaigns/TOBalleditions/index |
 | Replay row | Play again · Feedback |
