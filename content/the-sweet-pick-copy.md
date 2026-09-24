@@ -173,7 +173,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Tally rows | {Bias} · Avoided / Fell for it |
 | Line above the buttons | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
 | Share button | Send festive wishes |
-| WhatsApp button | WhatsApp |
 | Save link (under the card) | Save image |
 | Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
