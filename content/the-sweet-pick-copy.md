@@ -35,6 +35,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Ticket stub | You plan to spend around ₹500 |
 | Card back, verdict | Great! / Oops! |
 | Card back, definition heading | What is the {Bias}? (for FOMO: What is FOMO?) |
+| Line above the cards | Three cards below. Pick one. (Two cards below, on the last pick) |
 | Below the cards, eyebrow | The same trick, elsewhere. |
 | Article link | Read about {the Bias} → |
 | Buttons | Next Pick (picks 1 to 4) · See how you did (pick 5) · Pick again |
@@ -44,7 +45,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 ### How to play (pick 1 only)
 
 1. Read the task at hand.
-2. Make your Sweet Pick.
+2. Compare the three cards, then make your Sweet Pick.
 3. Read the back of the cards.
 4. Scroll down and tap Next Pick for your next scenario.
 
@@ -158,7 +159,6 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 |---|---|
 | Headline | You made {N} mindful picks out of 5. (“pick” when N is 1; counts up as the mithai land) |
 | Subhead | the tag’s line, see Result tags |
-| Eyebrow | Your festive box |
 | Seal, top arc | THE SWEET PICK |
 | Seal, bottom arc | THE ORANGE BOOK |
 | Seal, centre | {Tag} (gold ink for 5 of 5) |

@@ -448,6 +448,8 @@
      Interior inside the hairline is 585x810 in the reference. Ornaments and type
      are placed from that: the corner motifs are the reference's own drawings,
      cropped out of it, and every position below is its measured percentage. */
+  .cardslead{margin:18px 0 10px;font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.8rem;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--orange)}
   .cards{position:relative;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(208px,1fr));align-items:start;margin-bottom:8px}
   .cards.duo{grid-template-columns:repeat(auto-fit,minmax(238px,1fr));max-width:600px}
   .card{
@@ -725,7 +727,6 @@
   @keyframes shine{from{background-position:140% 0}to{background-position:-40% 0}}
   .sharerow.in #share-btn{animation:wiggle .8s ease-in-out .9s 1}
   @keyframes wiggle{0%,100%{transform:none}20%{transform:rotate(-2deg) scale(1.04)}40%{transform:rotate(2deg) scale(1.04)}60%{transform:rotate(-1deg)}80%{transform:rotate(1deg)}}
-  .yourbox .eyebrow{color:var(--orange);font-size:1.3rem;margin:0 0 6px}
   .realbox{position:relative;width:min(420px,100%)}
   .realbox .boxbase{display:block;width:100%;height:auto}
   .realbox .sweet{position:absolute;display:block}
@@ -952,7 +953,7 @@
       <div class="lbl">How to play</div>
       <ol>
         <li>Read the task at hand.</li>
-        <li>Make your Sweet&nbsp;Pick.</li>
+        <li>Compare the three cards, then make your Sweet&nbsp;Pick.</li>
         <li>Read the back of the cards.</li>
         <li>Scroll down and tap Next&nbsp;Pick for your next scenario.</li>
       </ol>
@@ -961,6 +962,8 @@
          itself leads with the task at hand -->
     <h1 class="headline vh" id="r-headline"></h1>
     <p class="subhead" id="r-scenario"></p>
+    <!-- on a phone the cards stack and only the first is in view; this says there are more -->
+    <p class="cardslead" id="r-cardslead"></p>
     <div class="cards" id="r-cards"></div>
     <div id="r-bridge"></div>
     <div class="btnrow" id="r-actions" hidden>
@@ -2034,6 +2037,7 @@
     /* which pick this is, for anything outside the page that needs to know; the reader is
        told by the row of cups above, not by a counter */
     $("p-round").setAttribute("data-pick", state.round + 1);
+    $("r-cardslead").textContent = (r.cards.length === 2 ? "Two" : "Three") + " cards below. Pick one.";
     if (!replay) state.tries = 0;
     /* the condensed rules sit on the first pick only; every round keeps the one-line instruction */
     $("howbox").hidden = (state.round !== 0);
@@ -2163,8 +2167,7 @@
     recordBest(n);
     $("rsub").textContent = title.s;
     var filled = filledCount();
-    $("yourbox").innerHTML = '<p class="eyebrow">Your festive box</p>' +
-      '<div class="boxstage">' + stampHtml(title, n === ROUNDS.length) +
+    $("yourbox").innerHTML = '<div class="boxstage">' + stampHtml(title, n === ROUNDS.length) +
       boxHtml("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") + "</div>";
     $("scoreline").textContent = scoreText(n);
     var t = $("tally");
