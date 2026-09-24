@@ -20,10 +20,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Title | The Sweet Pick |
 | Tagline (under the box, above the button) | This festive season, a different kind of lesson |
 | Menu, first visit | Play |
-| Menu, game in progress | Continue — Pick {N} of 5 · New game |
+| Menu, game in progress | Continue (Pick {N} of 5) · New game |
 | Plate after a finished game | Best run {N} of 5 · {Tag} |
 | Keyboard hint (desktop) | ▲ ▼ Select ↵ Enter |
-| Tap hint (phone) | Tap a line to choose |
 | Hero illustration (alt text) | An open box of twelve festive mithai, its lid set beside it |
 
 ## 3. Pick pages · shared elements
@@ -45,7 +44,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 ### How to play (pick 1 only)
 
 1. Read the task at hand.
-2. Size up the cards and make your Sweet Pick.
+2. Make your Sweet Pick.
 3. Read the back of the cards.
 4. Scroll down and tap Next Pick for your next scenario.
 
@@ -99,7 +98,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | Your turn to bring the festive box for the office. Whatever you carry in will be noticed. |
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
-| The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming. |
+| The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof, never mind that he does not much like gaming. |
 | Watch for it in | Trending restaurants · Bestseller products · Popular gadgets |
 | Article link | Read about the Bandwagon Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article2 |
 | Illustration (alt text) | A boy asks his mother for a ₹45,000 gaming console because all his friends are getting one. |
@@ -108,9 +107,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Box | Front | Result | Back copy |
 |---|---|---|---|
-| Traditional Mithai Box | ₹425 | Great! You avoided the Bandwagon Effect. | The ₹600 Signature Fusion Box was marked “Office Favourite Today”. You ignored the popularity cue and chose the ₹425 box. |
-| Signature Fusion Mithai Box | ₹600 · tag “Office Favourite Today” | Oops! You fell for the Bandwagon Effect. | “Office Favourite Today” may have pulled you towards the ₹600 box, even though ₹425 and ₹475 options were available within budget. |
-| Dry Fruit Mithai Box | ₹475 | Great! You avoided the Bandwagon Effect. | You chose the ₹475 Dry Fruit Box instead of automatically following the ₹600 “Office Favourite”. |
+| Traditional Mithai Box | ₹425 | Great! You avoided the Bandwagon Effect. | The ₹600 Signature Fusion Box was marked “Most Picked Today”. You ignored the popularity cue and chose the ₹425 box. |
+| Signature Fusion Mithai Box | ₹600 · tag “Most Picked Today” | Oops! You fell for the Bandwagon Effect. | “Most Picked Today” may have pulled you towards the ₹600 box, even though ₹425 and ₹475 options were available within budget. |
+| Dry Fruit Mithai Box | ₹475 | Great! You avoided the Bandwagon Effect. | You chose the ₹475 Dry Fruit Box instead of automatically following the ₹600 “Most Picked” box. |
 
 ## 7. Pick 4 · FOMO
 
@@ -119,8 +118,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Headline | Three boxes, one to buy. |
 | Task at hand | The evening before the big day. The shelves are thinning and the queue behind you is growing. |
 | Mithai earned | Peda |
-| Definition (card back) | FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
-| The same trick, elsewhere | Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine. |
+| Definition (card back) | FOMO, the fear of missing out, can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
+| The same trick, elsewhere | Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television. The one at home was working fine. |
 | Watch for it in | Flash sales · Ticket bookings · Limited-stock messages |
 | Article link | Read about the FOMO Effect → https://www.icici.bank.in/campaigns/TOB/the-orange-book-vol-30/Article2 |
 | Illustration (alt text) | A couple on a sofa. He holds a 20% off flyer and points at a 65-inch smart TV; she says the one they own is working fine. |
@@ -157,28 +156,25 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Element | Copy |
 |---|---|
-| Page number | The Sweet Pick · Last page |
-| Headline | A sweeter way to choose |
+| Headline | You made {N} mindful picks out of 5. (“pick” when N is 1; counts up as the mithai land) |
+| Subhead | the tag’s line, see Result tags |
 | Eyebrow | Your festive box |
 | Seal, top arc | THE SWEET PICK |
 | Seal, bottom arc | THE ORANGE BOOK |
 | Seal, centre | {Tag} (gold ink for 5 of 5) |
-| Line under the seal | the tag's line, see Result tags |
-| Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
-| Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
-| Line above the card | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
+| Line above the card | This festive season, don’t just greet your friends, challenge them to a Sweet Pick. |
 | Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
-| Share button | Send festive wishes |
+| Share button | Share the challenge |
 | Replay row | Play again · Feedback |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
 | Read-more button | Read all editions → https://www.icici.bank.in/campaigns/TOBalleditions/index |
 
 ### Result tags
 
-| Mindful picks | Tag | Line under the seal |
+| Mindful picks | Tag | Subhead |
 |---|---|---|
 | 5 of 5 | Mithai Master | Nothing got past you. |
 | 3 or 4 of 5 | Sweet Spotter | You saw most of the tricks coming. |
@@ -196,20 +192,24 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Where | Copy |
 |---|---|
-| Send festive wishes (native share or WhatsApp) | 🪔 Wishing you a festive season full of sweet choices.<br><br>Instead of the usual greeting, here’s one you can play — pick a mithai box and see what it says about you 🍬<br><br>The Sweet Pick, ICICI Bank’s interactive Orange Book 👇<br>{link} |
+| Share the challenge (native share or WhatsApp) | Instead of the usual greeting, here’s one you can play - pick a mithai box and see what it says about you!<br><br>Take the Sweet Pick Challenge: {link} |
 | WhatsApp button in the band | ✨ This festive season, ICICI Bank’s Orange Book is a game.<br><br>Pick a mithai box and see what’s really doing the choosing 🍬<br><br>The Sweet Pick 👇<br>{link} |
 
-## 10. Feedback page (carried over from previous editions)
+## 10. Rating (what the Feedback button opens)
+
+The feedback page is gone; the Feedback button on the last page opens a small rating card instead. The edition’s disclaimer, which lived on that page, now closes the last page.
 
 | Element | Copy |
 |---|---|
-| Mascot (alt text) | Feedback |
-| Feedback CTA (image link) | https://orangebook.customersuggestions.co.in/?utm_source=TOBOctober2026CTA&utm_medium=TOBOctober26_HTML_FeedbackCTA&utm_campaign=TOBOctober26CTA_Feedback |
-| Line | Connect with us for banking solutions. |
-| Call | 1800 1080 |
-| WhatsApp | WhatsApp ‘Start’ to 86400 86400. |
-| Disclaimer | The information provided by ICICI Bank is for general informational purposes only and does not constitute financial, investment, legal, or tax advice. It does not take into account your individual objectives or financial situation. We strongly recommend you seek independent professional advice before making any investment decisions. |
-| Disclaimer link | Click here to view the disclaimer. → https://www.icicibank.com/disclaimer/disclaimer-tob?utm_source=TOBOctober2026&utm_medium=TOBOctober26_HTML_Disclaimer&utm_campaign=TOBOctober26_ClickDisclaimer |
+| Heading | How was your Sweet Pick? |
+| Line under it | Tap a star to rate it. |
+| Stars (accessible names) | 1 star · 2 stars · 3 stars · 4 stars · 5 stars |
+| After a star is tapped | Thank you! |
+| Link | Tell us more → the Orange Book feedback form (the same link the old page carried) |
+| Button | Done |
+| Close (accessible name) | Close |
+| Disclaimer, last page | The information provided by ICICI Bank is for general informational purposes only and does not constitute financial, investment, legal, or tax advice. It does not take into account your individual objectives or financial situation. We strongly recommend you seek independent professional advice before making any investment decisions. |
+| Disclaimer link | Click here to view the disclaimer. |
 
 ## 11. Screen-reader-only labels
 
@@ -218,4 +218,5 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 - Share on WhatsApp (the band's WhatsApp disc)
 - Your box: {N} of 5 filled (the tray)
 - Your festive box: {N} of 5 cups filled (the box on the last page)
+- Your rating / 1 star … 5 stars / Close (the rating card)
 - Your result card: {Tag}, {N} of 5 mindful picks (the shareable card)
