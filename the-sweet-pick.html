@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Sweet Pick</title>
 <!-- The two faces travel with the edition rather than being fetched from a font CDN, so it
      renders identically on a server with no route to the outside world. Latin subsets, taken
@@ -928,6 +929,16 @@
 
   @media (prefers-reduced-motion: reduce){
     *,*::before,*::after{animation:none!important;transition-duration:.001ms!important}
+    /* the lights, the sparks and the petals are drawn transparent and lit by their own
+       animation, so stopping every animation used to erase them and leave the cover bare.
+       They now rest where they were seeded, lit but still. */
+    .light{opacity:.55}
+    .spark{opacity:.55}
+    .petal{opacity:.9;top:var(--rest-top,34%)}
+    /* the seal is stamped rather than slammed, and the ring it rings with and the light it
+       catches are moments, not marks — without their animation they would simply sit there */
+    .stamp.in{opacity:1}
+    .stamp.in::after,.stamp.in::before{display:none}
   }
 </style>
 
@@ -1887,7 +1898,8 @@
       var del  = (Math.random()*16).toFixed(1);
       var sway = (Math.random()*1.8 + 2.4).toFixed(1);
       html += '<div class="petal" style="left:' + left + "%;width:" + size +
-              "px;animation-duration:" + dur + "s;animation-delay:-" + del + 's">' +
+              "px;--rest-top:" + Math.round(Math.random() * 78 + 8) + "%" +
+              ";animation-duration:" + dur + "s;animation-delay:-" + del + 's">' +
               '<svg viewBox="0 0 20 26" style="animation-duration:' + sway + 's">' +
               '<g class="leaf" style="animation-duration:' + (sway * 1.7).toFixed(1) + 's">' +
               /* a marigold petal: a frilled crown narrowing to its base */
