@@ -171,12 +171,12 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
 | Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
-| Line above the buttons | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
-| Share button | Send festive wishes |
-| Save link (under the card) | Save image |
-| Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
+| Line above the share button | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
+| Share button | Send festive wishes |
+| Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
+| Save link (under the card) | Save image |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
 | Read-more button | Read all editions → https://www.icici.bank.in/campaigns/TOBalleditions/index |
 | Replay row | Play again · Turn the page |
