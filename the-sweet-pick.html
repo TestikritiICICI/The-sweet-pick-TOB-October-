@@ -723,6 +723,13 @@
     display:grid;place-items:center;
   }
   .boxtray .slot.on{border-color:transparent;background:transparent}
+  /* a round that got away is settled rather than waiting: a solid ring and the tally's own
+     mark, so it can never be mistaken for one of the picks still to come */
+  .boxtray .slot.miss{border:2px solid var(--maroon);background:#FBEDEE}
+  .boxtray .slot .xmark{
+    width:15px;height:15px;display:block;
+    fill:none;stroke:var(--maroon);stroke-width:3.4;stroke-linecap:round;
+  }
   .boxtray .slot img{width:40px;height:auto;display:block;filter:drop-shadow(0 2px 3px rgba(120,60,10,.25))}
   .boxtray .slot.pop img{animation:slotpop .5s cubic-bezier(.2,.9,.3,1.4) both}
   .boxtray .slot.await{border-color:var(--orange);animation:slotwait .7s ease-in-out infinite alternate}
@@ -1307,6 +1314,20 @@
       env(ac, o, t + n[1], 0.1, 0.55); o.start(t + n[1]); o.stop(t + n[1] + 0.6);
     });
   }
+  /* the answer to chime(): three notes falling where those three rise, on a softer wave and a
+     little quieter, over a low note that carries the weight the thud used to. A wrong pick
+     should sound like an "oh", not a buzzer. */
+  function missTone(){
+    var ac = audio(); if (!ac) return;
+    var t = ac.currentTime;
+    var lo = ac.createOscillator(); lo.type = "sine";
+    lo.frequency.setValueAtTime(174.61, t); lo.frequency.exponentialRampToValueAtTime(110, t + 0.3);
+    env(ac, lo, t, 0.2, 0.34); lo.start(t); lo.stop(t + 0.38);
+    [[587.33, 0], [493.88, 0.1], [392, 0.2]].forEach(function(n){
+      var o = ac.createOscillator(); o.type = "triangle"; o.frequency.value = n[0];
+      env(ac, o, t + n[1], 0.075, 0.5); o.start(t + n[1]); o.stop(t + n[1] + 0.55);
+    });
+  }
   function thud(){
     var ac = audio(); if (!ac) return;
     var t = ac.currentTime, o = ac.createOscillator(); o.type = "sine";
@@ -1391,11 +1412,17 @@
     return {x:c.fx, y:c.fy - 0.006, w:c.fw * COVER / m.rw, ry:m.ry, ar:m.ar};
   }
   function filledCount(){ return state.results.filter(function(x){ return x && x.win; }).length; }
+  /* the mark on a round that got away, in the maroon the tally uses for "Fell for it" */
+  function crossSvg(){
+    return '<svg class="xmark" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M7 7l10 10M17 7 7 17"/></svg>';
+  }
   function paintTray(){
     var el = $("boxtray"), h = '<span class="slots">';
     for (var i = 0; i < ROUNDS.length; i++){
-      var res = state.results[i], on = res && res.win;
-      h += '<span class="slot' + (on ? " on" : "") + '">' + (on ? sweetImg(ROUNDS[i].sweet) : "") + "</span>";
+      var res = state.results[i], on = res && res.win, miss = !!res && !res.win;
+      h += '<span class="slot' + (on ? " on" : miss ? " miss" : "") + '">' +
+           (on ? sweetImg(ROUNDS[i].sweet) : miss ? crossSvg() : "") + "</span>";
     }
     el.innerHTML = h + '</span><span class="budget"><span class="bk">Budget</span><span class="bn">' + rupee(BUDGET) + "</span></span>";
     el.setAttribute("aria-label", "Your box: " + filledCount() + " of " + ROUNDS.length + " filled");
@@ -2124,7 +2151,7 @@
       saveGame();
       paintProgress();
       if (c.win){ chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, state.round); }, 500); }
-      else { thud(); buzz(40); paintTray(); }
+      else { missTone(); buzz(40); paintTray(); }
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
       var src = r.source;
