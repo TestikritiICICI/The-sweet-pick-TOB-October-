@@ -171,7 +171,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
 | Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
-| Line above the buttons | Don’t just wish them this festive season. Challenge them to a Sweet Pick. |
+| Line above the buttons | This festive season, don’t just greet your friends — challenge them to a Sweet Pick. |
 | Share button | Send festive wishes |
 | WhatsApp button | WhatsApp |
 | Save link (under the card) | Save image |
