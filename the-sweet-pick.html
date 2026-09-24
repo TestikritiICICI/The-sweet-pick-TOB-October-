@@ -442,7 +442,8 @@
   .pill:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
   .pill.plain{background:none;color:var(--orange);border:1.5px solid var(--orange);box-shadow:none;font-weight:600}
   .pill.plain:hover{background:rgba(240,100,35,.08)}
-  .btnrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:26px}
+  .btnrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:26px}
+  #p-close .btnrow{justify-content:center}
 
   /* ---------- pick cards: the shared reference artwork, measured off it ----------
      Interior inside the hairline is 585x810 in the reference. Ornaments and type
@@ -707,9 +708,6 @@
   .stamp .ringtext{fill:var(--maroon);font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:15px;letter-spacing:3px}
   .stamp .tagname{fill:var(--maroon);font-family:Handlee,"Bradley Hand","Segoe Print",cursive;font-size:46px;text-anchor:middle}
   .stamp .tagname.one{font-size:52px}
-  .stamp.gold .paper{fill:url(#st-paper-gold)}
-  .stamp.gold .ink{stroke:#B0700E}
-  .stamp.gold .dot,.stamp.gold .pip,.stamp.gold .ringtext,.stamp.gold .tagname{fill:#B0700E}
   /* the seal slams down, rings with the impact, then catches the light */
   .stamp.in{animation:slam .62s cubic-bezier(.2,.9,.3,1.2) both}
   @keyframes slam{
@@ -1215,7 +1213,7 @@
   function mindful(){ return state.results.filter(function(x){ return x && x.win; }).length; }
   /* the card's wish, and the message that carries it. The message names the edition,
      because the card deliberately does not. */
-  var GREETING = "Wishing you a festive season full of sweet choices";
+  var GREETING = "Wishing you a festive season full of sweet & mindful choices";
   function titleFor(n){
     if (n >= ROUNDS.length) return {t:"Mithai Master", s:"Nothing got past you."};
     if (n >= 3) return {t:"Sweet Spotter", s:"You saw most of the tricks coming."};
@@ -2131,13 +2129,12 @@
 
   /* the tag as a rubber-stamp seal: cream paper, maroon ink; a double rule at the rim, a perforated ring inside,
      the edition round the rim, the tag across the middle */
-  function stampHtml(title, gold){
+  function stampHtml(title){
     var words = title.t.split(" "), lines = words.length > 1 ? [words[0], words.slice(1).join(" ")] : [title.t];
     var pip = function(cy){ return '<path class="pip" d="M150 ' + (cy - 12) + 'l3.4 8.6 8.6 3.4-8.6 3.4-3.4 8.6-3.4-8.6-8.6-3.4 8.6-3.4z"/>'; };
-    return '<div class="stamp' + (gold ? " gold" : "") + '" id="rtitle" role="heading" aria-level="2" aria-label="' + title.t + '">' +
+    return '<div class="stamp" id="rtitle" role="heading" aria-level="2" aria-label="' + title.t + '">' +
       '<svg viewBox="0 0 300 300" aria-hidden="true">' +
       '<defs><radialGradient id="st-paper" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFFCF4"/><stop offset=".75" stop-color="#FFF6E6"/><stop offset="1" stop-color="#F4E3C6"/></radialGradient>' +
-      '<radialGradient id="st-paper-gold" cx=".5" cy=".45" r=".7"><stop offset="0" stop-color="#FFF9E6"/><stop offset=".75" stop-color="#FFF1D2"/><stop offset="1" stop-color="#EFD9A7"/></radialGradient>' +
       '<path id="st-top" d="M40 150A110 110 0 0 1 260 150"/><path id="st-bot" d="M30 150A120 120 0 0 0 270 150"/></defs>' +
       '<circle class="paper" cx="150" cy="150" r="147"/>' +
       '<circle class="ink thick" cx="150" cy="150" r="140"/><circle class="ink fine" cx="150" cy="150" r="132"/><circle class="ink dotted" cx="150" cy="150" r="98"/>' +
@@ -2167,7 +2164,7 @@
     recordBest(n);
     $("rsub").textContent = title.s;
     var filled = filledCount();
-    $("yourbox").innerHTML = '<div class="boxstage">' + stampHtml(title, n === ROUNDS.length) +
+    $("yourbox").innerHTML = '<div class="boxstage">' + stampHtml(title) +
       boxHtml("Your festive box: " + filled + " of " + ROUNDS.length + " cups filled") + "</div>";
     $("scoreline").textContent = scoreText(n);
     var t = $("tally");

@@ -170,7 +170,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Subhead | the tag’s line, see Result tags |
 | Seal, top arc | THE SWEET PICK |
 | Seal, bottom arc | THE ORANGE BOOK |
-| Seal, centre | {Tag} (gold ink for 5 of 5) |
+| Seal, centre | {Tag} |
 | Tally rows | {Bias} · Avoided / Fell for it |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
@@ -195,7 +195,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 |---|---|
 | Top left | ICICI Bank logo |
 | Top right | THE / ORANGE BOOK (the lockup, set as on the title screen) |
-| Wish (the card’s only line) | Wishing you a festive season full of sweet choices |
+| Wish (the card’s only line) | Wishing you a festive season full of sweet & mindful choices |
 | Illustration | The open mithai box from the title screen, lid set beside it |
 
 ### Share messages
