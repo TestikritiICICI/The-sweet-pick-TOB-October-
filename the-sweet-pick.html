@@ -872,7 +872,14 @@
   /* the result: a title, the box, and a card to share */
   .result{margin:0 0 18px}
   .rsub{color:var(--navy);font-size:1.25rem;margin:10px 0 6px}
-  .sharerow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 18px}
+  .sharelead{text-align:center;font-family:Handlee,"Bradley Hand","Segoe Print",cursive;
+    font-size:1.06rem;line-height:1.3;color:var(--navy);margin:0 0 12px;max-width:none}
+  /* WhatsApp sits beside the share sheet, not instead of it: its own green so it is
+     recognised at a glance, a step down in size so the primary action still leads */
+  .pill.wa{background:#25D366;border-color:#1BB255;color:#08301A;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;font-size:.94rem;padding-left:18px;padding-right:20px}
+  .pill.wa svg{width:19px;height:19px;flex:none}
+  .sharerow{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:0 0 18px}
   .sharepreview{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 26px}
   .sharepreview.flash{animation:flashpanel .9s ease}
   @keyframes flashpanel{30%{box-shadow:0 0 0 6px rgba(240,100,35,.35)}100%{box-shadow:none}}
@@ -1036,8 +1043,10 @@
       <p class="scoreline" id="scoreline"></p>
     </div>
     <ul class="tally" id="tally"></ul>
+    <p class="sharelead">This festive season, greet your friends a little differently.</p>
     <div class="sharerow">
-      <button class="pill" id="share-btn" type="button">Share my result</button>
+      <button class="pill" id="share-btn" type="button">Send festive wishes</button>
+      <a class="pill wa" id="share-wa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/><path d="M16.6 14.3c-.3-.1-1.6-.8-1.9-.9-.2-.1-.4-.1-.6.1l-.8 1c-.2.2-.3.2-.6.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.6-1.2.1-.2 0-.4 0-.5L9.2 8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3c-.8.9-.7 2.1.1 3.3a9.2 9.2 0 0 0 4.3 3.8c1.5.6 2.2.5 2.9.4.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.1l-.5-.2Z"/></svg>WhatsApp</a>
     </div>
     <div class="sharepreview" id="share-preview" hidden></div>
     <p>The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned.</p>
@@ -1283,6 +1292,9 @@
 
   /* ---- the measure of a game: how many of the five picks were mindful ---- */
   function mindful(){ return state.results.filter(function(x){ return x && x.win; }).length; }
+  /* the card's wish, and the message that carries it. The message names the edition,
+     because the card deliberately does not. */
+  var GREETING = "Wishing you a festive season full of sweet choices";
   function titleFor(n){
     if (n >= ROUNDS.length) return {t:"Mithai Master", s:"Nothing got past you."};
     if (n >= 3) return {t:"Sweet Spotter", s:"You saw most of the tricks coming."};
@@ -1560,8 +1572,12 @@
     var box = new Image(), sweets = {}, waits = [];
     function wait(im){ return new Promise(function(res){ if (im.complete && im.naturalWidth) return res(im); im.onload = function(){ res(im); }; im.onerror = function(){ res(null); }; }); }
     box.src = BOX_IMG; waits.push(wait(box));
+    var hero = new Image(), lid = new Image();
+    hero.src = HERO_TRAY; waits.push(wait(hero));
+    lid.src = HERO_LID; waits.push(wait(lid));
     Object.keys(SWEET_IMG).forEach(function(k){ var im = new Image(); im.src = SWEET_IMG[k]; sweets[k] = im; waits.push(wait(im)); });
-    ART = Promise.all(waits).then(function(){ return {box:box.naturalWidth ? box : null, sweets:sweets}; });
+    ART = Promise.all(waits).then(function(){ return {box:box.naturalWidth ? box : null, sweets:sweets,
+      hero:hero.naturalWidth ? hero : null, lid:lid.naturalWidth ? lid : null}; });
     return ART;
   }
   /* inside the claude.ai viewer a save goes through its downloads capability, which
@@ -1620,6 +1636,30 @@
     g.restore();
   }
   /* words folded into at most two lines that fit the width */
+  /* a hero line needs to keep filling lines until the words run out; then, once the count
+     is known, the measure is tightened until one more line would appear. That is the
+     narrowest width holding the same count, which evens the lines and stops the last one
+     being left with a single word. */
+  function wrapLines(g, text, maxWidth){
+    var words = text.split(" "), lines = [], cur = words[0];
+    for (var i = 1; i < words.length; i++){
+      var t = cur + " " + words[i];
+      if (g.measureText(t).width <= maxWidth) cur = t;
+      else { lines.push(cur); cur = words[i]; }
+    }
+    lines.push(cur);
+    return lines;
+  }
+  function balanced(g, text, maxWidth, maxLines){
+    var lines = wrapLines(g, text, maxWidth);
+    if (lines.length > maxLines) return lines;
+    var lo = 40, hi = maxWidth;
+    while (hi - lo > 4){
+      var mid = (lo + hi) / 2;
+      if (wrapLines(g, text, mid).length <= lines.length) hi = mid; else lo = mid;
+    }
+    return wrapLines(g, text, hi);
+  }
   function wrapText(g, text, maxWidth){
     if (g.measureText(text).width <= maxWidth) return [text];
     var words = text.split(" "), best = 1, diff = Infinity;
@@ -1629,47 +1669,93 @@
     }
     return [words.slice(0, best).join(" "), words.slice(best).join(" ")];
   }
+  /* the card borrows the cover's own festive furniture: a warm lamp glow, marigold petals
+     and the small sparks. They are placed by hand around the type rather than scattered at
+     random, so nothing ever lands on a word. */
+  var CARD_PETALS = [
+    [86, 236, 46, -22, .95], [966, 300, 38, 24, .85], [150, 742, 40, 18, .9],
+    [986, 690, 52, -14, .95], [58, 520, 34, 34, .7], [1012, 494, 30, -30, .65],
+    [214, 968, 36, 12, .8], [880, 964, 44, -18, .85], [498, 1012, 32, 8, .6],
+    [742, 196, 30, 36, .6], [300, 176, 26, -40, .5]
+  ];
+  var CARD_SPARKS = [
+    [176, 372, 26, .85], [928, 420, 20, .7], [120, 640, 17, .6], [1004, 812, 24, .8],
+    [252, 862, 16, .55], [820, 300, 18, .6], [560, 966, 20, .5], [64, 906, 14, .5],
+    [960, 170, 16, .5], [392, 1024, 15, .45]
+  ];
+  var PETAL_D = "M10 25.5C7.2 19.5 1.5 15.6 1.5 9.6c0-2.6 1.4-4.9 3.1-5.9.9-.5 1.7.3 2.6.3.9 0 1.7-1.3 2.8-1.3s1.9 1.3 2.8 1.3c.9 0 1.7-.8 2.6-.3 1.7 1 3.1 3.3 3.1 5.9 0 6-5.7 9.9-8.5 15.9Z";
+  var SPARK_D = "M12 0l3 9 9 3-9 3-3 9-3-9-9-3 9-3Z";
+  function festiveGround(g, W, H){
+    var glow = g.createRadialGradient(540, 470, 40, 540, 470, 640);
+    glow.addColorStop(0, "rgba(255,214,150,.30)");
+    glow.addColorStop(.55, "rgba(255,190,120,.10)");
+    glow.addColorStop(1, "rgba(255,180,100,0)");
+    g.fillStyle = glow; g.fillRect(0, 0, W, H);
+    if (!window.Path2D) return;
+    var pp = new Path2D(PETAL_D), sp = new Path2D(SPARK_D);
+    CARD_PETALS.forEach(function(d, i){
+      g.save(); g.globalAlpha = d[4] * .85;
+      g.translate(d[0], d[1]); g.rotate(d[3] * Math.PI / 180); g.scale(d[2] / 20, d[2] / 20);
+      g.translate(-10, -13);
+      g.fillStyle = PETAL_FILLS[i % PETAL_FILLS.length];
+      g.shadowColor = "rgba(122,38,0,.34)"; g.shadowBlur = 10; g.shadowOffsetY = 3;
+      g.fill(pp); g.restore();
+    });
+    CARD_SPARKS.forEach(function(d){
+      g.save(); g.globalAlpha = d[3];
+      g.translate(d[0], d[1]); g.scale(d[2] / 24, d[2] / 24); g.translate(-12, -12);
+      g.fillStyle = "#FFE3AE"; g.fill(sp); g.restore();
+    });
+    /* a thin gold rule just inside the trim, the way a festive card is bordered */
+    g.save(); g.strokeStyle = "rgba(255,221,164,.42)"; g.lineWidth = 3;
+    roundRect(g, 26, 26, W - 52, H - 52, 22); g.stroke(); g.restore();
+  }
+
+  /* the card is a festive greeting, the same for every reader: the wish, the box, and the
+     two marks. The score stays on the page — a card that is going to be forwarded to a
+     family group is a wish, not a result. */
   function drawResultCard(g, n, title, art){
     var W = 1080, H = 1080;
-    g.fillStyle = "#F06423"; g.fillRect(0, 0, W, H);   /* flat brand orange */
+    g.fillStyle = "#F06423"; g.fillRect(0, 0, W, H);
+    festiveGround(g, W, H);
+
     var logo = document.querySelector(".logodiv img");
     if (logo && logo.complete && logo.naturalWidth) g.drawImage(logo, 64, 60, 330, 330 * logo.naturalHeight / logo.naturalWidth);
-    g.fillStyle = "#fff"; g.textBaseline = "alphabetic";
-    /* the box, then the seal on its lid; the whole group sits a little higher to leave the footer its room */
-    if (art && art.box){
-      var bw = 640, bh = bw * BOX_AR, bx0 = 540 - bw / 2, by0 = 430;
-      g.shadowColor = "rgba(90,30,0,.38)"; g.shadowBlur = 36; g.shadowOffsetY = 18;
-      g.drawImage(art.box, bx0, by0, bw, bh);
-      g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
-      for (var i = 0; i < ROUNDS.length; i++){
-        var rs = state.results[i], im = art.sweets[ROUNDS[i].sweet];
-        if (!(rs && rs.win && im)) continue;
-        var p = sweetPlace(i), sw = p.w * bw, sh = sw * p.ar;
-        g.drawImage(im, bx0 + p.x * bw - sw / 2, by0 + p.y * bh - p.ry * sh, sw, sh);
-      }
-    }
-    drawStamp(g, 540, 355, 185, title, n === ROUNDS.length);
-    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.font = "34px Handlee, cursive";
-    var sub = wrapText(g, title.s, 880);
-    if (sub.length === 1){ g.fillText(sub[0], 540, 838); }
-    else { g.font = "31px Handlee, cursive"; g.fillText(sub[0], 540, 826); g.fillText(sub[1], 540, 862); }
-    g.font = "36px Handlee, cursive";
-    g.fillText(n + " of " + ROUNDS.length + " mindful picks", 540, sub.length === 1 ? 886 : 906);
-    var m = document.querySelector("#p-feedback .feedgif img");
-    if (m && m.complete && m.naturalWidth) g.drawImage(m, W - 214, H - 218, 200, 200);
-    /* the publication's mark, set as the cover sets it: THE over ORANGE BOOK, then the volume and the bank */
-    g.textAlign = "left"; g.fillStyle = "#fff";
-    g.font = "800 22px Mulish, sans-serif"; try { g.letterSpacing = "5px"; } catch(e){}
-    g.fillText("THE", 64, H - 126);
-    g.font = "800 46px Mulish, sans-serif"; try { g.letterSpacing = "2px"; } catch(e){}
-    g.fillText("ORANGE BOOK", 64, H - 82);
+
+    /* the lockup as the cover sets it: THE sits over the O of ORANGE, not over BOOK */
+    g.textBaseline = "alphabetic"; g.fillStyle = "rgba(255,255,255,.95)";
+    g.font = "800 35px Mulish, sans-serif"; try { g.letterSpacing = "1.5px"; } catch(e){}
+    var obw = g.measureText("ORANGE BOOK").width, obx = W - 64 - obw;
+    g.textAlign = "left"; g.fillText("ORANGE BOOK", obx, 124);
+    g.font = "800 17px Mulish, sans-serif"; try { g.letterSpacing = "5px"; } catch(e){}
+    g.fillText("THE", obx + 2, 86);
     try { g.letterSpacing = "0px"; } catch(e){}
-    g.font = "500 22px Mulish, sans-serif"; g.fillStyle = "rgba(255,255,255,.9)";
-    g.fillText("ICICI Bank", 64, H - 46);
+
+    /* the wish */
+    g.textAlign = "center"; g.fillStyle = "#fff";
+    var size = 80, lines;
+    for (;;){
+      g.font = size + "px Handlee, cursive";
+      lines = balanced(g, GREETING, 870, 3);
+      if (lines.length <= 3 || size <= 52) break;
+      size -= 4;
+    }
+    var lh = size * 1.1, top = 322 - (lines.length - 1) * lh / 2;
+    for (var li = 0; li < lines.length; li++) g.fillText(lines[li], 540, top + li * lh);
+
+    /* the cover's own box, whole and full */
+    if (art && art.hero){
+      var hw = 520, hh = hw * art.hero.naturalHeight / art.hero.naturalWidth,
+          hx = 540 - hw / 2, hy = 714 - hh / 2;
+      g.shadowColor = "rgba(90,30,0,.36)"; g.shadowBlur = 34; g.shadowOffsetY = 16;
+      g.drawImage(art.hero, hx, hy, hw, hh);
+      if (art.lid) g.drawImage(art.lid, hx, hy, hw, hh);
+      g.shadowColor = "transparent"; g.shadowBlur = 0; g.shadowOffsetY = 0;
+    }
   }
   function prepareShare(n, title){
     SHARE.file = null; SHARE.dataUrl = "";
-    SHARE.text = "I made " + n + " of " + ROUNDS.length + " mindful picks on The Sweet Pick, this month\u2019s interactive Orange Book from ICICI Bank. Can you spot the festive tricks?";
+    SHARE.text = GREETING + ". Your turn \u2014 try your hand at The Sweet Pick, this season\u2019s interactive Orange Book from ICICI Bank.";
     /* the box is drawn as an image of its own SVG, so the card shows the same box as the page */
     Promise.all([ensureFonts(), artReady()]).then(function(parts){
       var cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1080;
@@ -2341,6 +2427,11 @@
     initShareBand();
     initDownloads();
     $("share-btn").addEventListener("click", shareResult);
+    /* the message is built when the card is, so the link is set on the way out */
+    var wa = $("share-wa");
+    wa.addEventListener("click", function(){
+      wa.href = "https://wa.me/?text=" + encodeURIComponent(SHARE.text + (shareUrl() ? " " + shareUrl() : ""));
+    });
     $("p-close").addEventListener("click", skipReveal);
     $("p-close").addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") skipReveal(); });
     paintHero();

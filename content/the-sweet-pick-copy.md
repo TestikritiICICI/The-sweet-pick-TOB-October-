@@ -171,9 +171,11 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Box caption | {N} of 5 filled · Full box! (for 5 of 5) |
 | Score line | You made {N} mindful picks out of 5. (“pick” when N is 1) |
 | Tally rows | {Bias} · Avoided / Fell for it |
-| Share button | Share my result |
+| Line above the buttons | This festive season, greet your friends a little differently. |
+| Share button | Send festive wishes |
+| WhatsApp button | WhatsApp |
 | Save link (under the card) | Save image |
-| Result card (alt text) | Your result card: {Tag}, {N} of 5 mindful picks |
+| Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
@@ -192,9 +194,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Element | Copy |
 |---|---|
-| Seal | THE SWEET PICK · {Tag} · THE ORANGE BOOK |
-| Under the seal | the tag's line |
-| Under the box | {N} of 5 mindful picks |
+| Wish (the card's only line) | Wishing you a festive season full of sweet choices |
 | Footer, wordmark | THE / ORANGE BOOK (set as on the cover) |
 | Footer, line under it | Vol. 65 · ICICI Bank |
 
@@ -202,7 +202,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Where | Copy |
 |---|---|
-| Share my result (native share or WhatsApp) | I made {N} of 5 mindful picks on The Sweet Pick, this month’s interactive Orange Book from ICICI Bank. Can you spot the festive tricks? {link} |
+| Send festive wishes (native share or WhatsApp) | Wishing you a festive season full of sweet choices. Your turn — try your hand at The Sweet Pick, this season’s interactive Orange Book from ICICI Bank. {link} |
 | WhatsApp button in the band | Hey, check out The Sweet Pick, this month’s interactive edition of The Orange Book from ICICI Bank. {link} |
 
 ## 10. Feedback page (carried over from previous editions)
