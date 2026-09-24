@@ -196,8 +196,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Where | Copy |
 |---|---|
-| Send festive wishes (native share or WhatsApp) | Wishing you a festive season full of sweet choices. Your turn — try your hand at The Sweet Pick, this season’s interactive Orange Book from ICICI Bank. {link} |
-| WhatsApp button in the band | Hey, check out The Sweet Pick, this month’s interactive edition of The Orange Book from ICICI Bank. {link} |
+| Send festive wishes (native share or WhatsApp) | 🪔 Wishing you a festive season full of sweet choices.<br><br>Instead of the usual greeting, here’s one you can play — pick a mithai box and see what it says about you 🍬<br><br>The Sweet Pick, ICICI Bank’s interactive Orange Book 👇<br>{link} |
+| WhatsApp button in the band | ✨ This festive season, ICICI Bank’s Orange Book is a game.<br><br>Pick a mithai box and see what’s really doing the choosing 🍬<br><br>The Sweet Pick 👇<br>{link} |
 
 ## 10. Feedback page (carried over from previous editions)
 

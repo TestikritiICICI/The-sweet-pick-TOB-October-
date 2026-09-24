@@ -1699,7 +1699,12 @@
   }
   function prepareShare(n, title){
     SHARE.file = null; SHARE.dataUrl = "";
-    SHARE.text = GREETING + ". Your turn \u2014 try your hand at The Sweet Pick, this season\u2019s interactive Orange Book from ICICI Bank.";
+    /* three short lines rather than one long sentence: WhatsApp keeps the breaks, so the
+       wish, the invitation and the link each land on their own. The emoji are written as
+       escapes so the file survives a server that serves it as anything but utf-8. */
+    SHARE.text = "\uD83E\uDE94 " + GREETING + ".\n\n" +
+      "Instead of the usual greeting, here\u2019s one you can play \u2014 pick a mithai box and see what it says about you \uD83C\uDF6C\n\n" +
+      "The Sweet Pick, ICICI Bank\u2019s interactive Orange Book \uD83D\uDC47";
     /* the box is drawn as an image of its own SVG, so the card shows the same box as the page */
     Promise.all([ensureFonts(), artReady()]).then(function(parts){
       var cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1080;
@@ -1736,7 +1741,7 @@
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
   function shareResult(){
-    var url = shareUrl(), text = SHARE.text + (url ? " " + url : "");
+    var url = shareUrl(), text = SHARE.text + (url ? "\n" + url : "");
     if (shareAllowed()){
       /* the card with the message and the link; where files cannot be shared, the message and the link */
       var d = {title:"The Sweet Pick", text:SHARE.text}; if (url) d.url = url;
@@ -1753,7 +1758,9 @@
   /* the band's WhatsApp button shares the edition itself, as Vol. 64's does */
   function initShareBand(){
     var a = $("share-band"), url = shareUrl();
-    var text = "Hey, check out The Sweet Pick, this month\u2019s interactive edition of The Orange Book from ICICI Bank." + (url ? " " + url : "");
+    var text = "\u2728 This festive season, ICICI Bank\u2019s Orange Book is a game.\n\n" +
+      "Pick a mithai box and see what\u2019s really doing the choosing \uD83C\uDF6C\n\n" +
+      "The Sweet Pick \uD83D\uDC47" + (url ? "\n" + url : "");
     a.href = "https://wa.me/?text=" + encodeURIComponent(text);
     a.addEventListener("click", function(e){
       if (!navigator.share) return;
