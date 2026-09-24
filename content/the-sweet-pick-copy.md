@@ -2,6 +2,8 @@
 
 The Orange Book · Vol. 65 · October 2026 · Interactive edition
 
+*The volume, month and year identify this document only. The edition itself carries none of them on any screen.*
+
 Every word the edition shows, in the order a reader meets it. Text in curly braces is filled in by the game: `{N}` is a count, `{Tag}` is the result tag, `{Bias}` is the pick's bias name. The budget is ₹500 on every pick. Where a line appears in two places (page and shareable card), it is listed once and cross-referenced.
 
 ## 1. Page furniture
@@ -22,7 +24,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Menu, first visit | Play |
 | Menu, game in progress | Continue (Pick {N} of 5) · New game |
 | Plate after a finished game | Best run {N} of 5 · {Tag} |
-| Keyboard hint (desktop) | ▲ ▼ Select ↵ Enter |
+| Keyboard hint (desktop) | ▲▼ Select ↵ Enter |
 | Hero illustration (alt text) | An open box of twelve festive mithai, its lid set beside it |
 
 ## 3. Pick pages · shared elements
@@ -35,7 +37,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Ticket stub | You plan to spend around ₹500 |
 | Card back, verdict | Great! / Oops! |
 | Card back, definition heading | What is the {Bias}? (for FOMO: What is FOMO?) |
-| Line above the cards | Three cards below. Pick one. (Two cards below, on the last pick) |
+| Line above the cards | Three cards below. Pick one. |
+| Line above the cards, pick 5 (two cards) | Two cards below. Pick one. |
+| Line above the places it turns up | Watch for it in: |
 | Below the cards, eyebrow | The same trick, elsewhere. |
 | Article link | Read about {the Bias} → |
 | Buttons | Next Pick (picks 1 to 4) · See how you did (pick 5) · Pick again |
@@ -57,6 +61,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | Festive week, and the neighbours have already sent a box over. Now it is your turn, and the shop has its sale board out. |
 | Mithai earned | Laddoo |
 | Definition (card back) | Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it. |
+| Card back, heading | What is the Anchoring Bias? |
 | The same trick, elsewhere | A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000. |
 | Watch for it in | Festive sales · Hotel deals · Electronics with crossed-out MRPs |
 | Article link | Read about the Anchoring Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article1 |
@@ -78,6 +83,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | The cousins are over for the celebrations. One box has to go around the whole room. |
 | Mithai earned | Modak |
 | Definition (card back) | The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison. |
+| Card back, heading | What is the Decoy Effect? |
 | The same trick, elsewhere | At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one. |
 | Watch for it in | Meal sizes · Subscription plans · Phone storage options |
 | Article link | Read about the Decoy Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article3 |
@@ -99,6 +105,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | Your turn to bring the festive box for the office. Whatever you carry in will be noticed. |
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
+| Card back, heading | What is the Bandwagon Effect? |
 | The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof, never mind that he does not much like gaming. |
 | Watch for it in | Trending restaurants · Bestseller products · Popular gadgets |
 | Article link | Read about the Bandwagon Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article2 |
@@ -120,6 +127,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | The evening before the big day. The shelves are thinning and the queue behind you is growing. |
 | Mithai earned | Peda |
 | Definition (card back) | FOMO, the fear of missing out, can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
+| Card back, heading | What is FOMO? |
 | The same trick, elsewhere | Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television. The one at home was working fine. |
 | Watch for it in | Flash sales · Ticket bookings · Limited-stock messages |
 | Article link | Read about the FOMO Effect → https://www.icici.bank.in/campaigns/TOB/the-orange-book-vol-30/Article2 |
@@ -141,6 +149,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Task at hand | A box for your parents. Your father has been told to watch his sugar, so this year you are reading labels. |
 | Mithai earned | Jalebi |
 | Definition (card back) | The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels. |
+| Card back, heading | What is the Framing Effect? |
 | The same trick, elsewhere | One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much. |
 | Watch for it in | Food labels · Health claims · Advertising claims |
 | Article link | Read about the Framing Effect → https://www.icici.bank.in/campaigns/TOB/the-orange-book-vol-30/Article2 |
@@ -166,7 +175,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Send-off | The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned. |
 | Send-off, second paragraph | The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always. |
 | Line above the card | This festive season, don’t just greet your friends, challenge them to a Sweet Pick. |
-| Greeting card (alt text) | Your festive greeting card from The Sweet Pick |
+| Greeting card (alt text) | Your result card: {Tag}, {N} of 5 mindful picks |
 | Share button | Share the challenge |
 | Replay row | Play again · Feedback |
 | Read-more line | For more such interesting money lessons, explore The Orange Book. |
@@ -184,9 +193,10 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Element | Copy |
 |---|---|
-| Wish (the card's only line) | Wishing you a festive season full of sweet choices |
-| Footer, wordmark | THE / ORANGE BOOK (set as on the cover) |
-| Footer, line under it | Vol. 65 · ICICI Bank |
+| Top left | ICICI Bank logo |
+| Top right | THE / ORANGE BOOK (the lockup, set as on the title screen) |
+| Wish (the card’s only line) | Wishing you a festive season full of sweet choices |
+| Illustration | The open mithai box from the title screen, lid set beside it |
 
 ### Share messages
 
@@ -197,7 +207,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 ## 10. Rating (what the Feedback button opens)
 
-The feedback page is gone; the Feedback button on the last page opens a small rating card instead. The edition’s disclaimer, which lived on that page, now closes the last page.
+The Feedback button on the last page opens a small rating card over the page. The edition’s disclaimer closes the last page.
 
 | Element | Copy |
 |---|---|
@@ -205,11 +215,11 @@ The feedback page is gone; the Feedback button on the last page opens a small ra
 | Line under it | Tap a star to rate it. |
 | Stars (accessible names) | 1 star · 2 stars · 3 stars · 4 stars · 5 stars |
 | After a star is tapped | Thank you! |
-| Link | Tell us more → the Orange Book feedback form (the same link the old page carried) |
+| Link | Tell us more → https://orangebook.customersuggestions.co.in/?utm_source=TOBOctober2026CTA&utm_medium=TOBOctober26_HTML_FeedbackCTA&utm_campaign=TOBOctober26CTA_Feedback |
 | Button | Done |
 | Close (accessible name) | Close |
 | Disclaimer, last page | The information provided by ICICI Bank is for general informational purposes only and does not constitute financial, investment, legal, or tax advice. It does not take into account your individual objectives or financial situation. We strongly recommend you seek independent professional advice before making any investment decisions. |
-| Disclaimer link | Click here to view the disclaimer. |
+| Disclaimer link | Click here to view the disclaimer. → https://www.icicibank.com/disclaimer/disclaimer-tob?utm_source=TOBOctober2026&utm_medium=TOBOctober26_HTML_Disclaimer&utm_campaign=TOBOctober26_ClickDisclaimer |
 
 ## 11. Screen-reader-only labels
 
