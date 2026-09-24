@@ -58,7 +58,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mithai earned | Laddoo |
 | Definition (card back) | Anchoring Bias is when the first number we see becomes a reference point and affects how we judge the price that comes after it. |
 | The same trick, elsewhere | A festive sale marks a shirt down from ₹5,000 to ₹3,000. The ₹5,000 does all the work: ₹3,000 starts to feel like a steal, even though the budget was ₹2,000. |
-| Chips | Festive sales · Hotel deals · Electronics with crossed-out MRPs |
+| Watch for it in | Festive sales · Hotel deals · Electronics with crossed-out MRPs |
 | Article link | Read about the Anchoring Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article1 |
 | Illustration (alt text) | A shirt marked down from ₹5,000 to ₹3,000. He calls it a steal; she points out it is still over their ₹2,000 budget. |
 
@@ -79,7 +79,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mithai earned | Modak |
 | Definition (card back) | The Decoy Effect happens when one option is positioned mainly to make another option look much better by comparison. |
 | The same trick, elsewhere | At the cinema, popcorn is ₹55 small, ₹64 medium, ₹70 large. The medium is there to be passed over: once you are looking at it, the large is only ₹6 more and feels like the obvious one. |
-| Chips | Meal sizes · Subscription plans · Phone storage options |
+| Watch for it in | Meal sizes · Subscription plans · Phone storage options |
 | Article link | Read about the Decoy Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article3 |
 | Illustration (alt text) | Three popcorn tubs at ₹55, ₹64 and ₹70, with the medium marked as the decoy that makes the large look worth it. |
 
@@ -100,7 +100,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mithai earned | Pista barfi |
 | Definition (card back) | The Bandwagon Effect is when something feels like the better or safer choice simply because many other people seem to be choosing it. |
 | The same trick, elsewhere | A child asks for a ₹45,000 gaming console because all his friends are getting one. What everyone else has begins to feel like proof — never mind that he does not much like gaming. |
-| Chips | Trending restaurants · Bestseller products · Popular gadgets |
+| Watch for it in | Trending restaurants · Bestseller products · Popular gadgets |
 | Article link | Read about the Bandwagon Effect → https://www.icici.bank.in/campaigns/October-2022/TOB17/Article2 |
 | Illustration (alt text) | A boy asks his mother for a ₹45,000 gaming console because all his friends are getting one. |
 
@@ -121,7 +121,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mithai earned | Peda |
 | Definition (card back) | FOMO — the fear of missing out — can make a limited option feel more urgent or valuable and push us to decide faster than we need to. |
 | The same trick, elsewhere | Twenty per cent off a 65-inch smart TV, and the offer ends in two days. It is the clock that starts to feel urgent rather than the television — the one at home was working fine. |
-| Chips | Flash sales · Ticket bookings · Limited-stock messages |
+| Watch for it in | Flash sales · Ticket bookings · Limited-stock messages |
 | Article link | Read about the FOMO Effect → https://www.icici.bank.in/campaigns/TOB/the-orange-book-vol-30/Article2 |
 | Illustration (alt text) | A couple on a sofa. He holds a 20% off flyer and points at a 65-inch smart TV; she says the one they own is working fine. |
 
@@ -142,7 +142,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Mithai earned | Jalebi |
 | Definition (card back) | The Framing Effect is when the way information is presented changes how attractive, positive or negative a choice feels. |
 | The same trick, elsewhere | One festive hamper says “only 10% preservatives”. The next says “70% preservative free”, which sounds the healthier of the two and holds three times as much. |
-| Chips | Food labels · Health claims · Advertising claims |
+| Watch for it in | Food labels · Health claims · Advertising claims |
 | Article link | Read about the Framing Effect → https://www.icici.bank.in/campaigns/TOB/the-orange-book-vol-30/Article2 |
 | Illustration (alt text) | Festive hampers labelled “only 10% preservatives” and “70% preservative free”; a shopper decides the second sounds healthier. |
 

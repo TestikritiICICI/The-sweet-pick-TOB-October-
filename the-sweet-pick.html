@@ -630,10 +630,15 @@
   }
   .srclink a:hover{border-bottom-color:var(--orange)}
   .srclink a:focus-visible{outline:2.5px solid var(--orange);outline-offset:3px}
-  .chips{display:flex;flex-wrap:wrap;gap:9px;list-style:none;margin:14px 0 0;padding:0}
-  .chips li{
-    font-family:Mulish,system-ui,sans-serif;font-weight:600;font-size:.76rem;
-    padding:5px 13px;border-radius:999px;border:1.5px solid var(--card-line);
+  /* the places the bias turns up. They were set as outlined pills, which is the shape every
+     button on the page wears, so they read as three things to press. They are a list now,
+     each behind a mark drawn at the weight of the edition's other marks. */
+  .placeslead{margin:16px 0 6px;max-width:none;color:var(--navy)}
+  .places{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+  .places li{display:flex;align-items:flex-start;gap:10px;color:var(--navy);line-height:1.45}
+  .places svg{
+    width:19px;height:19px;flex:none;margin-top:4px;opacity:.85;
+    fill:none;stroke:var(--orange);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
   }
 
   /* ---------- tally ---------- */
@@ -1826,6 +1831,47 @@
     host.innerHTML = html;
   }
 
+  /* a mark for each of the places a bias turns up: line drawings at the weight the
+     edition draws its other marks, and only ever distinct from the other two in
+     their own round, which is all the reader sees at once */
+  var PLACE_MARKS = {
+    /* anchoring */
+    "Festive sales":
+      '<path d="M20.4 12.6 12.6 20.4a1.9 1.9 0 0 1-2.7 0l-6.1-6.1a1.9 1.9 0 0 1-.6-1.5l.5-6.3a1.9 1.9 0 0 1 1.7-1.7l6.3-.5a1.9 1.9 0 0 1 1.5.6l6.1 6.1a1.9 1.9 0 0 1 0 2.7Z"/><circle cx="8.7" cy="8.7" r="1.35"/>',
+    "Hotel deals":
+      '<path d="M3 18.5V8.5"/><path d="M21 18.5v-4a2 2 0 0 0-2-2H3"/><path d="M3 15.5h18"/><circle cx="7.6" cy="9.4" r="1.7"/>',
+    "Electronics with crossed-out MRPs":
+      '<rect x="2.6" y="4.4" width="18.8" height="12.2" rx="2"/><path d="M9 20.4h6"/><path d="M12 16.6v3.8"/>',
+    /* the decoy */
+    "Meal sizes":
+      '<path d="M4.9 6.4h14.2a.8.8 0 0 1 0 1.6H4.9a.8.8 0 0 1 0-1.6Z"/><path d="M6.3 8 7.5 19.5a1.6 1.6 0 0 0 1.6 1.4h5.8a1.6 1.6 0 0 0 1.6-1.4L17.7 8"/><path d="m11 3.2 1.8 3.2"/>',
+    "Subscription plans":
+      '<path d="M20.4 12a8.4 8.4 0 1 1-2.5-6"/><path d="M20.4 3.2v5.2h-5.2"/>',
+    "Phone storage options":
+      '<rect x="6.4" y="2.5" width="11.2" height="19" rx="2.6"/><path d="M10.2 5.2h3.6"/><path d="M9.2 11.8h5.6"/><path d="M9.2 14.9h5.6"/><path d="M9.2 18h3.1"/>',
+    /* the bandwagon */
+    "Trending restaurants":
+      '<path d="M7.7 2.8v5.4a2 2 0 0 0 4 0V2.8"/><path d="M9.7 10.2V21.2"/><path d="M16.6 2.8c2 2 2.5 5 1.5 7.6-.4 1-1 1.5-1.5 1.5v9.3"/>',
+    "Bestseller products":
+      '<circle cx="12" cy="8.8" r="5.4"/><path d="M9 13.6 7.6 21.2 12 18.6l4.4 2.6L15 13.6"/>',
+    "Popular gadgets":
+      '<path d="M4 13.6v-1.8a8 8 0 0 1 16 0v1.8"/><rect x="2.9" y="13.4" width="4.4" height="6.6" rx="2"/><rect x="16.7" y="13.4" width="4.4" height="6.6" rx="2"/>',
+    /* FOMO */
+    "Flash sales":
+      '<path d="M13.6 2.4 4.6 13.6h5.9l-1 8 9-11.2h-5.9Z"/>',
+    "Ticket bookings":
+      '<path d="M3 8.6V6.4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.2a2.6 2.6 0 0 0 0 4.8v2.2a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.2a2.6 2.6 0 0 0 0-4.8Z"/><path d="M13.4 5.6v11.4" stroke-dasharray="1.6 2.4"/>',
+    "Limited-stock messages":
+      '<path d="M6.6 3h10.8"/><path d="M6.6 21h10.8"/><path d="M7.6 3c0 4 4.4 5.1 4.4 9s-4.4 5-4.4 9"/><path d="M16.4 3c0 4-4.4 5.1-4.4 9s4.4 5 4.4 9"/>',
+    /* framing */
+    "Food labels":
+      '<path d="M8.4 2.6h7.2"/><path d="M9.4 2.6v2.6c0 1.1-2.2 1.9-2.2 3.6v10.4a2 2 0 0 0 2 2h5.6a2 2 0 0 0 2-2V8.8c0-1.7-2.2-2.5-2.2-3.6V2.6"/><path d="M7.2 12.4h9.6"/>',
+    "Health claims":
+      '<path d="M12 20.6S3.1 15 3.1 9.4A4.7 4.7 0 0 1 12 6.9a4.7 4.7 0 0 1 8.9 2.5c0 5.6-8.9 11.2-8.9 11.2Z"/>',
+    "Advertising claims":
+      '<path d="M3.4 10.2v3.6A1.6 1.6 0 0 0 5 15.4h2.6l9 5.6V3l-9 5.6H5a1.6 1.6 0 0 0-1.6 1.6Z"/><path d="M7.6 15.4V21"/><path d="M19.9 9.4a4.2 4.2 0 0 1 0 5.2"/>',
+  };
+
   var PETAL_FILLS = ["#FFB443","#FF9A2E","#FFC85A","#FF8A3D","#FFD27A"];
   function seedPetals(){
     var host = $("petals");
@@ -2089,7 +2135,11 @@
                '" loading="lazy"></figure>' : "") +
         '<div class="btext">' +
         '<p class="wide">' + r.bridge + "</p>" +
-        '<ul class="chips">' + r.places.map(function(p){ return "<li>" + p + "</li>"; }).join("") + "</ul>" +
+        '<p class="placeslead">Watch for it in:</p>' +
+        '<ul class="places">' + r.places.map(function(p){
+          return '<li><svg viewBox="0 0 24 24" aria-hidden="true">' + (PLACE_MARKS[p] || "") +
+                 "</svg><span>" + p + "</span></li>";
+        }).join("") + "</ul>" +
         (src ? '<p class="srclink"><a href="' + src.url + '" target="_blank" rel="noopener">' +
                "Read about " + src.sect + "&nbsp;&rarr;</a></p>" : "") +
         "</div></div></div>";
