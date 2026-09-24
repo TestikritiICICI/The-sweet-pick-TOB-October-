@@ -1002,19 +1002,21 @@
     <p>The festive season is a time for happiness, celebration and shopping. But biases can quietly find their way into our decisions and sometimes make us spend more than we planned.</p>
     <p>The idea is not to stop enjoying the season. It is simply to notice what may be shaping a choice, pause when it matters and strike the right balance, always.</p>
     <p class="sharelead">This festive season, don’t just greet your friends — challenge them to a Sweet&nbsp;Pick.</p>
+    <!-- the ask, then the card it sends, then the button that sends it -->
+    <div class="sharepreview" id="share-preview" hidden></div>
     <div class="sharerow">
       <button class="pill" id="share-btn" type="button">Send festive wishes</button>
-    </div>
-    <div class="sharepreview" id="share-preview" hidden></div>
-    <div class="outro">
-      <p>For more such interesting money lessons, explore The Orange Book.</p>
-      <a class="pill" href="https://www.icici.bank.in/campaigns/TOBalleditions/index" target="_blank" rel="noopener">Read all editions</a>
     </div>
     <div class="btnrow">
       <!-- back to the title screen rather than straight into a new game: it carries the
            reader's best run, and it is the only way home now the contents panel has gone -->
       <button class="pill plain" data-go="cover">Play again</button>
       <button class="pill plain" data-go="feedback">Feedback</button>
+    </div>
+    <!-- the Orange Book's own send-off closes the page -->
+    <div class="outro">
+      <p>For more such interesting money lessons, explore The Orange Book.</p>
+      <a class="pill" href="https://www.icici.bank.in/campaigns/TOBalleditions/index" target="_blank" rel="noopener">Read all editions</a>
     </div>
   </div>
 </section>
@@ -2348,7 +2350,7 @@
     var pg = $("p-close");
     if (reducedMotion()){ finishReveal(); celebrate(); REVEAL = null; return; }
     pg.classList.add("staging");
-    var parts = {box:$("result"), tally:$("tally"), share:pg.querySelector(".sharerow")};
+    var parts = {box:$("result"), tally:$("tally"), share:pg.querySelector(".sharelead")};
     if (!("IntersectionObserver" in window)){ beginPart("box"); beginPart("tally"); beginPart("share"); return; }
     revealWatch = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
