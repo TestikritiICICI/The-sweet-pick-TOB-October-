@@ -2052,16 +2052,23 @@
       "</span>";
   }
 
-  /* shrink a box name until it sits inside the band the reference gives it,
-     measured against the live rule position rather than assumed */
+  /* Shrink a box name until it sits inside the band the reference gives it, measured against
+     the live rule position rather than assumed.
+
+     The band is read off the card's own layout rather than its painted rectangle. The cards
+     are dealt in from a third of their size, and a phone fires a resize every time the
+     address bar collapses under a scroll; landing one of those mid-deal used to measure the
+     band at a third of its height, shrink the name to the 9px floor and leave it there, since
+     nothing measures again once the cards have landed. Offsets ignore the transform, so the
+     same answer comes back whether the card is being dealt, turning over or sitting still. */
   function fitNames(){
     var cards = $("r-cards").querySelectorAll(".cfront");
     for (var i = 0; i < cards.length; i++){
       var nm = cards[i].querySelector(".cname"), rule = cards[i].querySelector(".rule-at");
       if (!nm || !rule) continue;
       nm.style.fontSize = "";
-      var fr = cards[i].getBoundingClientRect();
-      var room = (rule.getBoundingClientRect().top - (fr.top + fr.height * 0.37) - 3) * 2;
+      /* each slot is centred on its band, so the rule's top edge is half its height above it */
+      var room = (rule.offsetTop - rule.offsetHeight / 2 - cards[i].offsetHeight * 0.37 - 3) * 2;
       if (room <= 0) continue;
       var size = parseFloat(window.getComputedStyle(nm).fontSize), guard = 0;
       while (nm.scrollHeight > room && size > 9 && guard++ < 48){
@@ -2407,7 +2414,15 @@
   $("next-btn").addEventListener("click", next);
   $("again-btn").addEventListener("click", again);
   /* card widths change with the viewport, so the names are re-fitted */
-  window.addEventListener("resize", function(){ if (state.page === "round") fitNames(); });
+  /* a phone fires resize right through the address bar's animation, so the fit is coalesced
+     into the next frame rather than run once per event */
+  var fitPending = false;
+  window.addEventListener("resize", function(){
+    if (state.page !== "round" || fitPending) return;
+    fitPending = true;
+    var run = function(){ fitPending = false; fitNames(); };
+    if (window.requestAnimationFrame) window.requestAnimationFrame(run); else window.setTimeout(run, 16);
+  });
 
   document.addEventListener("keydown", function(e){
     if (navOpen()){
