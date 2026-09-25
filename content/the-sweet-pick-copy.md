@@ -71,9 +71,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Box | Front | Result | Back copy |
 |---|---|---|---|
-| Classic Box | ₹400 | Great! You avoided the Anchoring Bias. | The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box. |
-| Celebration Box | ₹475 | Great! You avoided the Anchoring Bias. | The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box. |
-| Premium Box | MRP ₹1,000 struck through, ₹750, with a 25% OFF flash | Oops! You fell for the Anchoring Bias. | The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget. |
+| Classic Mithai Box | ₹400 | Great! You avoided the Anchoring Bias. | The Premium Box showed ₹1,000 crossed out and ₹750 now. You kept your ₹500 budget in mind and chose the ₹400 box. |
+| Celebration Mithai Box | ₹475 | Great! You avoided the Anchoring Bias. | The ₹1,000 → ₹750 offer did not pull you over budget. You stayed within your ₹500 plan and chose the ₹475 box. |
+| Premium Mithai Box | MRP ₹1,000 struck through, ₹750, with a 25% OFF flash | Oops! You fell for the Anchoring Bias. | The crossed-out ₹1,000 may have made ₹750 feel like a bargain, even though it is ₹250 over your ₹500 budget. |
 
 ## 5. Pick 2 · Decoy Effect
 
@@ -93,9 +93,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Box | Front | Result | Back copy |
 |---|---|---|---|
-| Small Box | ₹300 | Great! You avoided the Decoy Effect. | The ₹500 Medium and ₹575 Large boxes make Large look like a tempting upgrade. But you still chose the ₹300 Small Box and remained under budget. |
-| Medium Box | ₹500 | Great! You avoided the Decoy Effect. | The ₹575 Large Box is only ₹75 more. You still chose the ₹500 Medium Box instead of automatically upgrading. |
-| Large Box | ₹575 | Oops! You fell for the Decoy Effect. | The ₹500 Medium Box may have made the ₹575 Large Box feel like the obvious upgrade for just ₹75 more. |
+| Small Mithai Box | ₹300 | Great! You avoided the Decoy Effect. | The ₹500 Medium and ₹575 Large boxes make Large look like a tempting upgrade. But you still chose the ₹300 Small Box and remained under budget. |
+| Medium Mithai Box | ₹500 | Great! You avoided the Decoy Effect. | The ₹575 Large Box is only ₹75 more. You still chose the ₹500 Medium Box instead of automatically upgrading. |
+| Large Mithai Box | ₹575 | Oops! You fell for the Decoy Effect. | The ₹500 Medium Box may have made the ₹575 Large Box feel like the obvious upgrade for just ₹75 more. |
 
 ## 6. Pick 3 · Bandwagon Effect
 
@@ -137,9 +137,9 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Box | Front | Result | Back copy |
 |---|---|---|---|
-| Classic Box | ₹300 | Great! You avoided FOMO. | The ₹550 Premium Box said “Only 1 left”. You ignored the urgency and chose the ₹300 Classic Box. |
-| Celebration Box | ₹400 | Great! You avoided FOMO. | You chose the ₹400 Celebration Box instead of being rushed by the “Only 1 left” ₹550 Premium Box. |
-| Premium Box | ₹550 · tag “Only 1 left” (pulses; hot) | Oops! You fell for FOMO. | “Only 1 left” may have made the ₹550 Premium Box feel urgent, despite ₹300 and ₹400 options being available. |
+| Classic Mithai Box | ₹300 | Great! You avoided FOMO. | The ₹550 Premium Box said “Only 1 left”. You ignored the urgency and chose the ₹300 Classic Box. |
+| Celebration Mithai Box | ₹400 | Great! You avoided FOMO. | You chose the ₹400 Celebration Box instead of being rushed by the “Only 1 left” ₹550 Premium Box. |
+| Premium Mithai Box | ₹550 · tag “Only 1 left” (pulses; hot) | Oops! You fell for FOMO. | “Only 1 left” may have made the ₹550 Premium Box feel urgent, despite ₹300 and ₹400 options being available. |
 
 ## 8. Pick 5 · Framing Effect
 
@@ -159,8 +159,8 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 
 | Box | Front | Result | Back copy |
 |---|---|---|---|
-| Box A | ₹600 · claim “70% sugar-free” | Oops! You may have fallen for the Framing Effect. | “70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar. |
-| Box B | ₹450 · claim “Contains 25% sugar” | Great! You looked beyond the positive frame. | You chose the ₹450 box with 25% sugar instead of being drawn towards the ₹600 box described as “70% sugar-free.” |
+| Mithai Box A | ₹600 · claim “70% sugar-free” | Oops! You may have fallen for the Framing Effect. | “70% sugar-free” may have made the ₹600 box sound more appealing. But Box B costs ₹450 and contains only 25% sugar. |
+| Mithai Box B | ₹450 · claim “Contains 25% sugar” | Great! You looked beyond the positive frame. | You chose the ₹450 box with 25% sugar instead of being drawn towards the ₹600 box described as “70% sugar-free.” |
 
 ## 9. Last page
 
