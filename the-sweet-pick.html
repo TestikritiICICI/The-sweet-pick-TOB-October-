@@ -953,7 +953,7 @@
       <div class="lbl">How to play</div>
       <ol>
         <li>Read the task at hand.</li>
-        <li>Compare the three cards, then make your Sweet&nbsp;Pick.</li>
+        <li>Compare the three mithai boxes on the cards, then make your Sweet&nbsp;Pick.</li>
         <li>Read the back of the cards.</li>
         <li>Scroll down and tap Next&nbsp;Pick for your next scenario.</li>
       </ol>
@@ -2048,7 +2048,7 @@
     /* the brief, laid out as a ticket: this pick's scene on the cream half, the plan on the stub */
     $("r-scenario").className = "subhead brief";
     $("r-scenario").innerHTML = '<span class="chit"><span class="chit-l"><span class="chit-k">Task at hand</span><span class="chit-t">' + r.scene + '</span></span>' +
-      '<span class="chit-r"><span class="chit-k">You plan to spend around</span><span class="chit-n">' + rupee(BUDGET) + "</span></span></span>";
+      '<span class="chit-r"><span class="chit-k">You plan to spend around</span><span class="chit-n">' + rupee(BUDGET) + '</span><span class="chit-k">on a mithai box</span></span></span>';
 
     var wrap = $("r-cards");
     wrap.className = "cards" + (r.cards.length === 2 ? " duo" : "");

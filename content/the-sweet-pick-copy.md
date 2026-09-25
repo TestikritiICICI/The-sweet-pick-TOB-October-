@@ -34,7 +34,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 | Budget chip (pinned strip) | Budget ₹500 |
 | Tray (accessible name) | Your box: {N} of 5 filled |
 | Ticket label | Task at hand |
-| Ticket stub | You plan to spend around ₹500 |
+| Ticket stub | You plan to spend around ₹500 on a mithai box (set as label, amount, then "on a mithai box") |
 | Card back, verdict | Great! / Oops! |
 | Card back, definition heading | What is the {Bias}? (for FOMO: What is FOMO?) |
 | Line above the cards | Three cards below. Pick one. |
@@ -49,7 +49,7 @@ Every word the edition shows, in the order a reader meets it. Text in curly brac
 ### How to play (pick 1 only)
 
 1. Read the task at hand.
-2. Compare the three cards, then make your Sweet Pick.
+2. Compare the three mithai boxes on the cards, then make your Sweet Pick.
 3. Read the back of the cards.
 4. Scroll down and tap Next Pick for your next scenario.
 
