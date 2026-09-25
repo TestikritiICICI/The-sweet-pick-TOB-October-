@@ -1641,13 +1641,14 @@
     if (logo && logo.complete && logo.naturalWidth) g.drawImage(logo, 64, 60, 330, 330 * logo.naturalHeight / logo.naturalWidth);
 
     /* the lockup as the cover sets it: THE sits over the O of ORANGE, not over BOOK.
-       The two lines together stand as tall as the ICICI Bank logo across from them. */
+       It is kept a little smaller than the ICICI Bank logo across from it (310 wide
+       and 50 tall against the logo's 330 by 62) and centred on the logo's height. */
     g.textBaseline = "alphabetic"; g.fillStyle = "rgba(255,255,255,.95)";
-    g.font = "800 50px Mulish, sans-serif"; try { g.letterSpacing = "2px"; } catch(e){}
+    g.font = "800 38px Mulish, sans-serif"; try { g.letterSpacing = "2px"; } catch(e){}
     var obw = g.measureText("ORANGE BOOK").width, obx = W - 64 - obw;
-    g.textAlign = "left"; g.fillText("ORANGE BOOK", obx, 124);
-    g.font = "800 24px Mulish, sans-serif"; try { g.letterSpacing = "6px"; } catch(e){}
-    g.fillText("THE", obx + 3, 78);
+    g.textAlign = "left"; g.fillText("ORANGE BOOK", obx, 116);
+    g.font = "800 19px Mulish, sans-serif"; try { g.letterSpacing = "5px"; } catch(e){}
+    g.fillText("THE", obx + 2, 80);
     try { g.letterSpacing = "0px"; } catch(e){}
 
     /* the wish */
