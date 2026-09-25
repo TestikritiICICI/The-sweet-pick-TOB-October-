@@ -667,10 +667,12 @@
     background:rgba(251,252,253,.92);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);
     font-family:Mulish,system-ui,sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);
   }
-  .boxtray .slots{display:flex;gap:6px}
+  .boxtray .slots{display:flex;gap:8px}
+  /* a flex box, not a grid: the sweet is drawn a little larger than its cup, and flex centring
+     lets it overhang both sides equally, where a grid track grew to fit it and pushed it right */
   .boxtray .slot{
     width:34px;height:34px;border-radius:50%;background:#FFF6E6;border:2px dashed #E4B27E;box-sizing:border-box;
-    display:grid;place-items:center;
+    display:flex;justify-content:center;align-items:center;flex:none;
   }
   .boxtray .slot.on{border-color:transparent;background:transparent}
   /* a round that got away is settled rather than waiting: a solid ring and the tally's own
@@ -1374,7 +1376,8 @@
   function flySweet(card, i){
     var slot = $("boxtray").querySelectorAll(".slot")[i];
     if (!slot) return;
-    if (reducedMotion() || !document.body.animate){ paintTray(); return; }
+    /* the card is gone once the next round has dealt: the sweet simply appears in its cup */
+    if (reducedMotion() || !document.body.animate || !document.body.contains(card)){ paintTray(); return; }
     var from = card.getBoundingClientRect(), to = slot.getBoundingClientRect(), SZ = 64;
     var tray = $("boxtray").getBoundingClientRect();
     var fl = document.createElement("span"); fl.className = "flysweet"; fl.innerHTML = sweetImg(ROUNDS[i].sweet);
@@ -2091,7 +2094,9 @@
       state.results[state.round] = {bias:r.bias, win:!!c.win};
       saveGame();
       paintProgress();
-      if (c.win){ chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, state.round); }, 500); }
+      /* the cup is fixed now: a quick Next Pick inside the half-second would otherwise
+         send the sweet flying into the next round's cup */
+      if (c.win){ var cup = state.round; chime(); buzz([10,30,10]); window.setTimeout(function(){ flySweet(chosen, cup); }, 500); }
       else { missTone(); buzz(40); paintTray(); }
       var run = streakAt(state.round);
       if (run >= 2) toast(run === ROUNDS.length ? "All five. Clean sweep!" : run + " in a row" + (run >= 3 ? "!" : ""));
