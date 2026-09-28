@@ -49,7 +49,7 @@ def mailer(d):
 <div class="vis imgcrop"><img src="{d['img']}" style="{d.get('imgstyle','')}"></div>
 <div class="body">{paras}<div class="list">{items}</div>{close}</div>
 <div class="cta2"><a class="btn">{d['cta']}</a></div>
-<div class="disc"><p>By clicking the Know More buttons, you will be redirected to ICICI Bank app/website.</p><p><a href="#">Click here</a> for Terms and Conditions</p></div>
+<div class="disc"><p>By clicking the above buttons, you will be redirected to ICICI Bank app/website.</p><p><a href="#">Click here</a> for Terms and Conditions</p></div>
 <div class="ft"><h4>Reach out to your Relationship Manager</h4>
 <div class="ct">{PHONE}<span>022-444-00-000</span></div><div class="ct">{MAIL}<span>myrm@icici.bank.in</span></div>
 <hr><h4>For further assistance</h4><div class="lk"><a href="#">WhatsApp us</a> | <a href="#">Locate a branch</a></div>
