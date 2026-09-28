@@ -1,0 +1,72 @@
+import sys
+S=sys.argv[1]
+fonts=''.join(f"@font-face{{font-family:Mulish;font-weight:{w};src:url(mulish-{w}.woff2) format('woff2')}}" for w in (400,500,600,700,800))
+TICK='<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="11" fill="#E8541A"/><path d="M6.3 11.4l3.1 3.1 6.3-6.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+PHONE='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8541A" stroke-width="1.5" stroke-linejoin="round"><path d="M5.2 2.8l3 .3 1.6 4.3-2.1 1.5a12 12 0 0 0 6.9 6.9l1.5-2.1 4.3 1.6.3 3a2 2 0 0 1-2.2 2.1C10.4 20 4 13.6 3.1 5a2 2 0 0 1 2.1-2.2z"/><path d="M14.5 3.5a6.5 6.5 0 0 1 6 6M14.3 6.6a3.4 3.4 0 0 1 3.1 3.1" stroke-linecap="round"/></svg>'
+MAIL='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8541A" stroke-width="1.5" stroke-linejoin="round"><path d="M2.5 9.5L12 3l9.5 6.5V21h-19z"/><path d="M2.5 9.5L12 16l9.5-6.5M2.5 21l7-6.3M21.5 21l-7-6.3"/><path d="M9 10.2l2.2 2.2 4-4.2" stroke-linecap="round"/></svg>'
+
+CSS=fonts+"""
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;font-family:Mulish,sans-serif;-webkit-font-smoothing:antialiased}
+.m{width:600px;background:#fff;color:#4a4a4a}
+.hd{height:100px;background:url(band-tile.png) repeat-x;background-size:auto 100px;overflow:hidden}
+.hd img{height:100px;display:block;margin-left:14px}
+.hero{background:#FAE0CF;padding:26px 46px 34px}
+h1{font-size:42px;line-height:1.14;font-weight:800;color:#E2501D;letter-spacing:-.2px}
+.sub{font-size:23px;line-height:1.35;color:#555;margin-top:14px;font-weight:500}
+.btn{display:inline-block;background:#E8541A;color:#fff;font-weight:700;font-size:21px;line-height:1;padding:15px 24px;border-radius:26px;margin-top:22px;text-decoration:none}
+.vis{background:#fff}
+.vis img{display:block;width:600px;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 90%,transparent 100%)}
+.body{padding:24px 46px 0;font-size:17px;line-height:1.5;color:#555}
+.body p{margin-bottom:16px}
+.list{margin:2px 0 20px}
+.li{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;color:#4a4a4a;font-weight:600}
+.li svg{flex:none;margin-top:1px}
+.hl{color:#E2501D;font-weight:700}
+.call{border:1.5px solid #E8541A;border-radius:8px;padding:14px 10px;text-align:center;color:#9F0B21;font-weight:600;font-size:17px;line-height:1.45;margin:6px 0 4px}
+.cta2{padding:4px 46px 0}
+.cta2 .btn{margin-top:10px}
+.disc{padding:22px 46px 26px;font-size:9.5px;line-height:1.5;color:#333}
+.disc p+p{margin-top:9px}
+.disc a{color:#9F0B21}
+.ft{background:#FAE0CF;padding:26px 46px 20px;color:#555}
+.ft h4{font-size:15.5px;font-weight:700;color:#E2501D;margin-bottom:8px}
+.ct{display:flex;align-items:center;gap:6px;font-size:19.5px;font-weight:700;color:#E2501D;margin:4px 0 6px}
+.ft hr{border:0;border-top:1px solid #555;margin:18px 0 20px}
+.lk{font-size:15.5px;color:#555}
+.lk a{color:#555}
+.sm{font-size:10.5px;line-height:1.6;color:#555}
+.sm a{color:#555}
+"""
+def mailer(d):
+    items=''.join(f'<div class="li">{TICK}<span>{t}</span></div>' for t in d['list'])
+    paras=''.join(f'<p>{p}</p>' for p in d['pre'])
+    close=(f'<div class="call">{d["close"]}</div>' if d['callout'] else f'<p class="hl">{d["close"]}</p>')
+    return f"""<!doctype html><html><head><meta charset="utf-8"><style>{CSS}
+.body{{text-align:{d['align']}}}.imgcrop img{{margin-top:-{d['crop']}px}}.imgcrop{{overflow:hidden;height:{d['h']}px}}</style></head><body><div class="m">
+<div class="hd"><img src="logo-band.png" alt="ICICI Bank"></div>
+<div class="hero"><h1>{d['h1']}</h1><p class="sub">{d['sub']}</p><a class="btn">{d['cta']}</a></div>
+<div class="vis imgcrop"><img src="{d['img']}" style="{d.get('imgstyle','')}"></div>
+<div class="body">{paras}<div class="list">{items}</div>{close}</div>
+<div class="cta2"><a class="btn">{d['cta']}</a></div>
+<div class="disc"><p>By clicking the Know More buttons, you will be redirected to ICICI Bank app/website.</p><p><a href="#">Click here</a> for Terms and Conditions</p></div>
+<div class="ft"><h4>Reach out to your Relationship Manager</h4>
+<div class="ct">{PHONE}<span>022-444-00-000</span></div><div class="ct">{MAIL}<span>myrm@icici.bank.in</span></div>
+<hr><h4>For further assistance</h4><div class="lk"><a href="#">WhatsApp us</a> | <a href="#">Locate a branch</a></div>
+<hr style="margin:18px 0 12px"><div class="sm">{d['sys']}<a href="#">Unsubscribe</a></div></div>
+</div></body></html>"""
+
+M1=dict(h1='Make recurring payments simpler',sub='Set it once, and let your payments<br>take care of themselves.',cta='Manage Bills',
+ img='ill-bills.jpg',imgstyle='width:606px;margin-left:-3px',crop=0,h=406,align='left',
+ pre=['Some payments are easy to forget because they happen so often. Subscriptions, memberships and regular bills quietly become part of your monthly routine.',
+      'With a Standing Instruction on your credit card, eligible recurring payments can be automated. You can:'],
+ list=['Set up eligible recurring payments once','Avoid making the same payment manually every month','Manage eligible regular bills through iMobile'],
+ close='A little automation can make your monthly money routine one thing simpler.',callout=False,
+ sys='<p style="margin-bottom:2px">This is a system generated e-mail. Please do not reply.</p>')
+M2=dict(h1='Big purchase? Make the payments lighter.',sub='Convert an eligible credit card purchase into convenient monthly EMIs.',cta='Convert Now',
+ img='ill-emi.jpg',crop=10,h=163,align='left',
+ pre=['A big purchase can be exciting. Paying for it all at once doesn’t always have to be.',
+      'If your recent ICICI Bank Credit Card spend is eligible for EMI conversion, you can:'],
+ list=['Spread the purchase amount across monthly instalments','Make a large payment easier to manage','Keep your monthly cash flow more comfortable'],
+ close='You’ve already made the purchase.<br>Now choose a payment option that works<br>better for your month.',callout=True,sys='')
+open(S+'/mailer1.html','w').write(mailer(M1)); open(S+'/mailer2.html','w').write(mailer(M2))
