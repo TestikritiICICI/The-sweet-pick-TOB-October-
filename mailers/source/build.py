@@ -57,14 +57,14 @@ def mailer(d):
 </div></body></html>"""
 
 M1=dict(h1='Make recurring payments simpler',sub='Set it once, and let your payments<br>take care of themselves.',cta='Manage Bills',
- img='ill-bills.jpg',imgstyle='width:606px;margin-left:-3px',crop=0,h=406,align='left',
+ img='ill-bills.png',crop=0,h=200,align='left',
  pre=['Some payments are easy to forget because they happen so often. Subscriptions, memberships and regular bills quietly become part of your monthly routine.',
       'With a Standing Instruction on your credit card, eligible recurring payments can be automated. You can:'],
  list=['Set up eligible recurring payments once','Avoid making the same payment manually every month','Manage eligible regular bills through iMobile'],
  close='A little automation can make your monthly money routine one thing simpler.',callout=False,
  sys='<p style="margin-bottom:2px">This is a system generated e-mail. Please do not reply.</p>')
 M2=dict(h1='Big purchase? Make the payments lighter.',sub='Convert an eligible credit card purchase into convenient monthly EMIs.',cta='Convert Now',
- img='ill-emi.jpg',crop=10,h=163,align='left',
+ img='ill-emi.png',crop=0,h=200,align='left',
  pre=['A big purchase can be exciting. Paying for it all at once doesn’t always have to be.',
       'If your recent ICICI Bank Credit Card spend is eligible for EMI conversion, you can:'],
  list=['Spread the purchase amount across monthly instalments','Make a large payment easier to manage','Keep your monthly cash flow more comfortable'],
