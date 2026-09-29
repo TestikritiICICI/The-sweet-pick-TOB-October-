@@ -1,6 +1,6 @@
 import sys
 S=sys.argv[1]
-fonts=''.join(f"@font-face{{font-family:Mulish;font-weight:{w};src:url(mulish-{w}.woff2) format('woff2')}}" for w in (400,500,600,700,800))
+fonts="@font-face{font-family:Mulish;font-weight:200 1000;src:url(Mulish-VF.ttf) format('truetype')}"
 TICK='<svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="11" fill="#E8541A"/><path d="M6.3 11.4l3.1 3.1 6.3-6.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 PHONE='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8541A" stroke-width="1.5" stroke-linejoin="round"><path d="M5.2 2.8l3 .3 1.6 4.3-2.1 1.5a12 12 0 0 0 6.9 6.9l1.5-2.1 4.3 1.6.3 3a2 2 0 0 1-2.2 2.1C10.4 20 4 13.6 3.1 5a2 2 0 0 1 2.1-2.2z"/><path d="M14.5 3.5a6.5 6.5 0 0 1 6 6M14.3 6.6a3.4 3.4 0 0 1 3.1 3.1" stroke-linecap="round"/></svg>'
 MAIL='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8541A" stroke-width="1.5" stroke-linejoin="round"><path d="M2.5 9.5L12 3l9.5 6.5V21h-19z"/><path d="M2.5 9.5L12 16l9.5-6.5M2.5 21l7-6.3M21.5 21l-7-6.3"/><path d="M9 10.2l2.2 2.2 4-4.2" stroke-linecap="round"/></svg>'
@@ -65,8 +65,8 @@ M1=dict(h1='Make recurring payments simpler',sub='Set it once, and let your paym
  sys='<p style="margin-bottom:2px">This is a system generated e-mail. Please do not reply.</p>')
 M2=dict(h1='Bought it?',sub='Make that spend feel lighter with EMI!',cta='Convert Now',
  img='ill-emi.png',crop=0,h=400,align='left',
- pre=['A big purchase can be exciting. Paying for it all at once doesn’t always have to be.',
-      'If your recent ICICI Bank Credit Card spend is eligible for EMI conversion, you can:'],
- list=['Spread the purchase amount across monthly instalments','Make a large payment easier to manage','Keep your monthly cash flow more comfortable'],
- close='You’ve already made the purchase.<br>Now choose a payment option that works<br>better for your month.',callout=True,sys='')
+ pre=['That recent \u20b9XX,XXX purchase on your ICICI Bank Credit Card is eligible for EMI conversion.',
+      'Now you can:'],
+ list=['Split the purchase into convenient monthly instalments','Manage the payment in a way that works better for your monthly cash flow'],
+ close='You\u2019ve made the purchase.<br>Now make the payment work better for you.',callout=True,sys='')
 open(S+'/mailer1.html','w').write(mailer(M1)); open(S+'/mailer2.html','w').write(mailer(M2))
