@@ -63,7 +63,7 @@ M1=dict(h1='Make recurring payments simpler',sub='Set it once, and let your paym
  list=['Set up eligible recurring payments once','Avoid making the same payment manually every month','Manage eligible regular bills through iMobile'],
  close='A little automation can make your monthly money routine one thing simpler.',callout=False,
  sys='<p style="margin-bottom:2px">This is a system generated e-mail. Please do not reply.</p>')
-M2=dict(h1='Big purchase? Make the payments lighter.',sub='Convert an eligible credit card purchase into convenient monthly EMIs.',cta='Convert Now',
+M2=dict(h1='Bought it?',sub='Make that spend feel lighter with EMI!',cta='Convert Now',
  img='ill-emi.png',crop=0,h=400,align='left',
  pre=['A big purchase can be exciting. Paying for it all at once doesn’t always have to be.',
       'If your recent ICICI Bank Credit Card spend is eligible for EMI conversion, you can:'],
