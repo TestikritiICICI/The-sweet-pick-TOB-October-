@@ -57,7 +57,7 @@ def mailer(d):
 </div></body></html>"""
 
 M1=dict(h1='Make recurring payments simpler',sub='Set it once, and let your payments<br>take care of themselves.',cta='Manage Bills',
- img='ill-bills.png',crop=0,h=195,align='left',
+ img='ill-bills.png',crop=0,h=364,align='left',
  pre=['Some payments are easy to forget because they happen so often. Subscriptions, memberships and regular bills quietly become part of your monthly routine.',
       'With a Standing Instruction on your credit card, eligible recurring payments can be automated. You can:'],
  list=['Set up eligible recurring payments once','Avoid making the same payment manually every month','Manage eligible regular bills through iMobile'],
