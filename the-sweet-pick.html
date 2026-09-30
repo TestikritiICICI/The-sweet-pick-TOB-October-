@@ -914,7 +914,7 @@
   <div class="stars" id="stars" role="radiogroup" aria-label="Your rating"></div>
   <div class="ratedone" id="ratedone" hidden>
     <p class="ratethanks">Thank you!</p>
-    <a class="pill" href="https://orangebook.customersuggestions.co.in/?utm_source=TOBOctober2026CTA&amp;utm_medium=TOBOctober26_HTML_FeedbackCTA&amp;utm_campaign=TOBOctober26CTA_Feedback" target="_blank" rel="noopener">Tell us more</a>
+    <a class="pill" id="ratemore" href="https://orangebook.customersuggestions.co.in/?utm_source=TOBOctober2026CTA&amp;utm_medium=TOBOctober26_HTML_FeedbackCTA&amp;utm_campaign=TOBOctober26CTA_Feedback" target="_blank" rel="noopener">Tell us more</a>
     <button class="pill plain" id="ratefinish" type="button">Done</button>
   </div>
 </div>
@@ -1184,6 +1184,34 @@
     if (!el) return;
     try { el.focus({preventScroll:true}); } catch(e){ el.focus(); }
   }
+  /* on the bank's server the page carries Google Tag Manager and Adobe's data layer, and each
+     moment of the game goes to both under the edition's labels, the way earlier editions count
+     their menu, share and feedback links. Anywhere else neither is on the page and this does nothing */
+  var TRACK_ED = "October65", TRACK_CAT = "OctoberTOB65";
+  var GTM_SUB = {TOBReadAllEditions:"ReadAllEditions"};
+  function track(sub, el, o){
+    o = o || {};
+    try {
+      if (window.dataLayer && typeof window.dataLayer.push === "function"){
+        var gs = GTM_SUB[sub] || sub;
+        window.dataLayer.push({event:"custom_event", eventCategory:"tob_" + TRACK_ED,
+          eventAction:gs + "_cta_" + TRACK_ED + "_click", eventLabel:"tob_" + TRACK_ED + "_" + gs});
+      }
+      if (typeof window.pushAdobeCtaClick === "function"){
+        var link = !!(el && el.tagName === "A");
+        var reg = el && el.closest ? el.closest("header,footer,section,[role=dialog]") : null;
+        window.pushAdobeCtaClick({
+          url:o.url || (link ? el.href : window.location.href),
+          productCategory:o.cat || TRACK_CAT, productSubCategory:sub,
+          ctaName:o.name || (el && (el.getAttribute("aria-label") || el.textContent.replace(/\s+/g, " ").trim())) || sub,
+          ctaType:o.type || (link ? "link" : "button"),
+          ctaRegion:reg ? (reg.id || reg.tagName.toLowerCase()) : ""
+        });
+      }
+    } catch(e){}
+  }
+  /* a round's bias in one word, for its labels: Anchoring, Decoy, Bandwagon, FOMO, Framing */
+  function biasKey(r){ return r.bias.split(" ")[0]; }
   var rupee = function(n){ return "₹" + n.toLocaleString("en-IN"); };
 
   /* replays the title screen: the boot animations hang off .boot, so dropping
@@ -1317,7 +1345,7 @@
     var m = false;
     try { m = window.localStorage.getItem(MUTE_KEY) === "1"; } catch(e){}
     setMuted(m);
-    $("mute").addEventListener("click", function(){ setMuted(!muted); if (!muted){ chime(); buzz(10); } });
+    $("mute").addEventListener("click", function(){ setMuted(!muted); track(muted ? "SoundOff" : "SoundOn", $("mute")); if (!muted){ chime(); buzz(10); } });
     /* No browser makes a sound before the reader has touched the page, and on iOS a context
        opened before that first touch comes up suspended. Every gesture is offered to it until
        it is running, so the sounds that are not themselves triggered by a tap, such as the
@@ -1510,7 +1538,9 @@
       hero:hero.naturalWidth ? hero : null, lid:lid.naturalWidth ? lid : null}; });
     return ART;
   }
-  function shareUrl(){ var h = window.location.href; return /^https?:/.test(h) ? h.split("#")[0] : ""; }
+  /* the edition's own address, without the sharer's campaign tags: a friend's visit should not
+     be counted to the mailer or page the sharer came in from */
+  function shareUrl(){ var h = window.location.href; return /^https?:/.test(h) ? h.split("#")[0].split("?")[0] : ""; }
   function ensureFonts(){
     if (!(document.fonts && document.fonts.load)) return Promise.resolve();
     return Promise.all([document.fonts.load("120px Handlee"), document.fonts.load("900 34px Mulish"), document.fonts.load("800 24px Mulish"), document.fonts.load("500 30px Mulish")]).catch(function(){});
@@ -1742,6 +1772,7 @@
       "The Sweet Pick \uD83D\uDC47" + (url ? "\n" + url : "");
     a.href = "https://wa.me/?text=" + encodeURIComponent(text);
     a.addEventListener("click", function(e){
+      track("TOBShare", a, {cat:"WatsappButton"});
       if (!navigator.share) return;
       e.preventDefault();
       var d = {title:"The Orange Book \u00b7 The Sweet Pick", text:text}; if (url) d.url = url;
@@ -1926,7 +1957,7 @@
       b.innerHTML = cursorSvg() + '<span class="lbl">' + m.label + "</span>" +
                     (m.note ? '<span class="note">' + m.note + "</span>" : "");
       b.addEventListener("mouseenter", function(){ state.mi = i; paintMenu(); });
-      b.addEventListener("click", function(){ act(m.act); });
+      b.addEventListener("click", function(){ menuGo(i); });
       li.appendChild(b);
       ul.appendChild(li);
     });
@@ -1936,6 +1967,12 @@
     var n = bestRun(), el = $("coverstat");
     el.innerHTML = "Best run <b>" + n + " of " + ROUNDS.length + "</b> \u00b7 " + titleFor(n).t;
     el.hidden = (n <= 0);
+  }
+  /* a menu item taken, by tap or by Enter: Play, Continue or NewGame */
+  function menuGo(i){
+    var m = MENU[i];
+    track(m.label.replace(/\s+/g, ""), $("menu").querySelectorAll(".mitem")[i], {name:m.label});
+    act(m.act);
   }
   function paintMenu(){
     var it = $("menu").querySelectorAll(".mitem");
@@ -2097,6 +2134,7 @@
       chosen.classList.add("revealed");
       if (c.win) chosen.classList.add("win");
       state.results[state.round] = {bias:r.bias, win:!!c.win};
+      track("Pick" + (state.round + 1) + biasKey(r) + (c.win ? "Avoided" : "FellForIt"), chosen, {name:c.name});
       saveGame();
       paintProgress();
       /* the cup is fixed now: a quick Next Pick inside the half-second would otherwise
@@ -2129,12 +2167,14 @@
   /* the reader wanted the other box: replay this round, and whichever box they
      settle on is the one that counts */
   function again(){
+    track("PickAgain" + (state.round + 1), $("again-btn"));
     state.tries++;
     renderRound(true);
     focusQuiet($("r-cards").querySelector(".card"));
   }
 
   function next(){
+    track(state.round < ROUNDS.length - 1 ? "NextPick" + (state.round + 1) : "SeeHowYouDid", $("next-btn"));
     if (state.round < ROUNDS.length - 1){ state.round++; renderRound(); }
     else { renderClose(); }
   }
@@ -2174,6 +2214,7 @@
     var n = mindful(), title = titleFor(n);
     clearSave();
     recordBest(n);
+    track("Score" + n + "of" + ROUNDS.length, $("scoreline"), {name:title.t, type:"result"});
     $("rsub").textContent = title.s;
     var filled = filledCount();
     $("yourbox").innerHTML = '<div class="boxstage">' + stampHtml(title) +
@@ -2364,12 +2405,14 @@
            '" aria-label="' + i + (i === 1 ? " star" : " stars") + '">' + starSvg() + "</button>";
     }
     host.innerHTML = h;
-    /* the stars are the whole form: a tap records it and says thank you. There is no server
-       behind this file, so the number stays with the reader unless they go on to say more. */
+    /* the stars are the whole form: a tap records it and says thank you. On the bank's server
+       the number goes to its analytics as Rating1 to Rating5; anywhere else it stays with the
+       reader unless they go on to say more. */
     host.addEventListener("click", function(e){
       var b = e.target.closest(".star"); if (!b) return;
       var v = parseInt(b.getAttribute("data-v"), 10);
       try { window.localStorage.setItem(RATE_KEY, String(v)); } catch(e2){}
+      track("Rating" + v, b);
       paintStars(v); chime(); buzz(10);
     });
     $("rateclose").addEventListener("click", closeRate);
@@ -2378,9 +2421,22 @@
   }
 
   /* ---------- wiring ---------- */
+  var GO_SUB = {cover:"PlayAgain", feedback:"TOBFeedback"};
   document.addEventListener("click", function(e){
     var t = e.target.closest("[data-go]");
-    if (t) act(t.getAttribute("data-go"));
+    if (!t) return;
+    var go = t.getAttribute("data-go");
+    track(GO_SUB[go] || go, t);
+    act(go);
+  });
+  /* the page's own links, counted as they are followed; the source links are drawn with each round */
+  [["#ratemore", "Feedback"], [".outro a", "TOBReadAllEditions"], [".disclaimer a", "Disclaimer"]].forEach(function(l){
+    var a = document.querySelector(l[0]);
+    if (a) a.addEventListener("click", function(){ track(l[1], a); });
+  });
+  $("r-bridge").addEventListener("click", function(e){
+    var a = e.target.closest(".srclink a");
+    if (a) track("ReadAbout" + biasKey(ROUNDS[state.round]), a);
   });
   $("next-btn").addEventListener("click", next);
   $("again-btn").addEventListener("click", again);
@@ -2403,7 +2459,7 @@
     if (state.page === "cover"){
       if (e.key === "ArrowDown"){ e.preventDefault(); state.mi = (state.mi + 1) % MENU.length; paintMenu(); }
       else if (e.key === "ArrowUp"){ e.preventDefault(); state.mi = (state.mi - 1 + MENU.length) % MENU.length; paintMenu(); }
-      else if (e.key === "Enter"){ e.preventDefault(); act(MENU[state.mi].act); }
+      else if (e.key === "Enter"){ e.preventDefault(); menuGo(state.mi); }
       return;
     }
     if (state.page === "round"){
@@ -2418,7 +2474,7 @@
     initSound();
     initShareBand();
     initRate();
-    $("share-btn").addEventListener("click", shareResult);
+    $("share-btn").addEventListener("click", function(){ shareResult(); track("ShareChallenge", $("share-btn")); });
     $("p-close").addEventListener("click", skipReveal);
     $("p-close").addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") skipReveal(); });
     paintHero();
